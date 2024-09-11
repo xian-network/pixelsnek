@@ -59,8 +59,7 @@ export const groupByTxHash= (data) => {
 };
 
 function* extractValues(groupedData) {
-  const extractionRules = {
-    create_thing: {
+  const  rules = {
       ":thing": "thing",
       ":type": "type",
       ":name": "name",
@@ -71,17 +70,9 @@ function* extractValues(groupedData) {
       ":meta:speed": "meta.speed",
       ":meta:num_of_frames": "meta.num_of_frames",
       ":meta:royalty_percent": "meta.royalty_percent",
-    },
-    set_owner: {
-      ":owner": "owner",
-    },
-    set_proof: {
       ":proof": "proof",
-    },
-    set_price: {
       ":price:hold": "price.hold",
       ":price:amount": "price.amount",
-    },
   };
 
   for (const group of groupedData) {
