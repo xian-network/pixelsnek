@@ -12,7 +12,6 @@ export const getStateChangesQuery = (contractType, offset = 0) => {
         key
         value
         transactionByTxHash {
-          function
           stamps
           sender
         }
@@ -34,7 +33,6 @@ export const getStateChangesQuery = (contractType, offset = 0) => {
         key
         value
         transactionByTxHash {
-          function
           stamps
           sender
         }

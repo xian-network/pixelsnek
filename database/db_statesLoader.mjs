@@ -34,7 +34,7 @@ export const makeGraphQLRequest = async (query) => {
   }
 };
 
-export const groupByTxHashAndFunction = (data) => {
+export const groupByTxHash= (data) => {
   const nodes = data.data.allStateChanges.nodes;
   const txMap = Object.create(null);
 
@@ -46,7 +46,6 @@ export const groupByTxHashAndFunction = (data) => {
       txMap[txHash] = {
         created,
         txHash,
-        function: transactionByTxHash.function,
         stamps: transactionByTxHash.stamps,
         sender: transactionByTxHash.sender,
         stateChanges: [],
@@ -175,7 +174,7 @@ export const processContractStates = async (contractType, offset) => {
     return;
   }
 
-  const groupedData = groupByTxHashAndFunction(queryResults);
+  const groupedData = groupByTxHash(queryResults);
   await processExtractedValues(groupedData);
   console.log(`${contractType} resultsTotalCount: `, resultsTotalCount);
 
