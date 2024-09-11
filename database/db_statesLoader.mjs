@@ -60,47 +60,71 @@ export const groupByTxHash= (data) => {
 
 function* extractValues(groupedData) {
   const  rules = {
-      ":thing": "thing",
-      ":type": "type",
-      ":name": "name",
-      "S:names:": { key: "names.uid", value: "uid" },
-      ":description": "description",
-      ":owner": "owner",
-      ":creator": "creator",
-      ":meta:speed": "meta.speed",
-      ":meta:num_of_frames": "meta.num_of_frames",
-      ":meta:royalty_percent": "meta.royalty_percent",
-      ":proof": "proof",
-      ":price:hold": "price.hold",
-      ":price:amount": "price.amount",
+    ":thing": "thing",
+    ":type": "type",
+    ":name": "name",
+    "S:names:": { key: "names.uid", value: "uid" },
+    ":description": "description",
+    ":owner": "owner",
+    ":creator": "creator",
+    ":meta:speed": "meta.speed",
+    ":meta:num_of_frames": "meta.num_of_frames",
+    ":meta:royalty_percent": "meta.royalty_percent",
+    ":proof": "proof",
+    ":price:hold": "price.hold",
+    ":price:amount": "price.amount", 
   };
 
   const objectEntries = Object.entries(rules);
 
   for (const group of groupedData) {
-    const rules = extractionRules[group.function];
-    if (rules) {
-      const groupResult = {};
-      groupResult["created"] = group.created;
-      groupResult["txHash"] = group.txHash;
-      groupResult["stamps_used"] = group.stamps;
-      groupResult["sender"] = group.sender;
-      for (const change of group.stateChanges) {
-        const { key, value } = change;
+    const groupResult = {};
+    groupResult["created"] = group.created;
+    groupResult["txHash"] = group.txHash;
+    groupResult["stamps_used"] = group.stamps;
+    groupResult["sender"] = group.sender;
+    let updateType = null;
+    let hasThingKey = false;
+    let hasPriceKey = false;
+    let hasOwnerKey = false;
+
+    for (const change of group.stateChanges) {
+      const { key, value } = change;
+      if (key.endsWith(":thing")) {
+        hasThingKey = true;
+      } else if (key.endsWith(":owner")) {
+        hasOwnerKey = true;
+      } else if (key.includes(":price:")) {
+        hasPriceKey = true;
+      }
+      // } else if (key.endsWith(":proof") && !updateType) {
+      //   updateType = "set_proof";
+      // }
+
       for (const [endsWith, resultKey] of objectEntries) {
-          if (typeof resultKey === "object") {
-            if (key.includes(endsWith)) {
-              groupResult[resultKey.key] = key.split(":").pop();
-              groupResult[resultKey.value] = value;
-            }
-          } else if (key.endsWith(endsWith)) {
-            groupResult[resultKey] = value;
+        if (typeof resultKey === "object") {
+          if (key.includes(endsWith)) {
+            groupResult[resultKey.key] = key.split(":").pop();
+            groupResult[resultKey.value] = value;
           }
+        } else if (key.endsWith(endsWith)) {
+          groupResult[resultKey] = value;
         }
       }
-      if (Object.keys(groupResult).length > 0) {
-        yield { function: group.function, data: groupResult };
-      }
+    }
+
+    if (hasThingKey && !updateType){
+      updateType = "create_thing";
+    }else if (hasPriceKey && hasOwnerKey) {
+      updateType = "sold_thing";
+    } else if (hasPriceKey && !updateType) {
+      updateType = "sell_thing";
+    } else if (hasOwnerKey && !updateType) {
+      updateType = "transfer_thing";
+    }
+
+    if (Object.keys(groupResult).length > 0) {
+      yield { updateType: updateType, data: groupResult };
     }
   }
 }
@@ -110,26 +134,28 @@ export const processExtractedValues = async (groupedData) => {
 
   for (const result of extractValues(groupedData)) {
     try {
-      console.log(`Processing ${result.function}`);
-      switch (result.function) {
+      console.log(`Processing ${result.updateType}`);
+      switch (result.updateType) {
         case "create_thing":
           await saveToDB.creatNewThing(db, result.data);
           break;
-        case "set_owner":
+        case "transfer_thing":
           await saveToDB.transferThing(db, result.data);
           break;
         case "set_proof":
           // await saveToDB.setProof(db, result.data);
           break;
-        case "set_price":
-          await saveToDB.soldThing(db, result.data);
+        case "sell_thing":
           await saveToDB.sellThing(db, result.data);
           break;
+        case "sold_thing":
+          await saveToDB.soldThing(db, result.data);
+          break;
         default:
-          console.log(`Unhandled function: ${result.function}`);
+          console.log(`Unhandled function: ${result.updateType}`);
       }
     } catch (error) {
-      console.error(`Error processing ${result.function}:`, error);
+      console.error(`Error processing ${result.updateType}:`, error);
     }
   }
 };
