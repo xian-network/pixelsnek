@@ -75,6 +75,8 @@ function* extractValues(groupedData) {
       ":price:amount": "price.amount",
   };
 
+  const objectEntries = Object.entries(rules);
+
   for (const group of groupedData) {
     const rules = extractionRules[group.function];
     if (rules) {
@@ -85,7 +87,7 @@ function* extractValues(groupedData) {
       groupResult["sender"] = group.sender;
       for (const change of group.stateChanges) {
         const { key, value } = change;
-        for (const [endsWith, resultKey] of Object.entries(rules)) {
+      for (const [endsWith, resultKey] of objectEntries) {
           if (typeof resultKey === "object") {
             if (key.includes(endsWith)) {
               groupResult[resultKey.key] = key.split(":").pop();
