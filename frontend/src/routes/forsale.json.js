@@ -2,7 +2,8 @@ export async function get(req, res, next) {
 	let { limit, offset } = req.query;
 	limit = parseInt(limit) || 25
 
-	var match = { $match : { "price_amount": { "$ne": '0' }, "blacklist": false }}
+	// var match = { $match : { "price_amount": { "$ne": '0' }, "blacklist": false }}
+	var match = { $match : { "price_amount": { "$ne": '0' }}}
 	var sort = { $sort : {"price_amount" : -1.0}}
 	var skip = { $skip: parseInt(offset) }
 	var reclimit = { $limit: limit}
