@@ -125,13 +125,20 @@ export const sellThing = async (db, processedResult) => {
   if (!pixel_frame) return;
 
   pixel_frame.price_hold = processedResult["price.hold"] || "";
-  pixel_frame.price_amount = processedResult["price.amount"] || amount;
+  // Convert price.amount to string if it's an integer
+  pixel_frame.price_amount = typeof processedResult["price.amount"] === 'number' 
+    ? processedResult["price.amount"].toString() 
+    : processedResult["price.amount"];
   pixel_frame.lastUpdate = processedResult.created;
   pixel_frame.lastSaleDate = processedResult.created;
 
-  await pixel_frame.save((err, doc) => {
+  // await pixel_frame.save((err, doc) => {
     //if (!loader) socket_server.to(`market-updates`).emit("market-update", { type: 'new-listing', update: doc })
-  });
+  // });
+
+  await pixel_frame.save();
+
+  console.log(util.inspect({ pixel_frame }, false, null, true));
 };
 
 export const soldThing = async (db, processedResult) => {
