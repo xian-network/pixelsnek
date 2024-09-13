@@ -142,7 +142,6 @@ export const processExtractedValues = async (groupedData) => {
             // await saveToDB.setProof(db, result.data);
             break;
           case "sell_thing":
-            console.log("sell_thing: ", result.data);
             await saveToDB.sellThing(db, result.data);
             break;
           case "sold_thing":
