@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start_polling": "node db_statesPoller.mjs",
+    "start_updating": "node db_statesUpdater.mjs",
     "load_all": "node db_statesLoader.mjs"
   },
   "dependencies": {
