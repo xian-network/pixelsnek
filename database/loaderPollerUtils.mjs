@@ -49,37 +49,38 @@ export const groupByTxHash= (data) => {
   };
 
 export function* extractValues(groupedData) {
-    const  rules = {
-      ":thing": "thing",
-      ":type": "type",
-      ":name": "name",
-      "S:names:": { key: "names.uid", value: "uid" },
-      ":description": "description",
-      ":owner": "owner",
-      ":creator": "creator",
-      ":meta:speed": "meta.speed",
-      ":meta:num_of_frames": "meta.num_of_frames",
-      ":meta:royalty_percent": "meta.royalty_percent",
-      ":proof": "proof",
-      ":price:hold": "price.hold",
-      ":price:amount": "price.amount", 
-    };
+  const  rules = {
+    ":thing": "thing",
+    ":type": "type",
+    ":name": "name",
+    "S:names:": { key: "names.uid", value: "uid" },
+    ":description": "description",
+    ":owner": "owner",
+    ":creator": "creator",
+    ":meta:speed": "meta.speed",
+    ":meta:num_of_frames": "meta.num_of_frames",
+    ":meta:royalty_percent": "meta.royalty_percent",
+    ":proof": "proof",
+    ":price:hold": "price.hold",
+    ":price:amount": "price.amount", 
+  };
   
-    const objectEntries = Object.entries(rules);
-  
-    for (const group of groupedData) {
-      const groupResult = {};
-      groupResult["created"] = group.created;
-      groupResult["txHash"] = group.txHash;
-      groupResult["stamps_used"] = group.stamps;
-      groupResult["sender"] = group.sender;
-      let updateType = null;
-      let hasThingKey = false;
-      let hasPriceKey = false;
-      let hasOwnerKey = false;
-  
-      for (const change of group.stateChanges) {
-        const { key, value } = change;
+  const objectEntries = Object.entries(rules);
+
+  for (const group of groupedData) {
+    const groupResult = {};
+    groupResult["created"] = group.created;
+    groupResult["txHash"] = group.txHash;
+    groupResult["stamps_used"] = group.stamps;
+    groupResult["sender"] = group.sender;
+    let updateType = null;
+    let hasThingKey = false;
+    let hasPriceKey = false;
+    let hasOwnerKey = false;
+
+    for (const change of group.stateChanges) {
+      const { key, value } = change;
+      if (key.startsWith("con_pixel_frames_info_v0_1")){
         if (key.endsWith(":thing")) {
           hasThingKey = true;
         } else if (key.endsWith(":owner")) {
@@ -107,22 +108,23 @@ export function* extractValues(groupedData) {
             groupResult[resultKey] = value;
           }
         }
-      }
-  
-      if (hasThingKey && !updateType){
-        updateType = "create_thing";
-      }else if (hasPriceKey && hasOwnerKey) {
-        updateType = "sold_thing";
-      } else if (hasPriceKey && !updateType) {
-        updateType = "sell_thing";
-      } else if (hasOwnerKey && !updateType) {
-        updateType = "transfer_thing";
-      }
-  
-      if (Object.keys(groupResult).length > 0) {
-        yield { updateType: updateType, data: groupResult };
-      }
+      }  
     }
+
+    if (hasThingKey && !updateType) {
+      updateType = "create_thing";
+    }else if (hasPriceKey && hasOwnerKey) {
+      updateType = "sold_thing";
+    } else if (hasPriceKey && !updateType) {
+      updateType = "sell_thing";
+    } else if (hasOwnerKey && !updateType) {
+      updateType = "transfer_thing";
+    }
+
+    if (Object.keys(groupResult).length > 0) {
+      yield { updateType: updateType, data: groupResult };
+    }
+  }
 }
 
 export const processExtractedValues = async (groupedData) => {
