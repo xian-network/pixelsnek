@@ -234,7 +234,7 @@ export const drawFrame = (canvas, pixels, pixelSize, watermark) => {
     ctx.fillRect(x, rowAdj, pixelSize, pixelSize);
   });
 
-  if (watermark) {
+  if (watermark && watermark.text) {
     ctx.font = `${pixelSize / pixelSizeRatio}em Roboto`;
 
     ctx.textBaseline = "middle";
