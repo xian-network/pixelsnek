@@ -4,7 +4,7 @@
     import { config } from '../js/config.js'
 
     export let id = parseInt(Math.random() * 10000);
-    export let watermark = undefined;
+    export let watermark;
     export let pixels;
     export let pixelSize = 3;
 
