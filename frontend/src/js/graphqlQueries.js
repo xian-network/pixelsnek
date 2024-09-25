@@ -48,23 +48,38 @@ export const getStateChangesQuery = (contractType, offset = 0) => {
   return queries[contractType]
 };
 
-export const getThing = (uid)=>{
+// export const getThing = (uid)=>{
+//   return `
+//   query MyQuery {
+//     allStates(
+//       filter: {key: {startsWith: "con_pixel_frames_info_v0_1", includes: "${uid}"}}
+//     ) {
+//       nodes {
+//         key
+//         value
+//         updated
+//       }
+//     }
+//   }
+//   `
+// }
+
+export const getThingForSale = ()=>{
   return `
   query MyQuery {
     allStates(
-      filter: {key: {startsWith: "con_pixel_frames_info_v0_1", includes: "${uid}"}}
+      filter: {key: {startsWith: "con_pixel_frames_info_v0_1", endsWith: "price:amount"}, value: {greaterThan: 0}}
     ) {
       nodes {
         key
         value
-        updated
       }
     }
   }
   `
 }
 
-export const getThing2 = (uid)=>{
+export const getThingByUid = (uid)=>{
   return `
   query MyQuery {
     name: allStates(
@@ -188,4 +203,19 @@ export const getOwnedUids = (owner, offset=0)=>{
     }
   }
   `
+}
+
+export const getKeys = (offset = 0) => {
+  return`
+  query MyQuery {
+    allStateChanges(
+      filter: { key: { startsWith: "con_pixel_frames_info_v0_1" } }
+      offset: ${offset}
+    ) {
+      nodes {
+        key
+      }
+    }
+  }
+  `  
 }
