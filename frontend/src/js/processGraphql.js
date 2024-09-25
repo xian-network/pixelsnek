@@ -29,19 +29,16 @@ export const makeGraphQLRequest = async (query) => {
     }
 };
 
-export const extractUids = (nodes) =>{
-    const uids = [];
+export const extractUids = (nodes) => {
+    const uniqueUids = new Set();
     for (const node of nodes) {
         const { key } = node;
-        
-        const uid = key.split(":")[1];
-        if (uid.length === 64) {
-            uids.push(uid);
+        if (key && key.includes(":") && key.split(":")[1].length === 64) {
+            uniqueUids.add(key.split(":")[1]);
         }
-        
-    }
+            }
 
-    return uids 
+    return Array.from(uniqueUids); 
 }
 
 export const extractThingValues = (uid, queyData) =>{
