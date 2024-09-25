@@ -92,9 +92,10 @@ export async function* processThings(offset, owner="", forsale=false) {
     }
 
     for (const uid of uids) {
+      if (uid){
         await new Promise(resolve => setTimeout(resolve, 1000)); // Add a 1-second delay
         
-        const thingQuery = getThing2(uid);
+        const thingQuery = getThingByUid(uid);
         const thingQueryResults = await makeGraphQLRequest(thingQuery);
         const thingData = thingQueryResults?.data
 
