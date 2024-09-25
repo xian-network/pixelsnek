@@ -1,4 +1,4 @@
-import { processOwnerThings } from "../../js/processGraphql";
+import { processThings } from "../../js/processGraphql";
 
 export async function get(req, res, next) {
 	let { account } = req.params;
@@ -10,7 +10,7 @@ export async function get(req, res, next) {
 	let count = 0;
 
 	try {
-		for await (const thing of processOwnerThings(account, offset)) {
+		for await (const thing of processThings(offset, account)) {
 			things.push(thing);
 			count++;
 		}
