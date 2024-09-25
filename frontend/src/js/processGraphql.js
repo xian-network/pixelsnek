@@ -41,7 +41,7 @@ export const extractUids = (nodes) => {
     return Array.from(uniqueUids); 
 }
 
-export const extractThingValues = (uid, queyData) =>{
+export const extractThingValues = (uid, queryData) =>{
     const thing = {};
 
     function getValue(field){
@@ -53,21 +53,21 @@ export const extractThingValues = (uid, queyData) =>{
     }
     
     thing.uid = uid;
-    thing.thing = getValue(queyData.thing);
-    thing.created = queyData.thing.nodes[0].updated
-    thing.owner = getValue(queyData.owner);
-    thing["price.hold"] = getValue(queyData.price_hold);
-    thing["price.amount"] = getValue(queyData.price_amount);
-    thing.type = getValue(queyData.type);
-    thing.name = getValue(queyData.name);
-    thing.description = getValue(queyData.description);
-    thing.creator = getValue(queyData.creator);
-    thing.likes = getValue(queyData.likes);
-    thing["meta.speed"] = getValue(queyData.speed);
-    thing["meta.num_of_frames"] = getValue(queyData.frames);
-    thing["meta.royalty_percent"] = getValue(queyData.royalty);
-    thing.proof = getValue(queyData.proof);
-    thing["names.uid"] =getValue(queyData.S_names);
+    thing.thing = getValue(queryData.thing);
+    thing.created = queryData.thing.nodes[0].updated
+    thing.owner = getValue(queryData.owner);
+    thing["price_hold"] = getValue(queryData.price_hold);
+    thing["price_amount"] = getValue(queryData.price_amount);
+    thing.type = getValue(queryData.type);
+    thing.name = getValue(queryData.name);
+    thing.description = getValue(queryData.description);
+    thing.creator = getValue(queryData.creator);
+    thing.likes = getValue(queryData.likes);
+    thing["speed"] = getValue(queryData.speed);
+    thing["num_of_frames"] = getValue(queryData.frames);
+    thing["royalty_percent"] = getValue(queryData.royalty);
+    thing.proof = getValue(queryData.proof);
+    // thing["names.uid"] =getValue(queryData.S_names);
 
     return thing; 
 }
