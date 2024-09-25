@@ -72,11 +72,24 @@ export const extractThingValues = (uid, queryData) =>{
     return thing; 
 }
 
-export async function* processOwnerThings(owner, offset) {
-    const uidQuery = getOwnedUids(owner, offset);
-    const uidQueryResults = await makeGraphQLRequest(uidQuery);
-
-    const uids = extractUids(uidQueryResults?.data.allStates.nodes)
+export async function* processThings(offset, owner="", forsale=false) {
+    let query;
+    let uidQueryResults;
+    let uids;
+    
+    if (owner){
+      query = getOwnedUids(owner, offset);
+      uidQueryResults = await makeGraphQLRequest(query);
+      uids = extractUids(uidQueryResults?.data.allStates.nodes);
+    } else if (forsale){
+      query = getThingForSale();
+      uidQueryResults = await makeGraphQLRequest(query);
+      uids = extractUids(uidQueryResults?.data.allStates.nodes);
+    } else {
+      query = getKeys(offset);
+      uidQueryResults = await makeGraphQLRequest(query);
+      uids = extractUids(uidQueryResults?.data.allStateChanges.nodes);
+    }
 
     for (const uid of uids) {
         await new Promise(resolve => setTimeout(resolve, 1000)); // Add a 1-second delay
