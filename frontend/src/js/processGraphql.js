@@ -1,4 +1,4 @@
-import { getOwnedUids, getThing2 } from "./graphqlQueries.js";
+import { getOwnedUids, getKeys, getThingByUid, getThingForSale } from "./graphqlQueries.js";
 
 export const makeGraphQLRequest = async (query) => {
     const url = "https://testnet.xian.org/graphql";
@@ -30,15 +30,15 @@ export const makeGraphQLRequest = async (query) => {
 };
 
 export const extractUids = (nodes) => {
-    const uniqueUids = new Set();
-    for (const node of nodes) {
-        const { key } = node;
-        if (key && key.includes(":") && key.split(":")[1].length === 64) {
-            uniqueUids.add(key.split(":")[1]);
-        }
-            }
+  const uniqueUids = new Set();
+  for (const node of nodes) {
+      const { key } = node;
+      if (key && key.includes(":") && key.split(":")[1].length === 64) {
+          uniqueUids.add(key.split(":")[1]);
+      }
+  }
 
-    return Array.from(uniqueUids); 
+  return Array.from(uniqueUids);
 }
 
 export const extractThingValues = (uid, queryData) =>{
@@ -51,7 +51,7 @@ export const extractThingValues = (uid, queryData) =>{
             return field.nodes[0].value
         }
     }
-    
+
     thing.uid = uid;
     thing.thing = getValue(queryData.thing);
     thing.created = queryData.thing.nodes[0].updated
@@ -100,5 +100,34 @@ export async function* processThings(offset, owner="", forsale=false) {
         const thingData = thingQueryResults?.data
 
         yield extractThingValues(uid, thingData);
+      }
     }
+}
+
+export const mockPixelThing = ()=>{
+  let things = [];
+  const thing = {
+    "uid": "c3361632d6a205715dca150fc09c6219c897ec2420d370740e23e6be548088ab",
+    "thing": "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRTRTRRRRRRRRRRRRRRRRRRRRRTRTRTRRRRRRRRRRRRRRRRRRRRRTRTRTRRRRRRRRRRRRRRRRRRRRRTRTRRRRRRRRRRRRRRRRRRRRRRRTRRRRRRRRRRRRRRRRRRRRRRTRRTRRRRRRRRRRRRRRRRRRRRRTRRTRRRRRRRRRRRRRRRRRRRRRTRRRRRRRRRRRRRRRRRRRRRRRRRTRTRRRRRRRRRRRRRRRRRRRRRRRTRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR",
+    "created": "2024-09-23T21:44:35.556472",
+    "owner": "5fa1b314468832fb9d391e8af756140e85325a565d8b411ae2f2001d37c30ef4",
+    "price.hold": "",
+    "price.amount": 0,
+    "type": "text/plain",
+    "name": "cool_pixel",
+    "description": "cool cool pixel",
+    "creator": "5fa1b314468832fb9d391e8af756140e85325a565d8b411ae2f2001d37c30ef4",
+    "likes": "",
+    "meta.speed": 500,
+    "meta.num_of_frames": 1,
+    "meta.royalty_percent": 5,
+    "proof": "",
+    "names.uid": ""
+  }
+
+  for (let i = 0; i < 25; i++){
+    things.push(thing)
+  }
+
+  return things;
 }
