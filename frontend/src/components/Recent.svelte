@@ -1,5 +1,3 @@
-
-
 <script>
 	import { onMount, beforeUpdate } from 'svelte'
 	import { scale } from 'svelte/transition';
@@ -18,7 +16,7 @@
 	let scrollHeight;
 	let innerHeight;
 
-    $: formatted = formatThings (recent.data);
+    $: formatted = formatThings(recent.data);
     $: elements = []
 	$: lastElementTop = elements.length > 0 ? elements[elements.length -1].offsetTop: null
 	$: lastElementOffsetHeight = elements.length > 0 ? elements[elements.length -1].offsetHeight: null
