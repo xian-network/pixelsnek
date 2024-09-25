@@ -16,10 +16,10 @@
 
 	const uid = $showModal.modalData.thingInfo.uid
 	const price = toBigNumber($showModal.modalData.thingInfo['price_amount'])
-	const approvalTxStamps_to_tau = price.isGreaterThan(toBigNumber($approvalAmount[config.masterContract])) ? toBigNumber(stampLimits.currency.approve).dividedBy($stampRatio) : toBigNumber(0)
-	const buyTxStamps_to_tau = toBigNumber(stampLimits[config.masterContract].buy_thing).dividedBy($stampRatio)
-	const total_tx_fees = approvalTxStamps_to_tau.plus(buyTxStamps_to_tau)
-	const total_tau_to_buy = price.plus(total_tx_fees)
+	const approvalTxStamps_to_xian = price.isGreaterThan(toBigNumber($approvalAmount[config.masterContract])) ? toBigNumber(stampLimits.currency.approve).dividedBy($stampRatio) : toBigNumber(0)
+	const buyTxStamps_to_xian = toBigNumber(stampLimits[config.masterContract].buy_thing).dividedBy($stampRatio)
+	const total_tx_fees = approvalTxStamps_to_xian.plus(buyTxStamps_to_xian)
+	const total_xian_to_buy = price.plus(total_tx_fees)
 	const thingName = $showModal.modalData.thingInfo['name']
 
     const buy = () => {
@@ -51,12 +51,12 @@
 	}
 
 	const checkPrice = () => {
-    	if (total_tau_to_buy.isGreaterThan($currency)){
+    	if (total_xian_to_buy.isGreaterThan($currency)){
 			createSnack({
                 title: `Insufficient ${config.currencySymbol}`,
                 body: `
-                	You need ${stringToFixed(total_tau_to_buy, 4)} ${config.currencySymbol} to buy this.
-                	 ${stringToFixed(price, 4)} ${config.currencySymbol} plus ${stringToFixed(total_tau_to_buy, 4)} ${config.currencySymbol} for tx fees.`,
+                	You need ${stringToFixed(total_xian_to_buy, 4)} ${config.currencySymbol} to buy this.
+                	 ${stringToFixed(price, 4)} ${config.currencySymbol} plus ${stringToFixed(total_xian_to_buy, 4)} ${config.currencySymbol} for tx fees.`,
                 type: "error"
             })
 		}else{
@@ -140,10 +140,10 @@
 			<input
 				type="submit"
 				class="button_text outlined"
-				disabled={total_tau_to_buy.isGreaterThan($currency)}
-				value={total_tau_to_buy.isGreaterThan($currency) ?
+				disabled={total_xian_to_buy.isGreaterThan($currency)}
+				value={total_xian_to_buy.isGreaterThan($currency) ?
 					`Insufficient ${config.currencySymbol}` :
-					`Buy For ${stringToFixed(total_tau_to_buy, 4)} ${config.currencySymbol}`
+					`Buy For ${stringToFixed(total_xian_to_buy, 4)} ${config.currencySymbol}`
 				} form="buy" />
 		</div>
 		<form id="buy" class="flex-col" on:submit|preventDefault={checkPrice}>
@@ -155,7 +155,7 @@
 				<p>Transaction Cost</p>
 				<strong>{`${stringToFixed(total_tx_fees, 4)} ${config.currencySymbol}`}</strong>
 				<p>Total Cost</p>
-				<strong>{`${stringToFixed(total_tau_to_buy, 4)} ${config.currencySymbol}`}</strong>
+				<strong>{`${stringToFixed(total_xian_to_buy, 4)} ${config.currencySymbol}`}</strong>
 			</div>
 		</form>
 	</div>
