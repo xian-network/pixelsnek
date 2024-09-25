@@ -20,7 +20,7 @@
 	const royalty_percent = $showModal.modalData.thingInfo['royalty_percent']
 	const thingInfo = $showModal.modalData.thingInfo
 
-	const sellTxStamps_to_tau = toBigNumber(stampLimits[config.masterContract].sell_thing).dividedBy($stampRatio)
+	const sellTxStamps_to_xian = toBigNumber(stampLimits[config.masterContract].sell_thing).dividedBy($stampRatio)
 
 
 	$: price = toBigNumber("0")
@@ -123,8 +123,8 @@
 			type="submit"
 			form="sell"
 			class="button_text outlined"
-			disabled={sellTxStamps_to_tau.isGreaterThan($currency) && (price.isLessThanOrEqualTo(0) || price.isEqualTo(currentSellPrice))}
-			value={sellTxStamps_to_tau.isGreaterThan($currency) ? `Insufficient ${config.currencySymbol}`: "List NFT!"}
+			disabled={sellTxStamps_to_xian.isGreaterThan($currency) && (price.isLessThanOrEqualTo(0) || price.isEqualTo(currentSellPrice))}
+			value={sellTxStamps_to_xian.isGreaterThan($currency) ? `Insufficient ${config.currencySymbol}`: "List NFT!"}
 		/>
 	</div>
 	<div class="flex-col">
@@ -133,7 +133,7 @@
 			<input id="price" type="number" step="0.1" required bind:this={inputElm} on:input={handleInput}/>
 			<div class="tx-costs">
 				<p>Transaction Cost</p>
-				<strong>{`${stringToFixed(sellTxStamps_to_tau, 4)} ${config.currencySymbol}`}</strong>
+				<strong>{`${stringToFixed(sellTxStamps_to_xian, 4)} ${config.currencySymbol}`}</strong>
 			</div>
 
 		{#if isOwner}
