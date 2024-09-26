@@ -25,7 +25,7 @@
     const buy = () => {
 		const transaction = {
 			methodName: 'buy_thing',
-			networkType: config.networkType,
+			// networkType: config.networkType,
 			kwargs: {
 				uid
 			}
@@ -39,7 +39,7 @@
 		const transaction = {
 			contractName: 'currency',
 			methodName: 'approve',
-			networkType: config.networkType,
+			// networkType: config.networkType,
 			kwargs: {
 				amount: {"__fixed__": "100000000"},
 				to: config.masterContract
@@ -67,7 +67,7 @@
 	const approveAndSend = async () => {
 		checkForApproval(config.masterContract).then((value) => {
 			console.log(value)
-			if (value.isLessThan(price)){
+			if (value < price){
 				approveBuy();
 			}else{
 				buy();

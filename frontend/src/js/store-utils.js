@@ -24,7 +24,7 @@ export const checkForApproval = async (contract) => {
     let approval = await getCurrentKeyValue( "currency", "balances", `${get(userAccount)}:${contract}`)
     if (approval === null || typeof approval === 'undefined') approval = toBigNumber(0)
     if (!Xian.Encoder.BigNumber.isBigNumber(approval)) toBigNumber(approval)
-    if (approval.isNaN()) toBigNumber(0)
+    if (isNaN(approval)) toBigNumber(0)
 
     approvalAmount.update(curr => {
         curr[contract] = approval
