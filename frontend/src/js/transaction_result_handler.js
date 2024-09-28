@@ -1,7 +1,5 @@
 export const TransactionResultHandler = (createSnack) => {
 	function handleTransaction(response, callback){
-		console.log("txResponse: ", response);
-
 		if(response === null){
 			console.log('Transaction responded with null')
 			createSnack({
