@@ -172,7 +172,6 @@ const XianWalletUtils = {
     getTxResults: async function(txHash) {
         try {
             const response = await fetch(`${this.rpcUrl}/tx?hash=0x${txHash}`);
-            console.log("dapp-utils: ", response)
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
