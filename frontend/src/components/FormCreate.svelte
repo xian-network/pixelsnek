@@ -51,8 +51,7 @@
 	}
 
 	const handleCreateTx = (txResults) => {
-
-        if (txResults.txBlockResult.status === 0) {
+        if (txResults.status === 0) {
         	created()
 			createSnack({
 				title: `Created!`,
