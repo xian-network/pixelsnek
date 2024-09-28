@@ -49,18 +49,17 @@
         closeModel()
     }
 
-	const handleSellTx = () => {
-    	// console.log(txResults)
-        // if (txResults.txBlockResult.status === 0) {
-        // 	updateInfo({
-		// 		"price_amount": price,
-        // 	})
-		// 	createSnack({
-		// 		title: `Listed!`,
-		// 		body: `${thingName} now listed for ${price} ${config.currencySymbol}.`,
-		// 		type: "info"
-		// 	})
-		// }
+	const handleSellTx = (txResults) => {
+        if (txResults.status === 0) {
+        	updateInfo({
+				"price_amount": price,
+        	})
+			createSnack({
+				title: `Listed!`,
+				body: `${thingName} now listed for ${price} ${config.currencySymbol}.`,
+				type: "info"
+			})
+		}
 		updateInfo({
 			"price_amount": price,
 		})
