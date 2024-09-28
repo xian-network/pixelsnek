@@ -59,7 +59,7 @@ const XianWalletUtils = {
                         let decodedData = window.atob(data);
                         let decodedOriginalTx = window.atob(original_tx);
                         let parsedData = JSON.parse(decodedData);
-                        parsedData.original_tx = JSON.parse(this.hexToString(decodedOriginalTx));
+                        parsedData.original_tx = JSON.parse(this.hexToString(decodedOriginalTx)); 
                         resolver(parsedData);
                     }).catch(error => {
                         console.error('Final error after retries:', error);
@@ -96,7 +96,7 @@ const XianWalletUtils = {
                             resolve(); // Resolve anyway to not block the flow
                         }
                     }
-                }, 2000); // 2 seconds timeout
+                }, 500); // 2 seconds timeout
             }
         });
     },
@@ -172,6 +172,7 @@ const XianWalletUtils = {
     getTxResults: async function(txHash) {
         try {
             const response = await fetch(`${this.rpcUrl}/tx?hash=0x${txHash}`);
+            console.log("dapp-utils: ", response)
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -238,11 +239,12 @@ const XianWalletUtils = {
     },
 
     hexToString: function(hex) {
-        let bytes = [];
-        for (let i = 0; i < hex.length; i += 2) {
-            bytes.push(parseInt(hex.substring(i, 2), 16));
+        if (!/^[0-9A-Fa-f]+$/.test(hex)) {
+            throw new Error('Invalid hexadecimal string');
         }
-        return String.fromCharCode.apply(String, bytes);
+    
+        const bytes = new Uint8Array(hex.match(/.{2}/g).map(byte => parseInt(byte, 16)));
+        return new TextDecoder().decode(bytes);
     },
 };
 export default XianWalletUtils;
