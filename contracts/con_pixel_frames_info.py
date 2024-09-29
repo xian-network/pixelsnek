@@ -34,6 +34,7 @@ def add_thing(thing_string: str, name: str, description: str, meta: dict, creato
     S[uid, 'description'] = description
     S[uid, 'owner'] = creator
     S[uid, 'creator'] = creator
+    S[uid, 'created'] = now
     S[uid, 'likes'] = 0
     S[uid, 'price', 'amount'] = 0
 
