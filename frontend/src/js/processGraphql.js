@@ -54,7 +54,7 @@ export const extractThingValues = (uid, queryData) =>{
 
     thing.uid = uid;
     thing.thing = getValue(queryData.thing);
-    thing.created = queryData.thing.nodes[0].updated
+    thing.created = getValue(queryData.created);
     thing.owner = getValue(queryData.owner);
     thing["price_hold"] = getValue(queryData.price_hold);
     thing["price_amount"] = getValue(queryData.price_amount);
