@@ -97,6 +97,9 @@ self.addEventListener('fetch', event => {
 		caches
 			.open(`offline${timestamp}`)
 			.then(async cache => {
+				if (!event.request) {
+					console.error('event.request is undefined');
+				}
 				try {
 					const response = await fetch(event.request);
 					cache.put(event.request, response.clone());
