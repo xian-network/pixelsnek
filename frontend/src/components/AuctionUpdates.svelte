@@ -5,36 +5,36 @@
     import {createSnack} from "../js/store-utils";
     import {config} from "../js/config";
 
-    const { socket } = getContext('app_functions')
+    // const { socket } = getContext('app_functions')
 
     let init = false
 
-    onMount(async () => {
-        await initialize()
+    // onMount(async () => {
+    //     await initialize()
 
-        socket.joinRoom('auction-updates')
-		socket.on('new-auction', (auctionUpdate) => {
-		    //console.log({newAuction: auctionUpdate})
-		    getThingInfo(auctionUpdate.uid).then(thingInfo => {
-		        auctionUpdate.thingInfo = thingInfo
-                announceNewAuction(decodeAuction(auctionUpdate))
-            })
-		})
-        socket.on('new-bid', (auctionUpdate) => {
-            //console.log({newBid: auctionUpdate})
-			if (!$auctions) return
-			announceNewBid(replaceAuctionInfo(auctionUpdate))
-        })
-		socket.on('auction-ended', (auctionUpdate) => {
-		    //console.log({auctionEnded: auctionUpdate})
-			announceAuctionEnded(replaceAuctionInfo(auctionUpdate))
-        })
-        return () => socket.leaveRoom('auction-updates')
-    })
+    //     socket.joinRoom('auction-updates')
+	// 	socket.on('new-auction', (auctionUpdate) => {
+	// 	    //console.log({newAuction: auctionUpdate})
+	// 	    getThingInfo(auctionUpdate.uid).then(thingInfo => {
+	// 	        auctionUpdate.thingInfo = thingInfo
+    //             announceNewAuction(decodeAuction(auctionUpdate))
+    //         })
+	// 	})
+    //     socket.on('new-bid', (auctionUpdate) => {
+    //         //console.log({newBid: auctionUpdate})
+	// 		if (!$auctions) return
+	// 		announceNewBid(replaceAuctionInfo(auctionUpdate))
+    //     })
+	// 	socket.on('auction-ended', (auctionUpdate) => {
+	// 	    //console.log({auctionEnded: auctionUpdate})
+	// 		announceAuctionEnded(replaceAuctionInfo(auctionUpdate))
+    //     })
+    //     return () => socket.leaveRoom('auction-updates')
+    // })
 
-    beforeUpdate(async () => {
-        if (!init) await initialize()
-    })
+    // beforeUpdate(async () => {
+    //     if (!init) await initialize()
+    // })
 
     async function initialize(){
         auctions.set(decodeAuctions(await getActiveAuctions()))

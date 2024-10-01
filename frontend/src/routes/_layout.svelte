@@ -24,7 +24,7 @@
 	import {stringToFixed, toBigNumber} from '../js/utils.js';
 	import {processTxResults, createSnack, refreshTAUBalance, checkForApproval} from '../js/store-utils.js';
 	import { TransactionResultHandler } from '../js/transaction_result_handler'
-	import * as socketservice from '../js/socketservice'
+	// import * as socketservice from '../js/socketservice'
 
 
 	export let segment;
@@ -33,7 +33,7 @@
 	let xduWalletInstalled = false;
 	let lastCurrencyCheck = new Date()
 	let txResultsHandler = TransactionResultHandler(createSnack)
-	let socket = socketservice.start()
+	// let socket = socketservice.start()
 
 	onMount(async() => {
 		XianWalletUtils.init('https://testnet.xian.org');
@@ -71,7 +71,7 @@
 		xdu: () => {
 			return xdu
 		},
-		socket,
+		// socket,
 		isInstalled: ()=>{
 			return xduWalletInstalled
 		},

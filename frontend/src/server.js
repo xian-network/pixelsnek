@@ -2,7 +2,7 @@ import polka from 'polka';
 const http = require('http');
 const io = require('socket.io')
 const server = http.createServer();
-import * as socketserver from './socketserver.js'
+// import * as socketserver from './socketserver.js'
 import { getBlockService } from '../../blockserviceAPI/blockservice.mjs'
 
 import crypto from 'crypto'
@@ -50,5 +50,5 @@ initGlobal().then(() => {
 			if (err) console.log('error', err);
 		});
 
-	socketserver.start(io(server), DATABASE_SERVICE_URL, DATABASE_SERVICE_PORT)
+	// socketserver.start(io(server), DATABASE_SERVICE_URL, DATABASE_SERVICE_PORT)
 })
