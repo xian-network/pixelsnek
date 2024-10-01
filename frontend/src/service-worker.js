@@ -33,11 +33,6 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
 
-	if (event.request.url.startsWith('chrome-extension://')) {
-		// Don't attempt to cache chrome-extension resources
-		return;
-	}
-
 	if (event.request.method !== 'GET' || event.request.headers.has('range')) return;
 
 	const url = new URL(event.request.url);
@@ -99,30 +94,19 @@ self.addEventListener('fetch', event => {
 	// cache if the user is offline. (If the pages never change, you
 	// might prefer a cache-first approach to a network-first one.)
 	event.respondWith(
-		(async () => {
-			try {
-				console.log('Fetching:', event.request.url);
-				const response = await fetch(event.request);
-				console.log('Fetch successful:', event.request.url);
-				return response;
-			} catch (error) {
-				console.error('Fetch failed for:', event.request.url, error);
-				
-				// Try to get from cache
-				const cache = await caches.open(`offline${timestamp}`);
-				const cachedResponse = await cache.match(event.request);
-				if (cachedResponse) {
-					console.log('Serving from cache:', event.request.url);
-					return cachedResponse;
+		caches
+			.open(`offline${timestamp}`)
+			.then(async cache => {
+				try {
+					const response = await fetch(event.request);
+					cache.put(event.request, response.clone());
+					return response;
+				} catch(err) {
+					const response = await cache.match(event.request);
+					if (response) return response;
+
+					throw err;
 				}
-				
-				// If not in cache, return a custom offline response
-				console.log('No cached version available for:', event.request.url);
-				return new Response('Resource unavailable offline', {
-					status: 503,
-					statusText: 'Service Unavailable'
-				});
-			}
-		})()
+			})
 	);
 });
