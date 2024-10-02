@@ -1,40 +1,44 @@
-<script context="module">
-	import { config } from '../../js/config.js'
-	export async function preload({ params, query }) {
-		try {
-			let things = await this.fetch(`./owned/${params.account}.json?limit=25`).then(res => res.json())
-			return {
-				account: params.account,
-				owned: things
-			}
-		} catch (error) {
-			console.error("Error fetching owned things:", error);
-			return {
-				account: params.account,
-				owned: [],
-				error: error.message
-			}
-		}
-	}
-</script>
-
 <script>
+    import { onMount } from 'svelte';
+	import { stores } from '@sapper/app';
     import Owned from "../../components/Owned.svelte";
-    import { formatAccountAddress } from '../../js/utils'
+    import { formatAccountAddress } from '../../js/utils';
 
-    export let account
-    export let owned
-    export let error = null
+    const { page } = stores();
+
+    let owned = [];
+    let error = null;
+    let loading = true;
+    let account;
+
+    $: account = $page.params.account;
+
+    onMount(async () => {
+        if (!account) return;
+        try {
+            const response = await fetch(`./owned/${account}.json?limit=25`);
+            owned = await response.json();
+        } catch (err) {
+            console.error("Error fetching owned things:", err);
+            error = err.message;
+        } finally {
+            loading = false;
+        }
+    });
 </script>
 
 <svelte:head>
 	<title>{`NFTs owned by ${formatAccountAddress(account)}`}</title>
 </svelte:head>
 
-{#if error}
+{#if loading}
+    <p>Loading...</p>
+{:else if error}
     <p>Error: {error}</p>
+{:else if account}
+    <Owned {owned} {account}/>
 {:else}
-    <Owned owned={owned} {account}/>
+    <p>No account specified</p>
 {/if}
 
 

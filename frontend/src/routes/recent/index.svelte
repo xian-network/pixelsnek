@@ -1,21 +1,33 @@
-<script context="module">
-	export async function preload(parms) {
-		let things = await this.fetch(`./recent_things.json?limit=25`).then(res => res.json())
-
-	    return {
-			recent: things
-		}}
-</script>
-
 <script>
-    import Recent from '../../components/Recent.svelte'
+    import { onMount } from 'svelte';
+    import Recent from '../../components/Recent.svelte';
 
-    export let recent;
+    let recent = [];
+    let error = null;
+    let loading = true;
 
+    onMount(async () => {
+        try {
+            const res = await fetch(`./recent_things.json?limit=25`);
+            recent = await res.json();
+            if (!recent) recent = [];
+        } catch (err) {
+            console.error("Error fetching recent things:", err);
+            error = err.message;
+        } finally {
+            loading = false;
+        }
+    });
 </script>
 
 <svelte:head>
-	<title>Pixel Whale Recent NFT Creations!</title>
+    <title>Pixel Whale Recent NFT Creations!</title>
 </svelte:head>
 
-<Recent {recent}/>
+{#if loading}
+    <p>Loading...</p>
+{:else if error}
+    <p>Error: {error}</p>
+{:else}
+    <Recent {recent}/>
+{/if}
