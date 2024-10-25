@@ -19,6 +19,7 @@
 
     // Pictures
     import SocialButtons from "./SocialButtons.svelte";
+    import { compute_rest_props } from 'svelte/internal';
 
     const {sendTransaction} = getContext('app_functions')
 
@@ -90,7 +91,6 @@
     }
 
     userAccount.subscribe(account => checkAlreadyLiked())
-
 </script>
 <style>
     .container{
@@ -188,7 +188,7 @@
         <p><strong>Current Owner</strong> <a href="{`./owned/${thingInfo.owner}`}">{formatAccountAddress(thingInfo.owner, 8, 4)}</a></p>
         <p><strong>Creator</strong> <a href="{`./creator/${thingInfo.creator}`}">{formatAccountAddress(thingInfo.creator, 8, 4)}</a></p>
         <p><strong>Date Created</strong> {new Date(thingInfo.created).toLocaleString()}</p>
-        <p><strong>Frame Speed</strong> {thingInfo.speed}ms</p>
+        <p><strong>Frame Speed</strong> {thingInfo.metaspeed}ms</p>
         <p><strong>Number of Frames</strong> {thingInfo.num_of_frames}</p>
         <p class="price"><strong>Current Price</strong> <Price {thingInfo} {updateInfo}/></p>
         {#if thingInfo['price_amount'] > 0 && thingInfo['price_hold'] !== ""}
@@ -213,6 +213,6 @@
 </div>
 
 <div class="sales-history">
-    <SalesHistory {salesHistory}/>
+    <!-- <SalesHistory {salesHistory}/> -->
 </div>
 

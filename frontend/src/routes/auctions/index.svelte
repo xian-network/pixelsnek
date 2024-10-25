@@ -9,7 +9,7 @@
 </script>
 
 <svelte:head>
-	<title>Pixel Whale NFT Auctions!</title>
+	<title>Pixel Snek NFT Auctions!</title>
 </svelte:head>
 
 <Auctions auctions={$auctions} />

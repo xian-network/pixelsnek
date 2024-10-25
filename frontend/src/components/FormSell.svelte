@@ -3,7 +3,7 @@
 
 	// Misc
 	import { frames, showModal, stampRatio, currency } from '../js/stores.js'
-	import { toBigNumber, stringToFixed } from '../js/utils.js'
+	import { toBigNumber, stringToFixed, buildExplorerLink } from '../js/utils.js'
 	import { createSnack, closeModel } from '../js/store-utils.js'
 	import { config, stampLimits } from '../js/config.js';
 
@@ -57,17 +57,20 @@
 			createSnack({
 				title: `Listed!`,
 				body: `${thingName} now listed for ${price} ${config.currencySymbol}.`,
-				type: "info"
+				type: "info",
+				link: buildExplorerLink(txResults.cometbft_hash)
+			})
+			updateInfo({
+				"price_amount": price,
+			})
+		} else {
+			createSnack({
+				title: `Error!`,
+				body: `Failed to list ${thingName}.`,
+				type: "error",
+				link: buildExplorerLink(txResults.cometbft_hash)
 			})
 		}
-		updateInfo({
-			"price_amount": price,
-		})
-		createSnack({
-			title: `Listed!`,
-			body: `${thingName} now listed for ${price} ${config.currencySymbol}.`,
-			type: "info"
-		})
     }
 
 	const handleInput = (e) => {

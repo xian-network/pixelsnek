@@ -1,6 +1,8 @@
 <script>
-    import { onMount } from 'svelte';
-    import ForSale from '../../components/ForSale.svelte';
+    import { onMount } from "svelte";
+    import ForSale from "../../components/ForSale.svelte";
+    import { getThingsForSaleUidsQuery } from "../../js/graphqlQueries.js";
+    import { fetchThings } from "../../js/processGraphql.js";
 
     let forsale = [];
     let error = null;
@@ -8,8 +10,8 @@
 
     onMount(async () => {
         try {
-            const res = await fetch(`./forsale.json?limit=25`);
-            forsale = await res.json();
+            forsale = await fetchThings(getThingsForSaleUidsQuery(5));
+
             if (!forsale) forsale = [];
         } catch (err) {
             console.error("Error fetching for sale items:", err);
@@ -21,13 +23,13 @@
 </script>
 
 <svelte:head>
-	<title>Pixel Whale NFTs For Sale!</title>
+    <title>Pixel Whale NFTs For Sale!</title>
 </svelte:head>
 
 {#if loading}
-	<p>Loading...</p>
+    <p>Loading...</p>
 {:else if error}
-	<p>Error: {error}</p>
+    <p>Error: {error}</p>
 {:else}
-	<ForSale {forsale}/>
+    <ForSale {forsale} />
 {/if}

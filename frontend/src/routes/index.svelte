@@ -1,11 +1,13 @@
 <!-- /frontend/src/routes/index.svelte -->
 <script context="module">
+	import { fetchThings } from "../js/processGraphql.js";
+	import { getMostLikedUidsQuery, getRecentUidsQuery, getOwnedUidsQuery, getThingsForSaleUidsQuery } from "../js/graphqlQueries.js";
 	export async function preload() {
 		let data = await Promise.all([
-			this.fetch(`./mostliked.json?limit=54`).then(res => res.json()),
-			this.fetch(`./recent_things.json?limit=10`).then(res => res.json()),
-			this.fetch(`./forsale.json?limit=10`).then(res => res.json()),
-			// this.fetch(`./getArtistEvent.json?event=artist`).then(res => res.json())
+			fetchThings(getRecentUidsQuery()),
+			fetchThings(getThingsForSaleUidsQuery()),
+			// fetchData(getMostLikedUidsQuery()),
+			// fetchData(getOwnedUidsQuery()),
 		])
 		// let eventInfo = data[3]
 		// try{
@@ -17,11 +19,11 @@
 		// }catch (e) {
 		// 	eventInfo = null
 		// }
-
+		// console.log({data[1]})
 		return {
-			mostLiked: data[0],
-			recent: data[1],
-			forsale: data[2],
+			// mostLiked: data[0],
+			recent: data[0],
+			forsale: data[1],
 			// eventInfo
 		}
 	}
@@ -69,7 +71,7 @@
 </style>
 
 <svelte:head>
-	<title>Pixel Whale: On-chain NFT Animations!</title>
+	<title>Pixel Snek: On-chain NFT Animations!</title>
 </svelte:head>
 
 <div class="hide-mobile">
@@ -88,7 +90,7 @@
 	<PixelWall {mostLiked}/>
 {/if} -->
 
-<PixelWall {mostLiked}/>
+<!-- <PixelWall {mostLiked}/> -->
 
 <Recent {recent} preview={true}/>
 <ForSale {forsale} preview={true}/>

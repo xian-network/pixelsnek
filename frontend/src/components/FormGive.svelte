@@ -3,7 +3,7 @@
 
 	// Misc
 	import { frames, showModal, stampRatio, currency } from '../js/stores.js'
-	import { isXianKey, toBigNumber, stringToFixed } from '../js/utils.js'
+	import { isXianKey, toBigNumber, stringToFixed, buildExplorerLink } from '../js/utils.js'
 	import { createSnack, closeModel } from '../js/store-utils.js'
 	import { config, stampLimits } from '../js/config.js';
 
@@ -93,7 +93,8 @@
 		createSnack({
 			title: `NFT Sent!`,
 			body: `You gifted ${thingName} to another user.`,
-			type: "info"
+			type: "info",
+			link: buildExplorerLink(txResults.cometbft_hash)
 		})
     }
     const clearValidity = () => {

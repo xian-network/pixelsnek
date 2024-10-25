@@ -7,18 +7,22 @@
 	import { formatThings, updateInfo, dedupArray } from "../js/utils";
 	import { config } from '../js/config.js'
 	import { userAccount } from '../js/stores.js'
+	import { fetchThings } from "../js/processGraphql.js";
+    import { getThingsForSaleUidsQuery } from "../js/graphqlQueries.js";
 
 	export let forsale;
 
 	export let preview = false;
 
-    let count = forsale.count;
+    // let count = forsale.count;
+	// console.log({count})
     let sending = false;
+	let at_end = false;
 
 	let scrollHeight;
 	let innerHeight;
 
-	$: formatted = !forsale.data ? [] : formatThings(forsale.data)
+	$: formatted = formatThings(forsale)
 	$: elements = []
 	$: lastElementTop = elements.length > 0 ? elements[elements.length -1] === null ? null : elements[elements.length -1].offsetTop : null
 	$: lastElementOffsetHeight = elements.length > 0 ? elements[elements.length -1] === null ? null : elements[elements.length -1].offsetHeight: null
@@ -27,25 +31,23 @@
 
 	const checkGetMore = () => {
     	if (lastElementTop === null || lastElementOffsetHeight === null) return
-		if (visibleHeight > lastElementTop - (lastElementOffsetHeight * 4)) getMore()
+		if (visibleHeight > lastElementTop - (lastElementOffsetHeight * 4)) {
+			getMore()}
 	}
 
     const getMore = async () => {
 		if (preview) return
+		if (at_end) return
 
-		if (count === formatted.length) return
+		// if (count === formatted.length) return
     	if (sending) return;
 		sending = true;
-		const res = await fetch(`./forsale.json?limit=25&offset=${formatted.length}`)
-		let things = await res.json()
-
-		if (!things.data) return
-
+		const things = await fetchThings(getThingsForSaleUidsQuery(10, formatted.length))
+		if (!things.length) at_end = true
 		sending = false;
 
-		formatted = dedupArray([...formatted, ...formatThings(things.data)])
+		formatted = [...formatted, ...formatThings(things)]
 
-		if (things.count) count = things.count
 	}
 
 	const updateThing = (e) => {

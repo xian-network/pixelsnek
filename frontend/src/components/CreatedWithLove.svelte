@@ -11,8 +11,8 @@
 </style>
 
 <p>
-    created with
+    <!-- created with
     <HeartIcon  width="25" />
-    by
-    <a href="www.lamden.io" target="_black" rel="noopener noreferrer">Lamden.io</a>
+    by -->
+    <!-- <a href="www.lamden.io" target="_black" rel="noopener noreferrer">Lamden.io</a> -->
 </p>

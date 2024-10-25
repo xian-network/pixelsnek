@@ -55,11 +55,13 @@ const XianWalletUtils = {
                 } else {
                     this.getTxResultsAsyncBackoff(event.detail.txid).then(tx => {
                         let data = tx.result.tx_result.data;
+                        let hash = tx.result.hash
                         let original_tx = tx.result.tx;
                         let decodedData = window.atob(data);
                         let decodedOriginalTx = window.atob(original_tx);
                         let parsedData = JSON.parse(decodedData);
-                        parsedData.original_tx = JSON.parse(this.hexToString(decodedOriginalTx)); 
+                        parsedData.original_tx = JSON.parse(this.hexToString(decodedOriginalTx));
+                        parsedData.cometbft_hash = hash;
                         resolver(parsedData);
                     }).catch(error => {
                         console.error('Final error after retries:', error);
@@ -170,12 +172,15 @@ const XianWalletUtils = {
     },
 
     getTxResults: async function(txHash) {
+        console.log({txHash})
         try {
             const response = await fetch(`${this.rpcUrl}/tx?hash=0x${txHash}`);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
+            console.log({data})
+            data.result.cometbft_hash = txHash;
             return data;
         } catch (error) {
             console.log('Transaction not found yet');

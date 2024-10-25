@@ -7,16 +7,19 @@
 	import { formatThings, updateInfo, dedupArray } from "../js/utils";
 	import { config } from '../js/config.js'
 	import { userAccount } from '../js/stores.js'
+	import { fetchThings } from "../js/processGraphql.js";
+    import { getRecentUidsQuery } from "../js/graphqlQueries.js";
+
 
 	export let recent;
 	export let preview = false;
 	let sending = false;
-	let count = recent.count;
+	let at_end = false;
 
 	let scrollHeight;
 	let innerHeight;
 
-    $: formatted = formatThings(recent.data);
+    $: formatted = formatThings(recent);
     $: elements = []
 	$: lastElementTop = elements.length > 0 ? elements[elements.length -1].offsetTop: null
 	$: lastElementOffsetHeight = elements.length > 0 ? elements[elements.length -1].offsetHeight: null
@@ -28,15 +31,16 @@
 		if (visibleHeight > lastElementTop - (lastElementOffsetHeight * 4)) getMore()
 	}
 	const getMore = async () => {
-    	if (count === formatted.length) return
+    	if (at_end) return
     	if (sending) return;
 		sending = true;
-		const res = await fetch(`./recent_things.json?limit=25&offset=${formatted.length}`)
-		let things = await res.json()
-		if (!things.data) things.data = []
+		const moreThings = await fetchThings(getRecentUidsQuery(formatted.length))
+		console.log({moreThings})
+		// let things = await res.json()
+		// if (!things.data) things.data = []
 		sending = false;
-		formatted = dedupArray([...formatted, ...formatThings(things.data)])
-		if (things.count) count = things.count
+		formatted = [...formatted, ...formatThings(moreThings)]
+		if (!moreThings.length) at_end = true
 	}
 
 	const updateThing = (e) => {

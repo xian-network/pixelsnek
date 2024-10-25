@@ -3,7 +3,7 @@ const http = require('http');
 const io = require('socket.io')
 const server = http.createServer();
 // import * as socketserver from './socketserver.js'
-import { getBlockService } from '../../blockserviceAPI/blockservice.mjs'
+// import { getBlockService } from '../../blockserviceAPI/blockservice.mjs'
 
 import crypto from 'crypto'
 import sirv from 'sirv';
@@ -12,16 +12,16 @@ import * as sapper from '@sapper/server';
 import Xian from 'xian-js'
 
 import compression from 'compression';
-import { getDatabase } from "../../database/database.mjs";
+// import { getDatabase } from "../../database/database.mjs";
 import {createGIF} from "./js/server_createGIF.mjs";
 
 const { PORT, NODE_ENV, DATABASE_SERVICE_PORT, DATABASE_SERVICE_URL, BLOCKSERVICE_URL } = process.env;
 const dev = NODE_ENV === 'development';
 
 const initGlobal = async () => {
-	global.db = await getDatabase()
+	// global.db = await getDatabase()
 
-	global.blockservice = getBlockService(BLOCKSERVICE_URL)
+	// global.blockservice = getBlockService(BLOCKSERVICE_URL)
 	global.fetch = require('node-fetch')
 
 	global.randomHash = () => {

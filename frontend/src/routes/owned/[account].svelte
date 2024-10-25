@@ -3,10 +3,30 @@
 	import { stores } from '@sapper/app';
     import Owned from "../../components/Owned.svelte";
     import { formatAccountAddress } from '../../js/utils';
+	import { fetchThings } from "../../js/processGraphql.js";
+    import { getOwnedUidsQuery } from "../../js/graphqlQueries.js";
+
+	// export async function preload({ params, query }) {
+	// 	try {
+	// 		let things = await fetchThings(getOwnedUidsQuery(params.account));
+	// 		return {
+	// 			account: params.account,
+	// 			owned: things
+	// 		}
+	// 	} catch (error) {
+	// 		console.error("Error fetching owned things:", error);
+	// 		return {
+	// 			account: params.account,
+	// 			owned: [],
+	// 			error: error.message
+	// 		}
+	// 	}
+	// }
+
 
     const { page } = stores();
 
-    let owned = [];
+    let owned;
     let error = null;
     let loading = true;
     let account;
@@ -16,8 +36,11 @@
     onMount(async () => {
         if (!account) return;
         try {
-            const response = await fetch(`./owned/${account}.json?limit=25`);
-            owned = await response.json();
+            owned = await fetchThings(getOwnedUidsQuery(account, 0, 10))
+            loading = false;
+            console.log({owned})
+
+            // owned = await response.json();
         } catch (err) {
             console.error("Error fetching owned things:", err);
             error = err.message;
@@ -33,12 +56,12 @@
 
 {#if loading}
     <p>Loading...</p>
-{:else if error}
-    <p>Error: {error}</p>
-{:else if account}
+<!-- {:else if error}
+    <p>Error: {error}</p> -->
+{:else if account && owned}
     <Owned {owned} {account}/>
-{:else}
-    <p>No account specified</p>
+<!-- {:else}
+    <p>No account specified</p> -->
 {/if}
 
 

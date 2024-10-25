@@ -44,11 +44,11 @@
         justify-content: flex-end;
 
         position: fixed;
-        pointer-events: none;
+        /* pointer-events: none; */
         top: 0;
         right: 0;
         width: 300px;
-        z-index: 100;
+        z-index: 1000;
         padding: 0 5px;
         box-sizing: border-box;
         overflow: hidden;
@@ -114,7 +114,7 @@
               out:fly="{{delay: 0, duration: 200, x: 400, y: 0, opacity: 0.5, easing: quintOut}}">
 
              {#if snack.thingInfo}
-                <a href="{`./frames/${snack.thingInfo.uid}`}">
+                <!-- <a href="{`./frames/${snack.thingInfo.uid}`}"> -->
                     <Preview
                             {index}
                             solidBorder={true}
@@ -124,7 +124,7 @@
                             thingInfo={snack.thingInfo}
                             showWatermark={false} border={false}
                     />
-                </a>
+                <!-- </a> -->
              {:else}
 
                  <div class="icon flex flex-center-center">
@@ -135,7 +135,10 @@
                 <div class="top-bar flex-row">
                     <p class="title">{snack.title}</p>
                 </div>
-                <p class="body">{snack.body}</p>
+                <p class="title">{snack.body}</p>
+             {#if snack.link}   
+                    <p class="link body"><a href={snack.link} target="_blank">View in explorer</a></p>
+                {/if}
             </div>
          </div>
     {/each}

@@ -4,7 +4,7 @@
 
     //MISC
 	import { frames, frameSpeed, showModal, frameStore, activeFrame } from '../js/stores.js'
-	import { serializeFrames, nameTaken } from '../js/utils.js'
+	import { serializeFrames, nameTaken, buildExplorerLink } from '../js/utils.js'
 	import { createSnack, closeModel } from '../js/store-utils.js'
 	import { config, stampLimits } from '../js/config.js';
 
@@ -52,11 +52,13 @@
 
 	const handleCreateTx = (txResults) => {
         if (txResults.status === 0) {
+			console.log({ txResults })
         	created()
 			createSnack({
 				title: `Created!`,
 				body: `${name} is now on the blockchain.`,
-				type: "info"
+				type: "info",
+				link: buildExplorerLink(txResults.cometbft_hash)
 			})
 
 			const oldIndex = $activeFrame
@@ -70,6 +72,13 @@
             })
 			let stateChange = txResults.state.find(f => f.key.includes(':names:'))
 			if (stateChange && stateChange.value) redirect(stateChange.value, window.location.href)
+		} else {
+			createSnack({
+				title: `Error!`,
+				body: `Failed to create ${name}.`,
+				type: "error",
+				link: buildExplorerLink(txResults.cometbft_hash)
+			})
 		}
     }
 

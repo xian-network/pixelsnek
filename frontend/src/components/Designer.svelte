@@ -82,7 +82,7 @@
 </style>
 
 <svelte:head>
-	<title>Pixel Whale NFT Designer!</title>
+	<title>Pixel Snek NFT Designer!</title>
 </svelte:head>
 
 <div class="designer">

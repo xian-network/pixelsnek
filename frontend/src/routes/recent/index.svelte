@@ -1,6 +1,8 @@
 <script>
-    import { onMount } from 'svelte';
-    import Recent from '../../components/Recent.svelte';
+    import { onMount } from "svelte";
+    import Recent from "../../components/Recent.svelte";
+    import { fetchThings } from "../../js/processGraphql.js";
+    import { getRecentUidsQuery } from "../../js/graphqlQueries.js";
 
     let recent = [];
     let error = null;
@@ -8,9 +10,7 @@
 
     onMount(async () => {
         try {
-            const res = await fetch(`./recent_things.json?limit=25`);
-            recent = await res.json();
-            if (!recent) recent = [];
+            recent = await fetchThings(getRecentUidsQuery());
         } catch (err) {
             console.error("Error fetching recent things:", err);
             error = err.message;
@@ -29,5 +29,5 @@
 {:else if error}
     <p>Error: {error}</p>
 {:else}
-    <Recent {recent}/>
+    <Recent {recent} />
 {/if}

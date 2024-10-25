@@ -88,7 +88,7 @@
                 title: `Insufficient ${config.currencySymbol}`,
                 body: `
 					It will cost ${stringToFixed(toBigNumber(stampsToSendTx / $stampRatio), 4)} ${config.currencySymbol} to send this transaction.
-					Please transfer more ${config.currencySymbol} to your Pixel Whale account using the Xian Wallet.
+					Please transfer more ${config.currencySymbol} to your Pixel Snek account using the Xian Wallet.
                 `,
                 type: "error",
 				delay: 7000
@@ -117,13 +117,6 @@
 		walletInfo.set(info)
 	}
 
-
-	const handleTxResults = (results) => {
-		let errors = processTxResults(results)
-		if (errors.length > 0) {
-			if (errors[0].includes('have not been approved for')) xdu.sendConnection(approvalRequest, true)
-		}
-	}
 
 	const refreshCurrencyBalance = async  () => {
 		if ($tabHidden || !$userAccount) setTimeout(refreshCurrencyBalance, 10000)

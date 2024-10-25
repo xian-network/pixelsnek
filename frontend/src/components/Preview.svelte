@@ -15,6 +15,7 @@
 
     let switcher;
     $: show = 1
+
     $: animationSpeed = setSpeed(speed || $frameSpeed)
 
     onMount(() => {

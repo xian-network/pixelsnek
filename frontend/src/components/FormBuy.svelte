@@ -3,7 +3,7 @@
 
 	// Misc
 	import { showModal, currency, userAccount, approvalAmount, stampRatio } from '../js/stores.js'
-	import { toBigNumber, stringToFixed } from '../js/utils.js'
+	import { toBigNumber, stringToFixed, buildExplorerLink } from '../js/utils.js'
 	import { createSnack, checkForApproval, closeModel } from '../js/store-utils.js'
 	import { config, stampLimits } from '../js/config.js'
 
@@ -91,18 +91,21 @@
 			createSnack({
 				title: `Purchased!`,
 				body: `You are now the proud owner of ${thingName}.`,
-				type: "info"
+				type: "info",
+				link: buildExplorerLink(txResults.cometbft_hash)
+			})
+			updateInfo({
+				owner: $userAccount,
+				"price_amount": "0",
+			})
+		} else {
+			createSnack({
+				title: `Error!`,
+				body: `Failed to purchase ${thingName}.`,
+				type: "error",
+				link: buildExplorerLink(txResults.cometbft_hash)
 			})
 		}
-		updateInfo({
-			owner: $userAccount,
-			"price_amount": "0",
-		})
-		createSnack({
-			title: `Purchased!`,
-			body: `You are now the proud owner of ${thingName}.`,
-			type: "info"
-		})
     }
 
 </script>

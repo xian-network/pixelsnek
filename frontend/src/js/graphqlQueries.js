@@ -1,8 +1,101 @@
+import { config } from "./config.js";
+
+export const getOwnedUidsQuery = (address, offset = 0, take = 10) => {
+  return `
+  query MyQuery {
+      allStates(
+        filter: {
+          key: { startsWith: "${config.infoContract}.S", endsWith: "owner" }
+          value: {
+            equalTo: "${address}"
+          }
+        }
+        offset: ${offset}
+        first: 10
+        orderBy: UPDATED_DESC
+      ) {
+        nodes {
+          key
+        }
+      }
+    }
+  `;
+};
+
+export const isLikedQuery = (uid, account) => {
+  return `
+  query MyQuery {
+    allStates(filter: {key: {equalTo: "${config.masterContract}.S:liked:${uid}:${account}"}}) {
+      nodes {
+        key
+      }
+    }
+  }
+  `
+}
+
+export const getRecentUidsQuery = (offset = 0, take = 5) => {
+  return `
+  query MyQuery {
+    allStates(
+      filter: {key: {startsWith: "${config.infoContract}", endsWith:"owner"}}
+      orderBy: UPDATED_DESC
+      first: ${take}
+      offset: ${offset}
+    ) {
+      nodes {
+        key
+        updated
+      }
+    }
+  }
+  `;
+};
+
+
+export const getMostLikedUidsQuery = (offset = 0, take = 10) => {
+  return `
+  query MyQuery {
+    allStates(
+      filter: {key: {startsWith: "${config.infoContract}.S:", endsWith: ":meta:likes"}}
+      orderBy: VALUE_DESC
+      first: ${take}
+      offset: ${offset}
+    ) {
+      nodes {
+        key
+        value
+      }
+    }
+  }
+  `
+}
+
+export const getThingsForSaleUidsQuery = (take = 5, offset = 0) => {
+  return `
+  query MyQuery {
+    allStates(
+      filter: {key: {startsWith: "${config.infoContract}", endsWith: "price:amount"}, value: {greaterThan: 0}}
+      orderBy: UPDATED_DESC
+      first: ${take}
+      offset: ${offset}
+    ) {
+      nodes {
+        key
+        value
+      }
+    }
+  }
+  `
+}
+
+
+
 export const getStateChangesQuery = (contractType, offset = 0) => {
   const infoQuery = `
   query MyQuery {
     allStateChanges(
-      filter: { key: { startsWith: "con_pixel_frames_info_v0_1" } }
+      filter: { key: { startsWith: "${config.infoContract}" } }
       offset: ${offset}
     ) {
       totalCount
@@ -23,7 +116,7 @@ export const getStateChangesQuery = (contractType, offset = 0) => {
   const auctionQuery = `
   query MyQuery {
     allStateChanges(
-      filter: { key: { startsWith: "con_pixel_frames_auction_v0_1" } }
+      filter: { key: { startsWith: "${config.auctionContract}" } }
       offset: ${offset}
     ) {
       totalCount
@@ -40,7 +133,7 @@ export const getStateChangesQuery = (contractType, offset = 0) => {
     }
   }
   `;
-  
+
   const queries = {
     "info": infoQuery,
     "auction": auctionQuery
@@ -48,27 +141,14 @@ export const getStateChangesQuery = (contractType, offset = 0) => {
   return queries[contractType]
 };
 
-// export const getThing = (uid)=>{
-//   return `
-//   query MyQuery {
-//     allStates(
-//       filter: {key: {startsWith: "con_pixel_frames_info_v0_1", includes: "${uid}"}}
-//     ) {
-//       nodes {
-//         key
-//         value
-//         updated
-//       }
-//     }
-//   }
-//   `
-// }
 
-export const getThingForSale = ()=>{
+
+export const getThingByUid = (uid) => {
   return `
   query MyQuery {
     allStates(
-      filter: {key: {startsWith: "con_pixel_frames_info_v0_1", endsWith: "price:amount"}, value: {greaterThan: 0}}
+      filter: {key: {equalTo: "${config.infoContract}.S:${uid}"}}
+      first: 1
     ) {
       nodes {
         key
@@ -79,118 +159,12 @@ export const getThingForSale = ()=>{
   `
 }
 
-export const getThingByUid = (uid)=>{
+export const getOwnedUids = (owner, offset = 0) => {
   return `
-  query MyQuery {
-    name: allStates(
-      filter: {key: {equalTo: "con_pixel_frames_info_v0_1.S:${uid}:name"}}
-    ) {
-      nodes {
-        value
-      }
-    }
-    S_names: allStates(
-      filter: {key: {equalTo: "con_pixel_frames_info_v0_1.S:names:${uid}"}}
-    ) {
-      nodes {
-        value
-      }
-    }
-    owner: allStates(
-      filter: {key: {equalTo: "con_pixel_frames_info_v0_1.S:${uid}:owner"}}
-    ) {
-      nodes {
-        value
-      }
-    }
-    creator: allStates(
-      filter: {key: {equalTo: "con_pixel_frames_info_v0_1.S:${uid}:creator"}}
-    ) {
-      nodes {
-        value
-      }
-    }
-    description: allStates(
-      filter: {key: {equalTo: "con_pixel_frames_info_v0_1.S:${uid}:description"}}
-    ) {
-      nodes {
-        value
-      }
-    }
-    thing: allStates(
-      filter: {key: {equalTo: "con_pixel_frames_info_v0_1.S:${uid}:thing"}}
-    ) {
-      nodes {
-        value
-        updated
-      }
-    }
-    type: allStates(
-      filter: {key: {equalTo: "con_pixel_frames_info_v0_1.S:${uid}:type"}}
-    ) {
-      nodes {
-        value
-      }
-    }
-    price_hold: allStates(
-      filter: {key: {equalTo: "con_pixel_frames_info_v0_1.S:${uid}:price:hold"}}
-    ) {
-      nodes {
-        value
-      }
-    }
-    price_amount: allStates(
-      filter: {key: {equalTo: "con_pixel_frames_info_v0_1.S:${uid}:price:amount"}}
-    ) {
-      nodes {
-        value
-      }
-    }
-    royalty: allStates(
-      filter: {key: {equalTo: "con_pixel_frames_info_v0_1.S:${uid}:meta:royalty_percent"}}
-    ) {
-      nodes {
-        value
-      }
-    }
-    frames: allStates(
-      filter: {key: {equalTo: "con_pixel_frames_info_v0_1.S:${uid}:meta:num_of_frames"}}
-    ) {
-      nodes {
-        value
-      }
-    }
-    speed: allStates(
-      filter: {key: {equalTo: "con_pixel_frames_info_v0_1.S:${uid}:meta:speed"}}
-    ) {
-      nodes {
-        value
-      }
-    }
-    likes: allStates(
-      filter: {key: {equalTo: "con_pixel_frames_info_v0_1.S:${uid}:meta:likes"}}
-    ) {
-      nodes {
-        value
-      }
-    }
-    proof: allStates(
-      filter: {key: {equalTo: "con_pixel_frames_info_v0_1.S:${uid}:meta:proof"}}
-    ) {
-      nodes {
-        value
-      }
-    }
-  }
-  `
-}
-
-export const getOwnedUids = (owner, offset=0)=>{
-  return`
   query MyQuery {
     allStates(
       filter: {
-        key: { startsWith: "con_pixel_frames_info_v0_1", endsWith: "owner" }
+        key: { startsWith: "${config.infoContract}", endsWith: "owner" }
         value: {
           equalTo: "${owner}"
         }
@@ -206,10 +180,10 @@ export const getOwnedUids = (owner, offset=0)=>{
 }
 
 export const getKeys = (offset = 0) => {
-  return`
+  return `
   query MyQuery {
     allStateChanges(
-      filter: { key: { startsWith: "con_pixel_frames_info_v0_1" } }
+      filter: { key: { startsWith: "${config.infoContract}" } }
       offset: ${offset}
     ) {
       nodes {
@@ -217,5 +191,50 @@ export const getKeys = (offset = 0) => {
       }
     }
   }
-  `  
+  `
+}
+
+export function constructValuesQuery(uids) {
+  const baseKey = `${config.infoContract}.S`;
+  const fields = [
+    "name",
+    "names",
+    "owner",
+    "creator",
+    "created",
+    "description",
+    "title",
+    "thing",
+    "type",
+    "likes",
+    "price:hold",
+    "price:amount",
+    "meta:royalty_percent",
+    "meta:num_of_frames",
+    "meta:speed",
+    "meta:likes",
+    "meta:proof"
+  ];
+
+  let query = `query MyQuery {`;
+
+  uids.forEach(uid => {
+    fields.forEach(field => {
+      const alias = `state_${uid.replace(/[^a-zA-Z0-9]/g, '')}_${field.replace(/[^a-zA-Z0-9]/g, '')}`;
+      query += `
+        ${alias}: allStates(
+          filter: {key: {equalTo: "${baseKey}:${uid}:${field}"}}
+        ) {
+          nodes {
+            key
+            value
+          }
+        }
+      `;
+    });
+  });
+
+  query += `}`;
+
+  return query;
 }

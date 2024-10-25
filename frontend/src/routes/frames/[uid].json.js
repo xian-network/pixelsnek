@@ -1,5 +1,5 @@
 import { getThingByUid } from "../../js/graphqlQueries";
-import { extractThingValues, makeGraphQLRequest } from "../../js/processGraphql";
+// import { extractThingValues } from "../../js/processGraphql";
 
 export async function get(req, res, next) {
 	const { uid } = req.params;
@@ -7,6 +7,7 @@ export async function get(req, res, next) {
 	let auctionInfo = null
 
 	const thingQuery = getThingByUid(uid);
+	console
 	const thingQueryResults = await makeGraphQLRequest(thingQuery);
 	const thingData = thingQueryResults?.data
 	const thingInfo = extractThingValues(uid, thingData);

@@ -195,7 +195,7 @@
 
 <nav class="flex-row">
 	<a class="brand flex-row" rel=prefetch  href=".">
-		<img src="logo-64.png" alt="nav logo">
+		<img src="img/PIXELSNEK-124.png" alt="nav logo">
 		<Title fontSize={1.2} subtitle={false}/>
 	</a>
 	<div class="links desktop">
@@ -206,7 +206,7 @@
 			{/if}
 			<li><a rel=prefetch aria-current="{segment === 'recent' ? 'page' : undefined}" href="recent">recent</a></li>
 			<li><a rel=prefetch aria-current="{segment === 'forsale' ? 'page' : undefined}" href="forsale">for sale</a></li>
-			<li><a href="https://docs.pixelwhale.io" target="_blank" rel="noopener noreferrer">docs</a></li>
+			<!-- <li><a href="https://docs.pixelwhale.io" target="_blank" rel="noopener noreferrer">docs</a></li> -->
 		</ul>
 	</div>
 	<div class="flex-col account desktop hide-mobile">

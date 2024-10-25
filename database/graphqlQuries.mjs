@@ -1,50 +1,19 @@
-export const getStateChangesQuery = (contractType, offset = 0) => {
-  const infoQuery = `
+export const getOwnedUidsQuery = async () => {
+  return `
   query MyQuery {
-    allStateChanges(
-      filter: { key: { startsWith: "con_pixel_frames_info_v0_1" } }
-      offset: ${offset}
-    ) {
-      totalCount
-      nodes {
-        created
-        txHash
-        key
-        value
-        transactionByTxHash {
-          stamps
-          sender
+      allStates(
+        filter: {
+          key: { startsWith: "con_pixel_frames_info_v0_3.S", endsWith: "owner" }
+          value: {
+            equalTo: "e9e8aad29ce8e94fd77d9c55582e5e0c57cf81c552ba61c0d4e34b0dc11fd931"
+          }
+        }
+      ) {
+        nodes {
+          key
         }
       }
     }
-  }
   `;
-
-  const auctionQuery = `
-  query MyQuery {
-    allStateChanges(
-      filter: { key: { startsWith: "con_pixel_frames_auction_v0_1" } }
-      offset: ${offset}
-    ) {
-      totalCount
-      nodes {
-        created
-        txHash
-        key
-        value
-        transactionByTxHash {
-          stamps
-          sender
-        }
-      }
-    }
-  }
-  `;
-  
-  const queries = {
-    "info": infoQuery,
-    "auction": auctionQuery
-  }
-  return queries[contractType]
 };
 

@@ -46,8 +46,8 @@ export const tauPrice = (() => {
 
     async function refreshPrice(){
         lastCheck = new Date()
-        let priceData = await fetch('./tauPrice.json').then(res => res.json())
-        store.set(priceData.currentPrice)
+        // let priceData = await fetch('./tauPrice.json').then(res => res.json())
+        store.set(0.018)
     }
 
     const setStore = (value) => store.set(value)

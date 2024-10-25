@@ -4,6 +4,8 @@ import Xian from "xian-js";
 import { validateTypes } from "types-validate-assert";
 
 let API = new Xian.MasternodeAPI({ masternode_hosts: [config.masternode] });
+console.log({ config })
+console.log({ API })
 
 export const color_to_letter = {
   //BTW
@@ -152,11 +154,11 @@ export const letter_to_color = {
 export const isValidPixel = (pixelValue) =>
   Object.keys(letter_to_color).includes(pixelValue);
 
+
 export const getCurrentKeyValue = async (contractName, variableName, key) => {
+  // console.log({contractName, variableName, key})
   let value = null;
-  const result = await fetch(
-    `./getkey-${contractName}.${variableName}:${key}.json`,
-  );
+  const result = await API.getVariable(contractName, `${variableName}:${key}`);
 
   try {
     let json = await result.json();
@@ -213,6 +215,7 @@ export const decodeFrames = (data) => {
 
 export const formatThings = (things) => {
   if (!things) return;
+  console.log({ things })
   things.forEach((thing) => {
     thing.frames = decodeFrames(thing.thing);
   });
@@ -308,6 +311,25 @@ export const createWatermark = (thingInfo, account) => {
     fillColor: "#21d6ab",
   };
 };
+
+export const hexToCometBftHash = (hex) => {
+  console.log(hex)
+  const byteArray = [];
+  for (let i = 0; i < hex.length; i += 2) {
+    byteArray.push(parseInt(hex.substr(i, 2), 16));
+  }
+
+  // Convert byte array to a base64 string
+  const base64String = btoa(String.fromCharCode(...byteArray));
+
+  return base64String;
+}
+
+export const buildExplorerLink = (txn_hash) => {
+  const link = `${config.blockExplorer}/tx/${txn_hash}`;
+  console.log({link})
+  return link;
+}
 
 export const updateInfo = (thingInfo, updates) => {
   Object.keys(updates).forEach((update) => {

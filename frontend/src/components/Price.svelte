@@ -21,6 +21,7 @@
     $: auctionFeatureLocked = featureLocks.auctions.locked
 
     const openModal = (modal) => {
+        console.log({thingInfo, modal, updateInfo})
         showModal.set({modalData:{thingInfo, modal: modal, updateInfo}, show:true})
     }
 
@@ -65,12 +66,18 @@
         color: var(--gray-5);
         margin: 0 4px;
     }
+
+    /* .currency-symbol{
+        font-size: 1.5em;
+        font-weight: 800;
+        color: #000000;
+    } */
 </style>
 
 
 {#if price.isGreaterThan(0)}
     <div class="flex-row price">
-        <LamdenLogoIcon class="icon" width="20"/>
+        <span class="currency-symbol">{config.currencySymbol}</span>
         {stringToFixed(price, 8)}
 
         {#if usdPrice && !usdPrice.isNaN()}

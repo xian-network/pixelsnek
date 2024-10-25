@@ -5,19 +5,21 @@
 
     import DisplayFrames from './DisplayFrames.svelte';
 
-    import { formatThings, updateInfo, dedupArray, formatAccountAddress, isXianKey } from "../js/utils.js";
+    import { formatThings, updateInfo, formatAccountAddress, isXianKey } from "../js/utils.js";
     import { userAccount } from '../js/stores'
 	import { config } from '../js/config'
+
+	import { fetchThings } from "../js/processGraphql.js";
+    import { getOwnedUidsQuery } from "../js/graphqlQueries.js";
 
     export let owned;
     export let account;
 
-    let count = owned.count
+	let at_end = false;
     let sending = false;
     let scrollHeight;
 	let innerHeight;
-
-    $: formatted = !owned.data ? [] : formatThings(owned.data)
+    $: formatted = formatThings(owned)
     $: elements = []
 	$: lastElementTop = elements.length > 0 ? elements[elements.length -1].offsetTop: null
 	$: lastElementOffsetHeight = elements.length > 0 ? elements[elements.length -1].offsetHeight: null
@@ -29,15 +31,18 @@
 		if (visibleHeight > lastElementTop - (lastElementOffsetHeight * 4)) getMore()
 	}
 	const getMore = async () => {
-    	if (count === formatted.length) return
+		if (at_end) return
     	if (sending) return;
+
 		sending = true;
-		const res = await fetch(`./owned/${account}.json?limit=25&offset=${formatted.length}`)
-		let things = await res.json()
-		if (!things.data) things.data = []
+		console.log($userAccount)
+		const query = getOwnedUidsQuery($userAccount, formatted.length)
+		console.log({query})
+		const things = await fetchThings(query)
+		console.log({things})
 		sending = false;
-		formatted = dedupArray([...formatted, ...formatThings(things.data)])
-		if (things.count) count = things.count
+		formatted = [...formatted, ...formatThings(things)]
+		if (!things.length) at_end = true
 	}
 
     const updateThing = (e) => {

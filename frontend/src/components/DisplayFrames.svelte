@@ -36,6 +36,7 @@
 
     onMount(() => {
         checkAlreadyLiked();
+        console.log({thingInfo})
         switcher = setInterval(switchFrames, thingInfo.speed)
         return (() => clearInterval((switcher)))
     })

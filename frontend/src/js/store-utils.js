@@ -3,6 +3,16 @@ import { config } from "./config.js";
 import Xian from "xian-js";
 import { snackbars, currency, userAccount, approvalAmount, showModal } from "./stores.js";
 import { getCurrentKeyValue, toBigNumber } from "./utils.js";
+import { executeGraphQlQuery } from "./processGraphql.js";
+import { isLikedQuery } from "./graphqlQueries.js";
+
+const masternode_api = new Xian.MasternodeAPI({ masternode_hosts: [config.masternode] });
+
+const getAlreadyLiked = async (uid, account) => {
+    const liked_query_string = isLikedQuery(uid, account)
+    const res = await executeGraphQlQuery(liked_query_string)
+    return res.data.allStates.nodes.value ? true : false
+}
 
 export const alreadyLiked = async (uid) => {
     let account = get(userAccount)
@@ -13,8 +23,7 @@ export const alreadyLiked = async (uid) => {
     //console.log({account, lsValue})
     //console.log({lsValue})
     if (lsValue !== null) return true;
-
-    const liked = await fetch(`./${uid}.json?account=${account}`).then(res => res.json())
+    const liked = await getAlreadyLiked(uid, account)
     if (liked === true) localStorage.setItem(`${uid}:${account}:liked`, true)
     return liked
 }
@@ -52,9 +61,9 @@ export const closeModel = () => {
 }
 
 export const createSnack = (snackInfo) => {
-    const { type, title, body, delay, thingInfo } = snackInfo;
+    const { type, title, body, delay, thingInfo, link } = snackInfo;
     snackbars.update(curr => {
-        let snack = { type, time: new Date().getTime(), title, body, delay: delay || 5000, thingInfo }
+        let snack = { type, time: new Date().getTime(), title, body, delay: delay || 5000, thingInfo, link }
         return [...curr, snack]
     })
 }
@@ -81,7 +90,6 @@ export const processTxResults = (results) => {
 export const refreshTAUBalance = async () => {
     if (!get(userAccount)) return
 
-    await fetch(`/getBalance-${get(userAccount)}.json`)
-        .then(res =>  res.json())
-        .then(json => currency.set(json.value))
+    const result = await masternode_api.getVariable("currency", `balances:${get(userAccount)}`);
+    currency.set(result)
 }

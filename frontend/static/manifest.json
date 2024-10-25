@@ -1,8 +1,8 @@
 {
 	"background_color": "#ffffff",
 	"theme_color": "#333333",
-	"name": "Pixel Whale",
-	"short_name": "Pixel Whale",
+	"name": "Pixel Snek",
+	"short_name": "Pixel Snek",
 	"display": "minimal-ui",
 	"start_url": "/",
 	"icons": [
