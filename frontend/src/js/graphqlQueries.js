@@ -11,7 +11,7 @@ export const getOwnedUidsQuery = (address, offset = 0, take = 10) => {
           }
         }
         offset: ${offset}
-        first: 10
+        first: ${take}
         orderBy: UPDATED_DESC
       ) {
         nodes {
