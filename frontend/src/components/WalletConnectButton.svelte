@@ -4,13 +4,6 @@
 
     export let xdu;
 
-    // const { isInstalled } = getContext('app_functions')
-
-    // $: installed = isInstalled();
-    // console.log({installed})
-    walletInstalled.subscribe(value => {
-        console.log({value})
-    })
 </script>
 
 {#if $walletInstalled === 'not_installed'}

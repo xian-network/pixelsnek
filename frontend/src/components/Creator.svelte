@@ -34,12 +34,10 @@
 	}
 
 	const getMore = async () => {
-        console.log({at_end, sending})
     	if (at_end) return
     	if (sending) return;
 		sending = true;
 		const moreThings = await fetchThings(getCreatedUidsQuery(creator, formatted.length))
-		console.log({moreThings})
 		sending = false;
 		formatted = [...formatted, ...formatThings(moreThings)]
 		if (!moreThings.length) at_end = true

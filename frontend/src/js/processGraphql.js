@@ -20,9 +20,7 @@ export async function fetchThings(query) {
     }
 
     const json = await response.json();
-    console.log({ json: json.data.allStates.nodes })
     uids = json.data.allStates.nodes.map((node) => node.key.split(':')[1]);
-    console.log({ uids });
 
     // Construct a new query using the uids
     const valuesQuery = constructValuesQuery(uids);
@@ -103,7 +101,6 @@ export async function fetchValues(query) {
 
       resultArray.push(value)
     })
-    console.log({ resultArray })
     return resultArray;
 
   } catch (error) {

@@ -4,8 +4,6 @@ import Xian from "xian-js";
 import { validateTypes } from "types-validate-assert";
 
 let API = new Xian.MasternodeAPI({ masternode_hosts: [config.masternode] });
-console.log({ config })
-console.log({ API })
 
 export const color_to_letter = {
   //BTW
@@ -215,7 +213,6 @@ export const decodeFrames = (data) => {
 
 export const formatThings = (things) => {
   if (!things) return;
-  console.log({ things })
   things.forEach((thing) => {
     thing.frames = decodeFrames(thing.thing);
   });
@@ -313,7 +310,6 @@ export const createWatermark = (thingInfo, account) => {
 };
 
 export const hexToCometBftHash = (hex) => {
-  console.log(hex)
   const byteArray = [];
   for (let i = 0; i < hex.length; i += 2) {
     byteArray.push(parseInt(hex.substr(i, 2), 16));

@@ -19,7 +19,7 @@
 
 
     const {sendTransaction} = getContext('app_functions')
-    const dispatch = createEventDispatcher();
+
 
     export let thingInfo;
     export let index;
@@ -36,7 +36,6 @@
 
     onMount(() => {
         checkAlreadyLiked();
-        console.log({thingInfo})
         switcher = setInterval(switchFrames, thingInfo.speed)
         return (() => clearInterval((switcher)))
     })
