@@ -10,7 +10,7 @@
 
     onMount(async () => {
         try {
-            recent = await fetchThings(getRecentUidsQuery());
+            recent = await fetchThings(getRecentUidsQuery(0, 7));
         } catch (err) {
             console.error("Error fetching recent things:", err);
             error = err.message;

@@ -10,7 +10,7 @@
 
     onMount(async () => {
         try {
-            forsale = await fetchThings(getThingsForSaleUidsQuery(5));
+            forsale = await fetchThings(getThingsForSaleUidsQuery());
 
             if (!forsale) forsale = [];
         } catch (err) {

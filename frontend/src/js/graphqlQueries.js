@@ -56,7 +56,7 @@ export const isLikedQuery = (uid, account) => {
   `
 }
 
-export const getRecentUidsQuery = (offset = 0, take = 5) => {
+export const getRecentUidsQuery = (offset = 0, take = 10) => {
   return `
   query MyQuery {
     allStates(
@@ -93,7 +93,7 @@ export const getMostLikedUidsQuery = (offset = 0, take = 10) => {
   `
 }
 
-export const getThingsForSaleUidsQuery = (take = 5, offset = 0) => {
+export const getThingsForSaleUidsQuery = (take = 10, offset = 0) => {
   return `
   query MyQuery {
     allStates(
