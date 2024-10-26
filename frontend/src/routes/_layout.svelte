@@ -7,10 +7,10 @@
 	// TODO - disclaimer when buying NFT
 	// TODO - disclaimer when selling NFT
 
-	import {onMount, beforeUpdate, setContext} from 'svelte';
+	import { onMount, beforeUpdate, setContext } from "svelte";
 
 	// Components
-	import Nav from '../components/Nav.svelte';
+	import Nav from "../components/Nav.svelte";
 	import XianWalletUtils from "../js/xian-dapp-utils";
 	import Snackbar from "../components/Snackbar.svelte";
 	import Modal from "../components/Modal.svelte";
@@ -18,129 +18,186 @@
 	import AuctionUpdates from "../components/AuctionUpdates.svelte";
 
 	// Misc
-	import {approvalRequest} from '../js/wallet_approval';
-	import { config, stampLimits } from '../js/config.js';
-	import { walletInfo, showModal, userAccount, stampRatio, currency, tabHidden, tauPrice} from '../js/stores.js';
-	import {stringToFixed, toBigNumber} from '../js/utils.js';
-	import {processTxResults, createSnack, refreshTAUBalance, checkForApproval} from '../js/store-utils.js';
-	import { TransactionResultHandler } from '../js/transaction_result_handler'
+	import { approvalRequest } from "../js/wallet_approval";
+	import { config, stampLimits } from "../js/config.js";
+	import {
+		walletInfo,
+		showModal,
+		userAccount,
+		stampRatio,
+		currency,
+		tabHidden,
+		tauPrice,
+		walletInstalled,
+	} from "../js/stores.js";
+	import { stringToFixed, toBigNumber } from "../js/utils.js";
+	import {
+		processTxResults,
+		createSnack,
+		refreshTAUBalance,
+		checkForApproval,
+	} from "../js/store-utils.js";
+	import { TransactionResultHandler } from "../js/transaction_result_handler";
 	// import * as socketservice from '../js/socketservice'
-
 
 	export let segment;
 
 	let xdu;
-	let xduWalletInstalled = false;
-	let lastCurrencyCheck = new Date()
-	let txResultsHandler = TransactionResultHandler(createSnack)
+	// let xduWalletInstalled = false;
+	let lastCurrencyCheck = new Date();
+	let txResultsHandler = TransactionResultHandler(createSnack);
 	// let socket = socketservice.start()
 
-	onMount(async() => {
-		XianWalletUtils.init('https://testnet.xian.org');
-		xdu = XianWalletUtils;
-		xduWalletInstalled = true;
-		const xduWalletInfo = await xdu.requestWalletInfo().catch(()=>xduWalletInstalled = false);
-		
-		handleWalletInfo(xduWalletInfo);
+	onMount(async () => {
+		await initXianWallet();
+		await checkWalletStatus();
+		setInterval(checkWalletStatus, 1000);
 
 		document.addEventListener("visibilitychange", setTabActive);
-		refreshCurrencyBalance()
-		refreshTauPrice()
-		checkForApproval(config.masterContract)
+		refreshCurrencyBalance();
+		refreshTauPrice();
+		checkForApproval(config.masterContract);
 
 		return () => {
 			document.removeEventListener("visibilitychange", setTabActive);
-		}
-	})
+		};
+	});
 
 	beforeUpdate(() => {
 		// if (xdu) {
 		// 	if (!$userAccount && xduWalletInfo.address) userAccount.set(xduWalletInfo.address)
 		// }
 		if (!$stampRatio) fetchStampRatio();
-	})
+	});
 
 	const fetchStampRatio = () => {
 		fetch(`./stampRatio.json`)
-				.then(res => res.json())
-				.then(res => stampRatio.set(res.currentRatio))
-	}
+			.then((res) => res.json())
+			.then((res) => stampRatio.set(res.currentRatio));
+	};
 
-	setContext('app_functions', {
-		sendTransaction: (transaction, callback) => sendTransaction(transaction, callback),
+	setContext("app_functions", {
+		sendTransaction: (transaction, callback) =>
+			sendTransaction(transaction, callback),
 		xdu: () => {
-			return xdu
+			return xdu;
 		},
 		// socket,
-		isInstalled: ()=>{
-			return xduWalletInstalled
-		},
-	})
+		// isInstalled: () => {
+		// 	return xduWalletInstalled;
+		// },
+	});
 
-	const sendTransaction = async(transaction, callback) => {
-		let usersStamps = determineUsersTotalStamps()
-		let contractName = transaction.contractName || config.masterContract
+	const initXianWallet = async () => {
+		await XianWalletUtils.init(config.masternode);
+		xdu = XianWalletUtils;
+	}
+
+	const checkWalletStatus = async () => {
+		xdu = XianWalletUtils;
+		// xduWalletInstalled = true;
+		await xdu
+			.requestWalletInfo()
+			.then((info) => {
+				handleWalletInfo(info);
+				walletInstalled.set("installed");
+			})
+			.catch(() => walletInstalled.set("not_installed"));
+	};
+
+	const sendTransaction = async (transaction, callback) => {
+		let usersStamps = determineUsersTotalStamps();
+		let contractName = transaction.contractName || config.masterContract;
 		let stampsToSendTx = transaction.stampLimit;
-		if (!stampsToSendTx) stampsToSendTx = stampLimits[contractName][transaction.methodName]
+		if (!stampsToSendTx)
+			stampsToSendTx = stampLimits[contractName][transaction.methodName];
 
-		if (usersStamps < stampsToSendTx){
+		if (usersStamps < stampsToSendTx) {
 			createSnack({
-                title: `Insufficient ${config.currencySymbol}`,
-                body: `
+				title: `Insufficient ${config.currencySymbol}`,
+				body: `
 					It will cost ${stringToFixed(toBigNumber(stampsToSendTx / $stampRatio), 4)} ${config.currencySymbol} to send this transaction.
 					Please transfer more ${config.currencySymbol} to your Pixel Snek account using the Xian Wallet.
                 `,
-                type: "error",
-				delay: 7000
-            })
-		}else{
-			transaction.stampLimit = stampsToSendTx
+				type: "error",
+				delay: 7000,
+			});
+		} else {
+			transaction.stampLimit = stampsToSendTx;
 
-		// 	const txResults = await xdu.sendTransaction(contractName, transaction.methodName, transaction.kwargs)
-		// 	.catch(txResultsHandler.handleTransactionError)
-		// 	txResultsHandler.handleTransaction(txResults)
-		// }
+			// 	const txResults = await xdu.sendTransaction(contractName, transaction.methodName, transaction.kwargs)
+			// 	.catch(txResultsHandler.handleTransactionError)
+			// 	txResultsHandler.handleTransaction(txResults)
+			// }
 
-			const txResults = await xdu.sendTransaction(contractName, transaction.methodName, transaction.kwargs, transaction.stampLimit)
-				.catch(txResultsHandler.handleTransactionError)
-			txResultsHandler.handleTransaction(txResults, callback)
+			const txResults = await xdu
+				.sendTransaction(
+					contractName,
+					transaction.methodName,
+					transaction.kwargs,
+					transaction.stampLimit,
+				)
+				.catch(txResultsHandler.handleTransactionError);
+			txResultsHandler.handleTransaction(txResults, callback);
 		}
-	}
+	};
 
 	const determineUsersTotalStamps = () => {
-		return parseInt($currency * $stampRatio)
-	}
+		return parseInt($currency * $stampRatio);
+	};
 
 	const handleWalletInfo = (info) => {
+		if (!info) return;
 		// autoTx.set(xdu.autoTransactions)
-		userAccount.set(info.address)
-		walletInfo.set(info)
-	}
+		userAccount.set(info.address);
+		walletInfo.set(info);
+	};
 
-
-	const refreshCurrencyBalance = async  () => {
-		if ($tabHidden || !$userAccount) setTimeout(refreshCurrencyBalance, 10000)
-		else{
-			await refreshTAUBalance()
-			lastCurrencyCheck = new Date()
-			setTimeout(refreshCurrencyBalance, 10000)
+	const refreshCurrencyBalance = async () => {
+		if ($tabHidden || !$userAccount)
+			setTimeout(refreshCurrencyBalance, 10000);
+		else {
+			await refreshTAUBalance();
+			lastCurrencyCheck = new Date();
+			setTimeout(refreshCurrencyBalance, 10000);
 		}
-	}
+	};
 
-	const refreshTauPrice = async  () => {
-		if ($tabHidden || !$userAccount) setTimeout(refreshTauPrice, 60000)
-		else{
-			tauPrice.refreshPrice()
-			setTimeout(refreshTauPrice, 60000)
+	const refreshTauPrice = async () => {
+		if ($tabHidden || !$userAccount) setTimeout(refreshTauPrice, 60000);
+		else {
+			tauPrice.refreshPrice();
+			setTimeout(refreshTauPrice, 60000);
 		}
-	}
+	};
 
 	const setTabActive = () => {
-		tabHidden.set(document.hidden)
-		if (!$tabHidden && $userAccount && new Date() - lastCurrencyCheck > 5000 ) refreshTAUBalance()
-		if (!$tabHidden && $userAccount && new Date() - tauPrice.lastCheck > 60000 ) tauPrice.refreshPrice()
-	}
+		tabHidden.set(document.hidden);
+		if (
+			!$tabHidden &&
+			$userAccount &&
+			new Date() - lastCurrencyCheck > 5000
+		)
+			refreshTAUBalance();
+		if (
+			!$tabHidden &&
+			$userAccount &&
+			new Date() - tauPrice.lastCheck > 60000
+		)
+			tauPrice.refreshPrice();
+	};
 </script>
+
+{#if $showModal.show}
+	<Modal />
+{/if}
+<Snackbar />
+<Nav {segment} {xdu} />
+<main>
+	<slot></slot>
+</main>
+<CreatedWithLove />
+<AuctionUpdates />
 
 <style>
 	main {
@@ -161,14 +218,3 @@
 		}
 	}
 </style>
-
-{#if $showModal.show}
-	<Modal/>
-{/if}
-<Snackbar />
-<Nav {segment} {xdu}/>
-<main>
-	<slot></slot>
-</main>
-<CreatedWithLove />
-<AuctionUpdates />

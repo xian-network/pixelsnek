@@ -10,7 +10,6 @@
 	import { fetchThings } from "../js/processGraphql.js";
     import { getRecentUidsQuery } from "../js/graphqlQueries.js";
 
-
 	export let recent;
 	export let preview = false;
 	let sending = false;

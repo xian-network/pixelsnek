@@ -1,9 +1,11 @@
 <script context="module">
 	import { config } from '../../js/config.js'
+	import { fetchThings } from "../../js/processGraphql.js";
+    import { getOwnedUidsQuery } from "../../js/graphqlQueries.js";
+
+	
 	export async function preload({ params, query }) {
-		const res = await this.fetch(`./creator/${params.creator}.json`)
-		let data = await res.json()
-		if (!data) data = []
+		let data = await fetchThings(getOwnedUidsQuery(params.creator))
 	    return {created: data, creator: params.creator}
 	}
 </script>

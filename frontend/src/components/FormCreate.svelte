@@ -107,9 +107,10 @@
 		color: var(--color-white-primary-tint);
 
 	}
-	.outlined:disabled {
-		background: var(--primary-dark);
-		color: var(--gray-2);
+	.button:disabled {
+		/* background: var(--primary-dark);
+		color: var(--gray-2); */
+		opacity: 0.5 !important;
 	}
 	textarea{
 		resize: none;
@@ -150,7 +151,7 @@
 <div class="modal-form flex-row">
 	<div class="preview-row">
 		<Preview frames={$frames} pixelSize={15} showWatermark={false}/>
-		<input type="submit" class="button_text outlined" value="Mint NFT!" form="create" disabled={name === "" ||  desc === ""} />
+		<input type="submit" class="button" value="Mint NFT!" form="create" disabled={name === "" ||  desc === ""} />
 	</div>
 	<form id="create" class="flex-col" on:submit|preventDefault={upload} bind:this={formElm}>
 		<label for="name">Name your Artwork</label>

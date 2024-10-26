@@ -327,7 +327,6 @@ export const hexToCometBftHash = (hex) => {
 
 export const buildExplorerLink = (txn_hash) => {
   const link = `${config.blockExplorer}/tx/${txn_hash}`;
-  console.log({link})
   return link;
 }
 

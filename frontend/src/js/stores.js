@@ -12,7 +12,7 @@ export const currentColor = writable(['A','B'])
 export const currentFrame = writable(0)
 //export const frameSpeed = writable(1000)
 
-export const walletInstalled = writable('checking');
+export const walletInstalled = writable('init'); // init | installed | not_installed
 export const walletInfo = writable({});
 export const userAccount = writable("");
 export const autoTx = writable(false);

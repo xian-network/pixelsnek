@@ -1,5 +1,5 @@
 <script>
-	import { userAccount, currency, walletInfo } from '../js/stores'
+	import { userAccount, currency, walletInfo, walletInstalled } from '../js/stores'
 	import { beforeUpdate, onMount } from 'svelte'
 
 	import { formatAccountAddress, stringToFixed } from '../js/utils.js'
@@ -201,7 +201,7 @@
 	<div class="links desktop">
 		<ul>
 			<li><a rel=prefetch aria-current="{segment === 'create' ? 'page' : undefined}" href="create">create</a></li>
-			{#if $userAccount !== ""}
+			{#if $userAccount !== "" || $userAccount == undefined}
 				<li><a rel=prefetch aria-current="{segment === 'owned' ? 'page' : undefined}" href={'owned/' + $userAccount}>owned</a></li>
 			{/if}
 			<li><a rel=prefetch aria-current="{segment === 'recent' ? 'page' : undefined}" href="recent">recent</a></li>
@@ -220,10 +220,10 @@
 			   class="address">
 				{`${formatAccountAddress($userAccount, 8, 4)}`}
 			</a>
-		{:else}
-			{#if xduInitialized && initalize}
+		{:else if xduInitialized && initalize}
 				<WalletConnectButton {xdu} />
-			{/if}
+		{:else if $walletInstalled === 'not_installed'}
+			INSTALL WALLET PLS
 		{/if}
 
 	</div>

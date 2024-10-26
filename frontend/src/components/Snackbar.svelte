@@ -44,7 +44,7 @@
         justify-content: flex-end;
 
         position: fixed;
-        /* pointer-events: none; */
+        pointer-events: none;
         top: 0;
         right: 0;
         width: 300px;
@@ -54,6 +54,7 @@
         overflow: hidden;
     }
     .snackbar{
+        pointer-events: auto;
         padding: 8px;
         margin-bottom: 1rem;
         box-shadow: 2px 6px 19px 0px rgba(0,0,0,0.29);

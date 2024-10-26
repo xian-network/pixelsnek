@@ -22,6 +22,28 @@ export const getOwnedUidsQuery = (address, offset = 0, take = 10) => {
   `;
 };
 
+export const getCreatedUidsQuery = (address, offset = 0, take = 10) => {
+  return `
+  query MyQuery {
+      allStates(
+        filter: {
+          key: { startsWith: "${config.infoContract}.S", endsWith: "creator" }
+          value: {
+            equalTo: "${address}"
+          }
+        }
+        offset: ${offset}
+        first: ${take}
+        orderBy: UPDATED_DESC
+      ) {
+        nodes {
+          key
+        }
+      }
+    }
+  `;
+};
+
 export const isLikedQuery = (uid, account) => {
   return `
   query MyQuery {

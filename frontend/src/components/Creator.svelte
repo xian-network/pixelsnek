@@ -1,9 +1,12 @@
 <script>
     import { beforeUpdate } from 'svelte';
     import DisplayFrames from './DisplayFrames.svelte';
-
+	import { fetchThings } from "../js/processGraphql.js";
+    import { getCreatedUidsQuery } from "../js/graphqlQueries.js";
     // MISC
     import { decodeFrames, formatAccountAddress, isXianKey  } from "../js/utils.js";
+	import { formatThings } from "../js/utils";
+
     import { userAccount } from '../js/stores'
     import { config } from '../js/config'
 
@@ -11,17 +14,36 @@
     export let creator;
 
     let formatted = [];
+    let scrollHeight;
+	let innerHeight;
+    let at_end = false;
+    let sending = false;
 
-    beforeUpdate(() => {
-        formatThings();
-    })
 
-    const formatThings = () => {
-        created.forEach(thing => {
-            thing.frames = decodeFrames(thing.thing)
-        })
-        formatted =  created
-    }
+    $: formatted = formatThings(created);
+    $: elements = []
+	$: lastElementTop = elements.length > 0 ? elements[elements.length -1].offsetTop: null
+	$: lastElementOffsetHeight = elements.length > 0 ? elements[elements.length -1].offsetHeight: null
+	$: visibleHeight = scrollHeight + innerHeight
+	$: checker = checkGetMore(elements)
+
+
+	const checkGetMore = () => {
+    	if (lastElementTop === null || lastElementOffsetHeight === null) return
+		if (visibleHeight > lastElementTop - (lastElementOffsetHeight * 4)) getMore()
+	}
+
+	const getMore = async () => {
+        console.log({at_end, sending})
+    	if (at_end) return
+    	if (sending) return;
+		sending = true;
+		const moreThings = await fetchThings(getCreatedUidsQuery(creator, formatted.length))
+		console.log({moreThings})
+		sending = false;
+		formatted = [...formatted, ...formatThings(moreThings)]
+		if (!moreThings.length) at_end = true
+	}
 
     formatThings();
 
@@ -87,14 +109,15 @@
 	</p>
 {/if}
 <div class="flex-row created">
-    {#each formatted as thingInfo}
+    {#each formatted as thingInfo, index}
         {#if thingInfo.blacklist && thingInfo.owner !== $userAccount}
 
 		{:else}
-            <div>
+            <div bind:this={elements[index]}>
                 <DisplayFrames pixelSize={7} {thingInfo} />
             </div>
         {/if}
     {/each}
 </div>
 
+<svelte:window bind:scrollY={scrollHeight} bind:innerHeight={innerHeight} on:scroll={checkGetMore}/>
