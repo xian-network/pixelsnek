@@ -18,6 +18,7 @@ export const userAccount = writable("");
 export const autoTx = writable(false);
 export const stampRatio = writable(50);
 export const auctions = writable([]);
+export const txnInProgress = writable(false);
 
 export const snackbars = writable([]);
 export const currency = writable(0);

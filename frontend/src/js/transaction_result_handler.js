@@ -1,3 +1,5 @@
+import { txnInProgress } from "./stores.js";
+
 export const TransactionResultHandler = (createSnack) => {
 	function handleTransaction(response, callback){
 		if(response === null){
@@ -29,6 +31,7 @@ export const TransactionResultHandler = (createSnack) => {
 			body: error,
 			type: 'error'
 		})
+		txnInProgress.set(false);
 	}
 
 	return {

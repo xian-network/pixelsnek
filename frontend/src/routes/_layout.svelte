@@ -29,6 +29,7 @@
 		tabHidden,
 		tauPrice,
 		walletInstalled,
+		txnInProgress
 	} from "../js/stores.js";
 	import { stringToFixed, toBigNumber } from "../js/utils.js";
 	import {
@@ -94,6 +95,7 @@
 	}
 
 	const checkWalletStatus = async () => {
+		if ($txnInProgress) return;
 		xdu = XianWalletUtils;
 		// xduWalletInstalled = true;
 		await xdu
@@ -106,6 +108,7 @@
 	};
 
 	const sendTransaction = async (transaction, callback) => {
+		txnInProgress.set(true);
 		let usersStamps = determineUsersTotalStamps();
 		let contractName = transaction.contractName || config.masterContract;
 		let stampsToSendTx = transaction.stampLimit;
@@ -139,6 +142,7 @@
 				)
 				.catch(txResultsHandler.handleTransactionError);
 			txResultsHandler.handleTransaction(txResults, callback);
+			txnInProgress.set(false);
 		}
 	};
 

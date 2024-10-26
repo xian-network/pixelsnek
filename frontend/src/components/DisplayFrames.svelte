@@ -30,6 +30,8 @@
     let switcher;
     let liked = null;
 
+    const dispatch = createEventDispatcher();
+
     $: show = 1
     $: auctioninfo = $auctions.find(f => f.uid === thingInfo.uid)
     $: activeAuction = auctioninfo ? true : false
