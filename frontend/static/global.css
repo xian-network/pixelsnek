@@ -309,8 +309,8 @@ form > label{
 
 .display-card > div {
 	margin:  1rem;
-	padding: 20px 20px;
-	width: 180px;
+	padding: 10px 10px;
+	width: 300px;
 	box-shadow: 2px 6px 19px 0px var(--box-shadow-primary-dark);
 	-webkit-box-shadow: 2px 6px 19px 0px var(--box-shadow-primary-dark);
 	-moz-box-shadow: 2px 6px 19px 0px var(--box-shadow-primary-dark);
@@ -432,5 +432,26 @@ input[type="range"]:focus::-ms-fill-upper {
 	}
 	.show-mobile {
 		display: none;
+	}
+}
+
+@media (max-width: 400px) {
+	/* .hide-mobile {
+		display: block;
+	} */
+	.display-card > div {
+		margin:  1rem 0rem;
+		padding: 10px 10px;
+		width: 100%;
+	}
+	main {
+		padding: 0px 5px !important;
+		margin: 0;
+	}
+
+	.shadowbox {
+		padding: 1rem 1rem;
+		margin: 0;
+		min-width: 100% !important;
 	}
 }

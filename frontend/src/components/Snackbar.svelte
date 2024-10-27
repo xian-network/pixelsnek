@@ -32,7 +32,6 @@
 
     const autoClose = () => {
         snackbars.update( curr => {
-            console.log("CLOSING SNACKBAR")
              return curr.filter((snack ) => {return (new Date().getTime() - snack.time) < snack.delay})
         })
     }

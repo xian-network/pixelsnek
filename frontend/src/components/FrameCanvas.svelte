@@ -22,6 +22,7 @@
 <style>
     canvas{
         display: block;
+        width: 100%;
     }
 </style>
 
