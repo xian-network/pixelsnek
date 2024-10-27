@@ -46,6 +46,8 @@ export const extractUids = (nodes) => {
 
 
 export async function fetchValues(query) {
+  console.log({ query })
+  console.log(query.length)
   const data = JSON.stringify({
     query: query,
   });
@@ -63,21 +65,30 @@ export async function fetchValues(query) {
     });
 
     const responseData = await response.json();
-
+    console.log({ responseData })
+    // console.log({responseData: responseData.errors})
     // Construct an array of JSON objects
     const resultArray = [];
     const uidMap = new Map();
 
-    for (const key in responseData.data) {
-      const nodes = responseData.data[key].nodes;
+    for (const alias in responseData.data) {
+      const nodes = responseData.data[alias].nodes;
+      console.log({ nodes })
       if (nodes && nodes.length > 0) {
-        const [_, uid, field] = key.split('_');
-        if (!uidMap.has(uid)) {
-          uidMap.set(uid, { uid });
+        // const [_, uid, field] = alias.split('_');
+        for (const node of nodes) {
+          const { key, value } = node;
+          const key_parts = key.split(':')
+          const uid = key_parts[1]
+          const field = key_parts[3] ? key_parts[2] + key_parts[3] : key_parts[2]
+          if (!uidMap.has(uid)) {
+            uidMap.set(uid, { uid });
+          }
+          const currentObject = uidMap.get(uid);
+          // Extract the first item from the array
+          currentObject[field] = value;
+          console.log({ field })
         }
-        const currentObject = uidMap.get(uid);
-        // Extract the first item from the array
-        currentObject[field] = nodes.map((node) => node.value)[0];
       }
     }
 

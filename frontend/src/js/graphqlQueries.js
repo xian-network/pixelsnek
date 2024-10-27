@@ -218,34 +218,32 @@ export const getKeys = (offset = 0) => {
 
 export function constructValuesQuery(uids) {
   const baseKey = `${config.infoContract}.S`;
-  const fields = [
-    "name",
-    "names",
-    "owner",
-    "creator",
-    "created",
-    "description",
-    "title",
-    "thing",
-    "type",
-    "likes",
-    "price:hold",
-    "price:amount",
-    "meta:royalty_percent",
-    "meta:num_of_frames",
-    "meta:speed",
-    "meta:likes",
-    "meta:proof"
-  ];
+  // const fields = [
+  //   "name",
+  //   "names",
+  //   "owner",
+  //   "creator",
+  //   "created",
+  //   "description",
+  //   "title",
+  //   "thing",
+  //   "type",
+  //   "likes",
+  //   "price:hold",
+  //   "price:amount",
+  //   "meta:royalty_percent",
+  //   "meta:num_of_frames",
+  //   "meta:speed",
+  //   "meta:likes",
+  //   "meta:proof"
+  // ];
 
   let query = `query MyQuery {`;
 
-  uids.forEach(uid => {
-    fields.forEach(field => {
-      const alias = `state_${uid.replace(/[^a-zA-Z0-9]/g, '')}_${field.replace(/[^a-zA-Z0-9]/g, '')}`;
-      query += `
-        ${alias}: allStates(
-          filter: {key: {equalTo: "${baseKey}:${uid}:${field}"}}
+  uids.forEach((uid, i) => {
+    query += `
+        i_${i}: allStates(
+          filter: {key: {startsWith: "${baseKey}:${uid}"}}
         ) {
           nodes {
             key
@@ -253,7 +251,6 @@ export function constructValuesQuery(uids) {
           }
         }
       `;
-    });
   });
 
   query += `}`;
