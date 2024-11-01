@@ -94,12 +94,11 @@ export async function fetchValues(query) {
 
     uidMap.forEach((value) => {
       if (!value.likes) value.likes = 0
+      value.num_of_frames = value.metanum_of_frames
+      delete (value.metanum_of_frames)
 
-      value.num_of_frames = value.metanumofframes
-      delete (value.metanumofframes)
-
-      value.royalty_percent = value.metaroyaltypercent
-      delete (value.metaroyaltypercent)
+      value.royalty_percent = value.metaroyalty_percent
+      delete (value.metaroyalty_percent)
 
       value.price_amount = value.priceamount
       delete (value.priceamount)
@@ -111,6 +110,7 @@ export async function fetchValues(query) {
       delete (value.metaspeed)
 
       resultArray.push(value)
+      console.log({value})
     })
     return resultArray;
 
