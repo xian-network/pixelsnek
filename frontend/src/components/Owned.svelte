@@ -28,14 +28,14 @@
 
 	const checkGetMore = () => {
     	if (lastElementTop === null || lastElementOffsetHeight === null) return
-		if (visibleHeight > lastElementTop - (lastElementOffsetHeight * 4) && $userAccount) getMore()
+		if (visibleHeight > lastElementTop - (lastElementOffsetHeight * 4) && account) getMore()
 	}
 	const getMore = async () => {
 		if (at_end) return
     	if (sending) return;
 
 		sending = true;
-		const query = getOwnedUidsQuery($userAccount, formatted.length)
+		const query = getOwnedUidsQuery(account, formatted.length)
 		const moreThings = await fetchThings(query)
 		sending = false;
 		formatted = [...formatted, ...formatThings(moreThings)]

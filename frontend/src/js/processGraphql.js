@@ -87,7 +87,6 @@ export async function fetchValues(query) {
           const currentObject = uidMap.get(uid);
           // Extract the first item from the array
           currentObject[field] = value;
-          console.log({ field })
         }
       }
     }
