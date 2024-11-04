@@ -9,7 +9,7 @@
 	import Title from './Title.svelte'
 	import WalletConnectButton from './WalletConnectButton.svelte'
 
-	export let segment;
+	export let pathname;
 	export let xdu;
 
 	let initalize = false;
@@ -37,6 +37,12 @@
 		}
 		if (xdu && !xduInitialized) xduInitialized = true;
 	})
+
+	// Helper function to check if path is current
+	const isCurrentPage = (path) => {
+		if (path === '.') return pathname === '/';
+		return pathname.startsWith('/' + path);
+	};
 
 </script>
 
@@ -200,13 +206,12 @@
 	</a>
 	<div class="links desktop">
 		<ul>
-			<li><a rel=prefetch aria-current="{segment === 'create' ? 'page' : undefined}" href="create">create</a></li>
+			<li><a rel=prefetch aria-current="{isCurrentPage('create') ? 'page' : undefined}" href="create">create</a></li>
 			{#if $userAccount !== "" || $userAccount == undefined}
-				<li><a rel=prefetch aria-current="{segment === 'owned' ? 'page' : undefined}" href={'owned/' + $userAccount}>owned</a></li>
+				<li><a rel=prefetch aria-current="{isCurrentPage('owned') ? 'page' : undefined}" href={'owned/' + $userAccount}>owned</a></li>
 			{/if}
-			<li><a rel=prefetch aria-current="{segment === 'recent' ? 'page' : undefined}" href="recent">recent</a></li>
-			<li><a rel=prefetch aria-current="{segment === 'forsale' ? 'page' : undefined}" href="forsale">for sale</a></li>
-			<!-- <li><a href="https://docs.pixelwhale.io" target="_blank" rel="noopener noreferrer">docs</a></li> -->
+			<li><a rel=prefetch aria-current="{isCurrentPage('recent') ? 'page' : undefined}" href="recent">recent</a></li>
+			<li><a rel=prefetch aria-current="{isCurrentPage('forsale') ? 'page' : undefined}" href="forsale">for sale</a></li>
 		</ul>
 	</div>
 	<div class="flex-col account desktop hide-mobile">
