@@ -3,9 +3,9 @@
     import { config } from '../js/config'
 
     // Icons
-    import LamdenLogoIcon from '../../static/img/lamden_logo_new.svg'
-    import GiftIcon from '../../static/img/gift.svg'
-    import AuctionIcon from '../../static/img/auction.svg'
+    import LamdenLogoIcon from '../../src/img/lamden_logo_new.svg'
+    import GiftIcon from '../../src/img/gift.svg'
+    import AuctionIcon from '../../src/img/auction.svg'
 
     export let salesHistory
     //console.log(salesHistory)

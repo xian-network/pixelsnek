@@ -1,6 +1,6 @@
 <script>
     // Pictures
-    import PaintBucket from '../../static/img/paint_bucket.svg'
+    import PaintBucket from '../../src/img/paint_bucket.svg'
 
     // MISC
     import { currentTool } from '../js/stores'

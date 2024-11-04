@@ -2,7 +2,7 @@
     import { getContext } from 'svelte'
 
 	// Pictures
-	import InfoIcon from '../../static/img/info-filled.svg'
+	import InfoIcon from '../../src/img/info-filled.svg'
 
 	// Misc
 	import { showModal } from '../js/stores.js'

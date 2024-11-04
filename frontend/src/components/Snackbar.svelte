@@ -7,10 +7,10 @@
     import { snackbars } from '../js/stores.js';
 
     // Icons
-    import CheckIcon from '../../static/img/check-filled.svg'
-    import WarningIcon from '../../static/img/warning-filled.svg'
-    import ErrorIcon from '../../static/img/error-filled.svg'
-    import InfoIcon from '../../static/img/info-filled.svg'
+    import CheckIcon from '../../src/img/check-filled.svg'
+    import WarningIcon from '../../src/img/warning-filled.svg'
+    import ErrorIcon from '../../src/img/error-filled.svg'
+    import InfoIcon from '../../src/img/info-filled.svg'
 
     // Components
     import Preview from './Preview.svelte';

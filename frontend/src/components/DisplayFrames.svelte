@@ -14,8 +14,8 @@
     import Likes from "./Likes.svelte";
 
     //Pictures
-    import ArtistIcon from '../../static/img/artist.svg'
-    import OwnerIcon from '../../static/img/owner.svg'
+    import ArtistIcon from '../../src/img/artist.svg'
+    import OwnerIcon from '../../src/img/owner.svg'
 
 
     const {sendTransaction} = getContext('app_functions')

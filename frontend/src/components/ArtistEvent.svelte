@@ -6,8 +6,8 @@
 	import Auctions from './Auctions.svelte'
 
 	// Icons
-	import IconTwitter from '../../static/img/twitter.svg'
-	import IconTelegram from '../../static/img/telegram.svg'
+	import IconTwitter from '../../src/img/twitter.svg'
+	import IconTelegram from '../../src/img/telegram.svg'
 
 	// Misc
 	import {getTimeAgo, getTimeTo} from "../js/utils";

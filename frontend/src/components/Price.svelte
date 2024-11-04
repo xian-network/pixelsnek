@@ -6,7 +6,7 @@
     import { config, featureLocks } from '../js/config.js'
 
     // Pictures
-    import LamdenLogoIcon from '../../static/img/lamden_logo_new.svg'
+    import LamdenLogoIcon from '../../src/img/lamden_logo_new.svg'
 
     // Components
     import FormSell from './FormSell.svelte'

@@ -15,7 +15,7 @@
     import FormAuctionCancel from './FormAuctionCancel.svelte'
 
     // Icons
-    import CheckIcon from '../../static/img/check-filled.svg'
+    import CheckIcon from '../../src/img/check-filled.svg'
 
     export let auctionInfo
     export let thingInfo

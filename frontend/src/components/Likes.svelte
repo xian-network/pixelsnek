@@ -9,8 +9,8 @@
     import { createSnack } from "../js/store-utils";
 
     //Pictures
-    import LikeFilledIcon from "../../static/img/like-filled.svg";
-    import LikeUnfilledIcon from "../../static/img/like-unfilled.svg";
+    import LikeFilledIcon from "../../src/img/like-filled.svg";
+    import LikeUnfilledIcon from "../../src/img/like-unfilled.svg";
 
     const { sendTransaction } = getContext("app_functions");
 

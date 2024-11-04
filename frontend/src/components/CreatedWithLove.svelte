@@ -1,5 +1,5 @@
 <script>
-    import HeartIcon from '../../static/img/icon_heart.svg'
+    import HeartIcon from '../../src/img/icon_heart.svg'
 </script>
 
 <style>

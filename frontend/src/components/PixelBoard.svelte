@@ -13,7 +13,7 @@
     import Pixel from './Pixel.svelte'
 
     // Pictures
-    import CheckCircleIcon from '../../static/img/check-circle.svg'
+    import CheckCircleIcon from '../../src/img/check-circle.svg'
 
     export let itemCreated;
 
