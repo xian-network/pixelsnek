@@ -14,8 +14,8 @@
     import Likes from "./Likes.svelte";
 
     //Pictures
-    import ArtistIcon from '../../src/img/artist.svg'
-    import OwnerIcon from '../../src/img/owner.svg'
+    import * as ArtistIcon from '../../src/img/artist.svg'
+    import * as OwnerIcon from '../../src/img/owner.svg'
 
 
     const {sendTransaction} = getContext('app_functions')
@@ -160,27 +160,27 @@
 
 </style>
 <div class="title flex-row">
-    <a href="{`./frames/${thingInfo.uid}`}" class="name">{thingInfo.name}</a>
+    <a href="{`/frames/${thingInfo.uid}`}" class="name">{thingInfo.name}</a>
 
 </div>
 <div class="icons text-color-gray-5 flex-row flex-align-center">
-    <a href="{`./creator/${thingInfo.creator}`}" class="icon">
-        <ArtistIcon width="20"/>
+    <a href="{`/creator/${thingInfo.creator}`}" class="icon">
+        <img src={ArtistIcon.default} alt="Artist" width="20"/>
     </a>
-    <a href="{`./owned/${thingInfo.owner}`}" class="icon flex-grow">
-        <OwnerIcon width="20"/>
+    <a href="{`/owned/${thingInfo.owner}`}" class="icon flex-grow">
+        <img src={OwnerIcon.default} alt="Owner" width="20"/>
     </a>
     <Likes {thingInfo} />
 
 </div>
 
-<a href="{`./frames/${thingInfo.uid}`}">
+<a href="{`/frames/${thingInfo.uid}`}">
     {#if frames.length >= show}
         <FrameCanvas {pixelSize} pixels={frames[show - 1]} watermark={createWatermark(thingInfo, $userAccount)}/>
     {/if}
 </a>
 {#if activeAuction}
-    <a href="{`./frames/${thingInfo.uid}#auction`}" class="auction">view active auction</a>
+    <a href="{`/frames/${thingInfo.uid}#auction`}" class="auction">view active auction</a>
 {:else}
     <div class="flex-row buy-like">
         <Price {thingInfo} updateInfo={updateThingInfo}/>
