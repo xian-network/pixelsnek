@@ -62,7 +62,7 @@
 </style>
 
 <div class="flex-row" style={`font-size: ${fontSize}em`} class:top-margin={showFullLogo}>
-	{#if showFullLogo}<img src="./img/PIXELSNEK-FULL.png" alt="pixel snek full logo"/>{/if}
+	{#if showFullLogo}<img src="img/PIXELSNEK-FULL.png" alt="pixel snek full logo"/>{/if}
 	<strong class:right-margin={showFullLogo}>Pixel</strong>
     <span style={`color: ${framesColor};`}>Snek</span>
 </div>
