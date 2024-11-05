@@ -1,6 +1,6 @@
 <script>
     import { getContext } from 'svelte'
-	import { goto } from '@sapper/app';
+	import { goto } from '$app/navigation';
 
     //MISC
 	import { frames, frameSpeed, showModal, frameStore, activeFrame } from '../js/stores.js'
