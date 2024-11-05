@@ -40,7 +40,7 @@
 
 	// Helper function to check if path is current
 	const isCurrentPage = (path) => {
-		if (path === '.') return pathname === '/';
+		if (path === 'home') return pathname === '/';
 		return pathname.startsWith('/' + path);
 	};
 
@@ -56,7 +56,7 @@
     	width: 100%;
 		padding: 1rem 3em;
 		display: flex;
-		flex-direction: row;
+		ex-direction: row;
 		align-items: center;
 		background: white;
 		border-bottom: 1px solid #ff5bb047;
@@ -200,18 +200,18 @@
 </style>
 
 <nav class="flex-row">
-	<a class="brand flex-row" rel=prefetch  href=".">
+	<a class="brand flex-row" rel=prefetch href="/">
 		<img src="img/PIXELSNEK-124.png" alt="nav logo">
 		<Title fontSize={1.2} subtitle={false}/>
 	</a>
 	<div class="links desktop">
 		<ul>
-			<li><a rel=prefetch aria-current="{isCurrentPage('create') ? 'page' : undefined}" href="create">create</a></li>
+			<li><a rel=prefetch aria-current="{isCurrentPage('create') ? 'page' : undefined}" href="/create">create</a></li>
 			{#if $userAccount !== "" || $userAccount == undefined}
-				<li><a rel=prefetch aria-current="{isCurrentPage('owned') ? 'page' : undefined}" href={'owned/' + $userAccount}>owned</a></li>
+				<li><a rel=prefetch aria-current="{isCurrentPage('owned') ? 'page' : undefined}" href={'/owned/' + $userAccount}>owned</a></li>
 			{/if}
-			<li><a rel=prefetch aria-current="{isCurrentPage('recent') ? 'page' : undefined}" href="recent">recent</a></li>
-			<li><a rel=prefetch aria-current="{isCurrentPage('forsale') ? 'page' : undefined}" href="forsale">for sale</a></li>
+			<li><a rel=prefetch aria-current="{isCurrentPage('recent') ? 'page' : undefined}" href="/recent">recent</a></li>
+			<li><a rel=prefetch aria-current="{isCurrentPage('forsale') ? 'page' : undefined}" href="/forsale">for sale</a></li>
 		</ul>
 	</div>
 	<div class="flex-col account desktop hide-mobile">
