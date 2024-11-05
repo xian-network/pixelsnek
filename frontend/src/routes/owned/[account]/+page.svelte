@@ -1,10 +1,10 @@
 <script>
     import { onMount } from 'svelte';
-	import { stores } from '@sapper/app';
-    import Owned from "../../components/Owned.svelte";
-    import { formatAccountAddress } from '../../js/utils';
-	import { fetchThings } from "../../js/processGraphql.js";
-    import { getOwnedUidsQuery } from "../../js/graphqlQueries.js";
+    import { page } from '$app/stores';
+    import Owned from "../../../components/Owned.svelte";
+    import { formatAccountAddress } from '../../../js/utils';
+	import { fetchThings } from "../../../js/processGraphql.js";
+    import { getOwnedUidsQuery } from "../../../js/graphqlQueries.js";
 
 	// export async function preload({ params, query }) {
 	// 	try {
@@ -22,9 +22,6 @@
 	// 		}
 	// 	}
 	// }
-
-
-    const { page } = stores();
 
     let owned;
     let error = null;

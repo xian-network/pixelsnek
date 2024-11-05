@@ -1,48 +1,17 @@
-<script context="module">
-	import { decodeFrames } from "../../js/utils.js";
-	import { getThingByUid } from "../../js/graphqlQueries";
-	import { fetchThings } from "../../js/processGraphql.js";
-
-	export async function preload({ params, query }) {
-		let data = await Promise.all([
-			fetchThings(getThingByUid(params.uid)),
-			// this.fetch(`./history/${params.uid}.json`).then(res => res.json())
-		]);
-		// console.log({ data: JSON.stringify(data) });
-		let thingInfo = data[0][0];
-		console.log({ thingInfo });
-		try {
-			thingInfo.frames = decodeFrames(thingInfo.thing);
-			console.log({ thingInfo });
-		} catch (e) {
-			thingInfo = {
-				name: "Not Found",
-				owner: "",
-				uid: params.uid,
-				description: "",
-				notFound: true,
-			};
-		}
-
-		return {
-			thingInfo,
-			// auctionInfo,
-			// salesHistory: data[1]
-		};
-	}
-</script>
-
 <script>
 	// Components
-	import DisplayFramesOne from "../../components/DisplayFramesOne.svelte";
+	import DisplayFramesOne from "../../../components/DisplayFramesOne.svelte";
 
 	// MISC
-	import { updateInfo } from "../../js/utils.js";
-	import { config } from "../../js/config.js";
+	import { updateInfo } from "../../../js/utils.js";
+	import { config } from "../../../js/config.js";
 
-	export let thingInfo;
-	export let auctionInfo;
-	export let salesHistory;
+	// export let thingInfo;
+	// export let auctionInfo;
+	// export let salesHistory;
+
+	export let data;
+	let { thingInfo, auctionInfo, salesHistory } = data;
 
 	console.log({ thingInfo, auctionInfo });
 
