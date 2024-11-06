@@ -129,7 +129,7 @@
              {:else}
 
                  <div class="icon flex flex-center-center">
-                     <svelte:component this={icons[snack.type]} width="26" />
+                    <img src={icons[snack.type]} alt={snack.type} width="26" />
                  </div>
              {/if}
              <div class="flex-col">
