@@ -257,3 +257,19 @@ export function constructValuesQuery(uids) {
 
   return query;
 }
+
+export const getNamesUid = (uid) => {
+  return `
+  query MyQuery {
+    allStates(
+      filter: {
+        key: { startsWith: "${config.infoContract}", includes: "names", endsWith: "${uid}" }
+      }
+    ) {
+      nodes {
+        key
+      }
+    }
+  }
+  `
+}

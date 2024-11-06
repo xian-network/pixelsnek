@@ -2,6 +2,8 @@ import { config } from "./config.js";
 
 import Xian from "xian-js";
 import { validateTypes } from "types-validate-assert";
+import { executeGraphQlQuery } from "./processGraphql.js";
+import { getNamesUid } from "./graphqlQueries.js";
 
 let API = new Xian.MasternodeAPI({ masternode_hosts: [config.masternode] });
 
@@ -288,8 +290,9 @@ export const sha256 = async (message) => {
 
 export const nameTaken = async (name) => {
   let name_uid = await sha256(name.toLowerCase().replace(" ", ""));
-  const res = await fetch(`./name_taken.json?name_uid=${name_uid}`);
-  const taken = await res.json();
+  const name_uid_query_string = getNamesUid(name_uid);
+  const res = await executeGraphQlQuery(name_uid_query_string);
+  const taken =  res.data.allStates.nodes.key ? true : false;
   return taken;
 };
 
