@@ -52,7 +52,7 @@
     		let tries = 0
 			let maxTries = 30
     		const get_thing_info = async () => {
-    			let new_thing_info = await fetch(`./frames/${txResults.original_tx.kwargs.uid}.json`)
+    			let new_thing_info = await fetch(`/frames/${txResults.original_tx.kwargs.uid}.json`)
 					.then(res => res.json())
 					.catch(() => resolve(false))
 				if (new_thing_info.lastUpdate > sendTime) resolve(new_thing_info)

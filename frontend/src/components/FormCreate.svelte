@@ -88,7 +88,7 @@
     	const checkForThing = async () => {
     		if (window.location.href !== location) return
     		checks = checks + 1
-    		let res = await fetch(`./frames/${uid}.json`).then(res => res.json())
+    		let res = await fetch(`/frames/${uid}.json`).then(res => res.json())
 			if (res.thingInfo === null) {
 				if (checks < maxChecks)setTimeout(checkForThing, 1000)
 			}else {
