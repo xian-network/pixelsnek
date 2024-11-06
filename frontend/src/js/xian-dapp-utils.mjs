@@ -50,7 +50,9 @@ const XianWalletUtils = {
             // Resolve pending transaction status requests
             if (this.state.transaction.requests.length > 0) {
                 const resolver = this.state.transaction.requests.shift();
-                if ('errors' in event.detail) {
+                if (!event.detail) {
+                    resolver(null);
+                } else if ('errors' in event.detail) {
                     resolver(event.detail);
                 } else {
                     this.getTxResultsAsyncBackoff(event.detail.txid).then(tx => {
