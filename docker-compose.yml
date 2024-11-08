@@ -1,7 +1,5 @@
-version: '3.8'
-
 services:
-  sapper-app:
+  sveltekit-app:
     build: 
       context: .
       dockerfile: frontend/Dockerfile
