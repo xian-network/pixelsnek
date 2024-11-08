@@ -14,13 +14,17 @@ RUN apk add --no-cache \
     libpng-dev \
     pkgconfig
 
+# Install pnpm    
+RUN npm install -g pnpm
+
 COPY ./frontend ./frontend
 
 WORKDIR /app/frontend
-RUN npm install
 
-RUN npm run build
+RUN pnpm install --frozen-lockfile
+
+RUN pnpm run build
 
 EXPOSE 80
 
-CMD ["npm", "run", "start"]
+CMD ["pnpm", "run", "start"]
