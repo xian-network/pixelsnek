@@ -1,6 +1,8 @@
 <script>
     import { getContext } from 'svelte'
 	import { goto } from '$app/navigation';
+	import { fetchThings } from '../js/processGraphql.js';
+	import { decodeFrames } from '../js/utils.js';
 
     //MISC
 	import { frames, frameSpeed, showModal, frameStore, activeFrame } from '../js/stores.js'
@@ -82,13 +84,36 @@
 		}
     }
 
+	const fetchFrame = async (uid) => {
+		let data = await fetchThings(getThingByUid(uid));
+		console.log({ frame_data: JSON.stringify(data) });
+		let thingInfo = data[0];
+		console.log({ thingInfo });
+		try {
+			thingInfo.frames = decodeFrames(thingInfo.thing);
+			console.log({ thingInfo });
+		} catch (e) {
+			thingInfo = {
+				name: "Not Found",
+				owner: "",
+				uid: params.uid,
+				description: "",
+				notFound: true,
+			};
+		}
+
+		return {
+			thingInfo
+		};
+	}
+
     const redirect = (uid, location) =>  {
     	let maxChecks = 30
 		let checks = 0
     	const checkForThing = async () => {
     		if (window.location.href !== location) return
     		checks = checks + 1
-    		let res = await fetch(`/frames/${uid}.json`).then(res => res.json())
+    		let res = await fetchFrame(uid);
 			if (res.thingInfo === null) {
 				if (checks < maxChecks)setTimeout(checkForThing, 1000)
 			}else {
@@ -97,6 +122,7 @@
 		}
 		checkForThing()
 	}
+
 </script>
 
 <style>
