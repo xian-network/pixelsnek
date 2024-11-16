@@ -36,7 +36,7 @@ function createGIF(thingInfo, shareLink = false) {
             encoder.setDelay(0);
             encoder.setQuality(50);
             encoder.setThreshold(0);
-            encoder.setTransparent(0x00FF15)
+            // encoder.setTransparent(0x00FF15)
 
             frames.forEach((frame, index) => {
                 if (index <= frames.length) {
@@ -44,6 +44,7 @@ function createGIF(thingInfo, shareLink = false) {
                     frame.forEach((letter, index) => {
                         if (letter === "A") ctx.fillStyle = "#00ff15"
                         else ctx.fillStyle = letter_to_color[letter];
+                        ctx.fillStyle = letter_to_color[letter];
                         let rowBefore = Math.floor(index / numOfPixels)
                         let rowAdj = (pixelSize * rowBefore)
                         let y = Math.floor(index / numOfPixels)
