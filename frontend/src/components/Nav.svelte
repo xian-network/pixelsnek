@@ -38,12 +38,6 @@
 		if (xdu && !xduInitialized) xduInitialized = true;
 	})
 
-	// Helper function to check if path is current
-	const isCurrentPage = (path) => {
-		if (path === 'home') return pathname === '/';
-		return pathname.startsWith('/' + path);
-	};
-
 </script>
 
 <style>
@@ -56,7 +50,7 @@
     	width: 100%;
 		padding: 1rem 3em;
 		display: flex;
-		ex-direction: row;
+		flex-direction: row;
 		align-items: center;
 		background: white;
 		border-bottom: 1px solid #ff5bb047;
@@ -206,12 +200,12 @@
 	</a>
 	<div class="links desktop">
 		<ul>
-			<li><a rel=prefetch aria-current="{isCurrentPage('create') ? 'page' : undefined}" href="/create">create</a></li>
+			<li><a rel=prefetch aria-current="{pathname === '/create/'? 'page' : undefined}" href="/create">create</a></li>
 			{#if $userAccount !== "" || $userAccount == undefined}
-				<li><a rel=prefetch aria-current="{isCurrentPage('owned') ? 'page' : undefined}" href={'/owned/' + $userAccount}>owned</a></li>
+				<li><a rel=prefetch aria-current="{pathname === '/owned/' + $userAccount + '/'? 'page' : undefined}" href={'/owned/' + $userAccount}>owned</a></li>
 			{/if}
-			<li><a rel=prefetch aria-current="{isCurrentPage('recent') ? 'page' : undefined}" href="/recent">recent</a></li>
-			<li><a rel=prefetch aria-current="{isCurrentPage('forsale') ? 'page' : undefined}" href="/forsale">for sale</a></li>
+			<li><a rel=prefetch aria-current="{pathname === '/recent/'? 'page' : undefined}" href="/recent">recent</a></li>
+			<li><a rel=prefetch aria-current="{pathname === '/forsale/'? 'page' : undefined}" href="/forsale">for sale</a></li>
 		</ul>
 	</div>
 	<div class="flex-col account desktop hide-mobile">
