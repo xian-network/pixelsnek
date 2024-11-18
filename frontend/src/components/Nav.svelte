@@ -195,7 +195,7 @@
 
 <nav class="flex-row">
 	<a class="brand flex-row" rel=prefetch href="/">
-		<img src="img/PIXELSNEK-124.png" alt="nav logo">
+		<img src="/img/PIXELSNEK-124.png" alt="nav logo">
 		<Title fontSize={1.2} subtitle={false}/>
 	</a>
 	<div class="links desktop">
