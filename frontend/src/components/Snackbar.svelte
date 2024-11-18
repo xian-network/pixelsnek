@@ -6,20 +6,14 @@
     // Misc
     import { snackbars } from '../js/stores.js';
 
-    // Icons
-    import CheckIcon from '../../src/img/check-filled.svg'
-    import WarningIcon from '../../src/img/warning-filled.svg'
-    import ErrorIcon from '../../src/img/error-filled.svg'
-    import InfoIcon from '../../src/img/info-filled.svg'
-
     // Components
     import Preview from './Preview.svelte';
 
     const icons = {
-        "warning": WarningIcon,
-        "success": CheckIcon,
-        "error": ErrorIcon,
-        "info": InfoIcon
+        "warning": "/img/warning-filled.svg",
+        "success": "/img/check-filled.svg",
+        "error": "/img/error-filled.svg",
+        "info": "/img/info-filled.svg"
     }
 
     let remover;
