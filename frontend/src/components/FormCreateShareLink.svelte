@@ -1,9 +1,6 @@
 <script>
     import { getContext } from 'svelte'
 
-	// Pictures
-	import InfoIcon from '../../src/img/info-filled.svg'
-
 	// Misc
 	import { showModal } from '../js/stores.js'
 	import { createSnack, closeModel } from '../js/store-utils.js'
@@ -133,7 +130,7 @@
 <div class="flex-col text-color-white-primary-tint">
 	<div class="flex-row">
 		<div class="icon">
-			<InfoIcon width="20"/>
+			<img src="/img/info-filled.svg" alt="info filled" width="20"/>
 		</div>
 		<div class="flex-col flex-justify-center info weight-600">
 			<p>As the owner of this NFT you can create a shareable link that has no watermark.</p>

@@ -1,9 +1,6 @@
 <script>
     import { getContext } from 'svelte'
 
-	// Pictures
-	import InfoIcon from '../../src/img/info-filled.svg'
-
 	// Misc
 	import { showModal } from '../js/stores.js'
 	import { createSnack, closeModel } from '../js/store-utils.js'
@@ -136,7 +133,7 @@
 
 <div class="flex-col text-color-white-primary-tint">
 	<div class="flex-row">
-		<InfoIcon class="icon" />
+		<img src="/img/info-filled.svg" alt="info filled" class="icon" />
 
 		<div class="flex-col flex-justify-center info weight-600">
 			<p>Deleting this link will prevent anyone from accessing the GIF file.</p>

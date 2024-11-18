@@ -8,10 +8,6 @@
     import { buildExplorerLink } from "../js/utils.js";
     import { createSnack } from "../js/store-utils";
 
-    //Pictures
-    import * as LikeFilledIcon from "../../src/img/like-filled.svg";
-    import * as LikeUnfilledIcon from "../../src/img/like-unfilled.svg";
-
     const { sendTransaction } = getContext("app_functions");
 
     export let thingInfo;
@@ -87,17 +83,17 @@
     >
         {#if liked !== null}
             {#if liked}
-                <img src={LikeFilledIcon.default} alt="Liked" width="21" />
+                <img src="/img/like-filled.svg" alt="Liked" width="21" />
             {:else}
-                <img src={LikeUnfilledIcon.default} alt="Not liked" width="21" />
+                <img src="/img/like-unfilled.svg" alt="Not liked" width="21" />
             {/if}
         {:else}
-            <img src={LikeUnfilledIcon.default} alt="Not liked" width="21" />
+            <img src="/img/like-unfilled.svg" alt="Not liked" width="21" />
         {/if}
     </div>
 
     <div class="show-mobile icon">
-        <img src={LikeUnfilledIcon.default} alt="Not liked" width="22" />
+        <img src="/img/like-unfilled.svg" alt="Not liked" width="22" />
     </div>
     {thingInfo.likes}
 </div>

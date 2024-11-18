@@ -14,9 +14,6 @@
     import FormAuctionClaim from './FormAuctionClaim.svelte'
     import FormAuctionCancel from './FormAuctionCancel.svelte'
 
-    // Icons
-    import CheckIcon from '../../src/img/check-filled.svg'
-
     export let auctionInfo
     export let thingInfo
     export let showInfo = true
@@ -228,7 +225,7 @@
                     {#if $userAccount === winning_bidder}
                         <div class="flex-row flex-center-center current-winner">
                             <span>You are winning this auction!</span>
-                            <CheckIcon class="auction-check-icon" width="17" />
+                            <img src="/img/check-filled.svg" alt="check filled" class="auction-check-icon" width="17" />
                         </div>
                     {:else}
                         <button class="button" on:click={handleBid} > BID </button>

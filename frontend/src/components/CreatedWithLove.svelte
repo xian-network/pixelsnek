@@ -1,7 +1,3 @@
-<script>
-    import HeartIcon from '../../src/img/icon_heart.svg'
-</script>
-
 <style>
     p{
     	height: 40px;
@@ -12,7 +8,7 @@
 
 <p>
     <!-- created with
-    <HeartIcon  width="25" />
+    <img src="/img/icon_heart.svg"  width="25" />
     by -->
     <!-- <a href="www.lamden.io" target="_black" rel="noopener noreferrer">Lamden.io</a> -->
 </p>

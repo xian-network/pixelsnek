@@ -13,11 +13,6 @@
     import Price from './Price.svelte'
     import Likes from "./Likes.svelte";
 
-    //Pictures
-    import * as ArtistIcon from '../../src/img/artist.svg'
-    import * as OwnerIcon from '../../src/img/owner.svg'
-
-
     const {sendTransaction} = getContext('app_functions')
 
 
@@ -165,10 +160,10 @@
 </div>
 <div class="icons text-color-gray-5 flex-row flex-align-center">
     <a href="{`/creator/${thingInfo.creator}`}" class="icon">
-        <img src={ArtistIcon.default} alt="Artist" width="20"/>
+        <img src="/img/artist.svg" alt="Artist" width="20"/>
     </a>
     <a href="{`/owned/${thingInfo.owner}`}" class="icon flex-grow">
-        <img src={OwnerIcon.default} alt="Owner" width="20"/>
+        <img src="/img/owner.svg" alt="Owner" width="20"/>
     </a>
     <Likes {thingInfo} />
 

@@ -2,11 +2,6 @@
     import { stringToFixed, timeDelta, formatAccountAddress} from '../js/utils'
     import { config } from '../js/config'
 
-    // Icons
-    import LamdenLogoIcon from '../../src/img/lamden_logo_new.svg'
-    import GiftIcon from '../../src/img/gift.svg'
-    import AuctionIcon from '../../src/img/auction.svg'
-
     export let salesHistory
     //console.log(salesHistory)
 
@@ -54,7 +49,7 @@
                 <div class="header flex-row flex-align-center">
                     <div class="flex-row flex-align-center">
                         <h3>Gifted</h3>
-                        <GiftIcon width="16" class="saleshistory-icon" />
+                        <img src="/img/gift.svg" alt="gift" width="16" class="saleshistory-icon" />
                     </div>
                     <span class="timedelta text-color-gray-5">{timeDelta(history.saleDate)}</span>
                 </div>
@@ -75,10 +70,10 @@
                 <div class="header flex-row flex-align-center">
                     <div class="flex-row flex-align-center">
                         <h3 class="flex-row">Auction</h3>
-                        <AuctionIcon width="20" class="saleshistory-icon" />
+                        <img src="/img/auction.svg" alt="auction" width="20" class="saleshistory-icon" />
                         <span class="winning-bid">Winning Bid</span>
                         <strong>{stringToFixed(history.price, 8)}</strong>
-                        <LamdenLogoIcon width="20" class="saleshistory-icon" />
+                        <img src="/img/lamden_logo_new.svg" alt="lamden logo" width="20" class="saleshistory-icon" />
 
                     </div>
                     <span class="timedelta text-color-gray-5">{timeDelta(history.saleDate)}</span>
@@ -102,7 +97,7 @@
                     <div class="flex-row flex-align-center">
                         <h3 class="flex-row">Sold for</h3>
                         <strong>{stringToFixed(history.price, 8)}</strong>
-                        <LamdenLogoIcon width="18" class="saleshistory-icon" />
+                        <img src="/img/lamden_logo_new.svg" alt="lamden logo" width="18" class="saleshistory-icon" />
                     </div>
                     <span class="timedelta text-color-gray-5">{timeDelta(history.saleDate)}</span>
                 </div>
