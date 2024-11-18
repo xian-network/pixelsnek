@@ -1,6 +1,4 @@
 <script>
-    import { onMount, getContext } from 'svelte'
-
     // Misc
     import { toBigNumber, stringToFixed, formatAccountAddress, getTimeAgo } from '../js/utils'
     import {showModal, userAccount} from "../js/stores";

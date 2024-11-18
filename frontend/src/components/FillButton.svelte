@@ -1,7 +1,4 @@
 <script>
-    // Pictures
-    import PaintBucket from '../../src/img/paint_bucket.svg'
-
     // MISC
     import { currentTool } from '../js/stores'
 

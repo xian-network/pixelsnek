@@ -5,9 +5,6 @@
     import { stringToFixed, toBigNumber } from '../js/utils.js'
     import { config, featureLocks } from '../js/config.js'
 
-    // Pictures
-    import LamdenLogoIcon from '../../src/img/lamden_logo_new.svg'
-
     // Components
     import FormSell from './FormSell.svelte'
     import FormBuy from './FormBuy.svelte'
