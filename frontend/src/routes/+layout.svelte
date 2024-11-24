@@ -51,7 +51,7 @@
 	onMount(async () => {
 		await initXianWallet();
 		await checkWalletStatus();
-		setInterval(checkWalletStatus, 1000);
+		// setInterval(checkWalletStatus, 1000);
 
 		document.addEventListener("visibilitychange", setTabActive);
 		refreshCurrencyBalance();
