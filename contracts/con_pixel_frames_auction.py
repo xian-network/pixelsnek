@@ -25,7 +25,7 @@ def operator_transfer_thing(uid: str, new_owner: str):
     assert ctx.caller == metadata['operator'], 'Only auction operator can transfer things from contract.'
     thing_master_contract = I.import_module(S['thing_master_contract'])
     thing_master_contract.transfer(uid=uid, new_owner=new_owner)
-    S[uid] = False
+    S[uid, new_owner] = False
 
 @export
 def operator_transfer_currency(amount: str, to: float):
@@ -34,7 +34,7 @@ def operator_transfer_currency(amount: str, to: float):
 
 def get_listing_info(uid: str):
     # Get listing info
-    listing_info = S[uid]
+    listing_info = S[uid, ctx.caller]
     assert listing_info is not None, "Listing doesn't exist!"
     return {
         'start_date': S[uid, 'start_date'],
@@ -59,7 +59,7 @@ def auction_thing(uid: str, reserve_price: float, start_date: datetime.datetime,
         main_account=ctx.caller
     )
 
-    assert not S[uid], 'Auction has already started!'
+    assert not S[uid, ctx.caller], 'Auction has already started!'
     assert end_date > now, "end_date is in the past"
     assert reserve_price >= 0, "reserve_price cannot be less than 0"
 
@@ -74,7 +74,7 @@ def auction_thing(uid: str, reserve_price: float, start_date: datetime.datetime,
     S[uid, "creator"] = Thing_Info[uid, 'creator']
     
     # Mark as auction started
-    S[uid] = True
+    S[uid, ctx.caller] = True
 
 @export
 def end_auction(uid: str, end_early: bool):
