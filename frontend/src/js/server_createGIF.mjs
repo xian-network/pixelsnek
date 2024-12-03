@@ -73,7 +73,7 @@ function createAndSendGIF2(res, thingInfo, shareLink = false) {
     encoder.setQuality(50); // image quality. 10 is default.
     encoder.setThreshold(0);
     // Comment out or adjust the transparency setting
-    encoder.setTransparent(0x00FF15)
+    // encoder.setTransparent(0x00FF15)
 
     frames.forEach((frame, index) => {
         if (index <= frames.length) {
