@@ -180,3 +180,6 @@ def bid(uid: str, bid_amount: float):
     # Set the new bid info
     S[uid, 'current_bid'] = bid_amount
     S[uid, 'current_winner'] = ctx.caller
+
+def strptime_ymdhms(date_string: str):
+    return datetime.datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')
