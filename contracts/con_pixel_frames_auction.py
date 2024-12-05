@@ -117,7 +117,7 @@ def process_auction_result_no_winner(listing_info):
             amount=listing_info['current_bid']
         )
 
-    S[listing_info['uid']] = False
+    S[listing_info['uid'], listing_info['current_owner']] = False
 
 def process_auction_result(listing_info):
     thing_master_contract = I.import_module(S['thing_master_contract'])
@@ -150,7 +150,7 @@ def process_auction_result(listing_info):
         amount=net_amount
     )
 
-    S[listing_info['uid']] = False
+    S[listing_info['uid'], listing_info['current_owner']] = False
 
 @export
 def bid(uid: str, bid_amount: float):
