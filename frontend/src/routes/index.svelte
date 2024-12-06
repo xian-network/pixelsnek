@@ -40,7 +40,8 @@
 	// import ArtistEvent from "../components/ArtistEvent.svelte";
 
 
-	export let mostLiked;
+	// export let mostLiked;
+	export let segment;
 	export let recent;
 	export let forsale;
 	// export let eventInfo;
