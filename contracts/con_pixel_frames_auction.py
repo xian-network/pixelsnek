@@ -59,6 +59,9 @@ def auction_thing(uid: str, reserve_price: float, start_date: datetime.datetime,
         main_account=ctx.caller
     )
 
+    start_date = strptime_ymdhms(start_date)
+    end_date = trptime_ymdhms(end_date)
+
     assert not S[uid, ctx.caller], 'Auction has already started!'
     assert end_date > now, "end_date is in the past"
     assert reserve_price >= 0, "reserve_price cannot be less than 0"
