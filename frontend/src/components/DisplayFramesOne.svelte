@@ -15,7 +15,7 @@
     import Likes from './Likes.svelte'
     import OwnerControls from './OwnerControls.svelte'
     import Auction from './Auction.svelte';
-    import AuctionBidHistory from './AuctionBidHistory.svelte';
+    // import AuctionBidHistory from './AuctionBidHistory.svelte';
 
     // Pictures
     import SocialButtons from "./SocialButtons.svelte";
@@ -208,7 +208,7 @@
         <hr>
         <div class="flex flex-justify-center flex-wrap auction">
             <Auction {auctionInfo} {thingInfo} showInfo={false}/>
-            <AuctionBidHistory bidHistory={auctionInfo.bid_history || []} />
+            <!--AuctionBidHistory bidHistory={auctionInfo.bid_history || []} /-->
         </div>
     {/if}
 </div>

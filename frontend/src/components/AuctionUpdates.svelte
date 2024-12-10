@@ -4,13 +4,15 @@
     import {decodeFrames, formatAccountAddress, stringToFixed} from "../js/utils";
     import {createSnack} from "../js/store-utils";
     import {config} from "../js/config";
+    import { fetchThings, fetchAuctionThings } from "../js/processGraphql";
+    import { getThingByUid, getAuctionThingQuery } from "../js/graphqlQueries";
 
     // const { socket } = getContext('app_functions')
 
     let init = false
 
-    // onMount(async () => {
-    //     await initialize()
+    onMount(async () => {
+        await initialize()
 
     //     socket.joinRoom('auction-updates')
 	// 	socket.on('new-auction', (auctionUpdate) => {
@@ -30,7 +32,7 @@
 	// 		announceAuctionEnded(replaceAuctionInfo(auctionUpdate))
     //     })
     //     return () => socket.leaveRoom('auction-updates')
-    // })
+    })
 
     // beforeUpdate(async () => {
     //     if (!init) await initialize()
@@ -48,6 +50,8 @@
 		if (!json) return []
 	    // return json.data.sort((a, b) => a.last_tx_uid > b.last_tx_uid ? -1 : 1)
         return json.data
+
+        // getAuctionThingQuery()
 
     }
 

@@ -2,7 +2,7 @@
     import { onMount, getContext } from 'svelte'
 
     // Misc
-    import { toBigNumber, stringToFixed, formatAccountAddress, getTimeAgo } from '../js/utils'
+    import { stringToFixed, formatAccountAddress } from '../js/utils'
     import {showModal, userAccount} from "../js/stores";
     import { config } from "../js/config"
 
@@ -31,12 +31,14 @@
     $: timesUp = new Date() > new Date(auctionInfo.scheduled_end_date)
     $: notClaimed = auctionInfo.winner === ""
     $: reserveMet = auctionInfo.reserve_met
-    $: bid_history = auctionInfo.bid_history
-    $: winning_bid_info = bid_history.length > 0 ? bid_history[0] : null
-    $: winning_bid = winning_bid_info ? toBigNumber(winning_bid_info.bid) : toBigNumber("0")
-    $: winning_bidder = winning_bid_info ? winning_bid_info.bidder : ""
-    $: winning_timestamp = winning_bid_info ? new Date(winning_bid_info.timestamp) : null
-    $: timeAgo = getTimeAgo(winning_timestamp, hasEnded)
+    // $: bid_history = auctionInfo.bid_history
+    // $: winning_bid_info = bid_history.length > 0 ? bid_history[0] : null
+    // $: winning_bid = winning_bid_info ? toBigNumber(winning_bid_info.bid) : toBigNumber("0")
+    // $: winning_bidder = winning_bid_info ? winning_bid_info.bidder : ""
+    $: winning_bid = auctionInfo.current_bid
+    $: winning_bidder = auctionInfo.current_winner
+    // $: winning_timestamp = winning_bid_info ? new Date(winning_bid_info.timestamp) : null
+    // $: timeAgo = getTimeAgo(winning_timestamp, hasEnded)
     $: canBeCancelled = determineCanBeCancelled(hasStarted, reserveMet)
 
     function determineCanBeCancelled(hasStarted, reserveMet){
@@ -48,7 +50,7 @@
     function auctionHasEnded(info){
         // console.log(auctionInfo)
         if (info.ended) return true
-        if (new Date() > new Date(info.scheduled_end_date)) return true
+        // if (new Date() > new Date(info.scheduled_end_date)) return true
         return false
     }
 
@@ -73,7 +75,7 @@
                     bid: winning_bid,
                     bidder: winning_bidder,
                     hasEnded,
-                    winning_timestamp,
+                    // winning_timestamp,
                     end_early: canBeCancelled,
                     claim,
                     reserveMet
@@ -201,7 +203,7 @@
                 {/if}
 
                 {#if winning_bidder}
-                    <p class="text-color-gray-5">{hasEnded ? `Won ${getTimeAgo(winning_timestamp)}by` : `${getTimeAgo(winning_timestamp)}by` }</p>
+                    <!--p class="text-color-gray-5">{hasEnded ? `Won ${getTimeAgo(winning_timestamp)}by` : `${getTimeAgo(winning_timestamp)}by` }</p-->
                     <a href="{`./owned/${winning_bidder}`}" class="text-color-gray-5">
                         {$userAccount === winning_bidder ? "YOU!" : formatAccountAddress(winning_bidder, 8, 4)}
                     </a>
@@ -250,8 +252,8 @@
             </div>
         {/if}
     </div>
-    <a href="{`./frames/${thingInfo.uid}#auction`}" class="text-color-gray-5 bid-history-link">
+    <!--a href="{`./frames/${thingInfo.uid}#auction`}" class="text-color-gray-5 bid-history-link">
         bid history
-    </a>
+    </a-->
     <AuctionEndDate {auctionInfo}/>
 </div>
