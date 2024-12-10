@@ -34,12 +34,13 @@ def operator_transfer_currency(amount: str, to: float):
 
 def get_listing_info(uid: str):
     # Get listing info
-    listing_info = S[uid, ctx.caller]
+    current_owner = S[uid, 'current_owner']
+    listing_info = S[uid, current_owner]
     assert listing_info is not None, "Listing doesn't exist!"
     return {
         'start_date': S[uid, 'start_date'],
         'end_date': S[uid, 'end_date'],
-        'current_owner': S[uid, 'current_owner'],
+        'current_owner': current_owner,
         'uid': S[uid, 'uid'],
         'reserve_price': S[uid, 'reserve_price'],
         'current_bid': S[uid, 'current_bid'],
