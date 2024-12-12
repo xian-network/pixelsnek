@@ -12,6 +12,7 @@
 		let data = await Promise.all([
 			fetchThings(getRecentUidsQuery()),
 			fetchThings(getThingsForSaleUidsQuery()),
+			this.fetch(`./getArtistEvent.json?event=artist`).then(res => res.json())
 			// fetchData(getMostLikedUidsQuery()),
 			// fetchData(getOwnedUidsQuery()),
 		]);
