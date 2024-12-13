@@ -29,7 +29,7 @@
     $: hasEnded = auctionHasEnded(auctionInfo)
     $: hasStarted = new Date() >= new Date(auctionInfo.start_date)
     $: timesUp = new Date() > new Date(auctionInfo.scheduled_end_date)
-    $: notClaimed = auctionInfo.winner === ""
+    $: notClaimed = auctionInfo.current_winner === ""
     $: reserveMet = auctionInfo.reserve_met
     // $: bid_history = auctionInfo.bid_history
     // $: winning_bid_info = bid_history.length > 0 ? bid_history[0] : null
