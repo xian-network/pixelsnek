@@ -8,13 +8,13 @@
 
     let timer = null
 
-    $: endTime = new Date(auctionInfo.scheduled_end_date)
-    $: startTime = new Date(auctionInfo.start_date)
+    $: endTime = auctionInfo.scheduled_end_date
+    $: startTime = auctionInfo.start_date
     $: ended = auctionInfo.ended
     // $: ended_early = auctionInfo.ended_early
     // $: ended_earlyTime = new Date(auctionInfo.ended_early_date)
     $: currentTime = new Date()
-    $: started = currentTime >= new Date(auctionInfo.start_date)
+    $: started = currentTime >= auctionInfo.start_date
     $: hasEnded = ended ? true : currentTime > endTime
     // $: deltaTime = determineTimeDelta(started, hasEnded, endTime, startTime, ended_early, ended_earlyTime, currentTime)
     $: deltaTime = determineTimeDelta(started, hasEnded, endTime, startTime, currentTime)

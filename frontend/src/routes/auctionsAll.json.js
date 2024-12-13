@@ -17,19 +17,17 @@ export async function get(req, res) {
 		auctionInfo = await Promise.all(auctionThings.map(async (info, index) => {
 			//assuming items in auctionThings and thingInfoArray are arranged in the same order
 			const thingInfo = thingInfoArray[index];
-			const endDate = new Date(info.end_date);
-			const startDate = new Date(info.start_date);
-			info.start_date = Date.UTC(startDate.getFullYear(), startDate.getMonth() - 1, startDate.getDay(), startDate.getHours(), startDate.getMinutes(), startDate.getSeconds(), startDate.getMilliseconds())
-			info.scheduled_end_date = Date.UTC(endDate.getFullYear(), endDate.getMonth() - 1, endDate.getDay(), endDate.getHours(), endDate.getMinutes(), endDate.getSeconds(), endDate.getMilliseconds())
+
+			info.start_date = (new Date(info.start_date)).getTime();
+			info.scheduled_end_date = (new Date(info.end_date)).getTime();
 			info.current_bid = info.current_bid == null? 0 : info.current_bid
+
 			return {
 				...info, 
 				thingInfo,
-				ended: new Date() > endDate, 
-				// ended_early: info[eventData.artistVk] === "False"? new Date() < new Date(info.scheduled_end_date) : false, 
-				// ended_early_date:
-				// bid_history: [], 
-				reserve_met: Number(info.reserve_price) >= Number(info.current_bid === null? 0: info.current_bid)}
+				ended: new Date() > info.scheduled_end_date, 
+				reserve_met: Number(info.reserve_price) >= Number(info.current_bid === null? 0: info.current_bid)
+			}
 		}))
 	} catch (err){
 		console.log(err);
