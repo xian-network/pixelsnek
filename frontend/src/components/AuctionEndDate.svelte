@@ -17,7 +17,7 @@
     $: started = currentTime >= auctionInfo.start_date
     $: hasEnded = ended ? true : currentTime > endTime
     // $: deltaTime = determineTimeDelta(started, hasEnded, endTime, startTime, ended_early, ended_earlyTime, currentTime)
-    $: deltaTime = determineTimeDelta(started, hasEnded, endTime, startTime, currentTime)
+    $: deltaTime = determineTimeDelta(started, endTime, startTime)
 
 
     onMount(() => {
