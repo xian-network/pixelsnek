@@ -10,7 +10,12 @@ export async function get(req, res) {
         eventData = JSON.parse(fs.readFileSync(`./events/${event}.json`, 'utf8'));
         const auctionThings = await fetchAuctionThings(getAuctionThingQuery(eventData.artistVk));
         // collect uids of only auctioned things
-		const uids = auctionThings.map((thing) => { if (thing[eventData.artistVk] === 'True') thing.uid });
+        // console.log({auctionThings})
+		const uids = auctionThings.map((thing) => { 
+            if (thing[eventData.artistVk] === 'True'){
+                return thing.uid 
+            }
+        });
         if (uids.length > 0){
             const valuesQuery = constructValuesQuery(uids);
             eventData.artThingList = await fetchValues(valuesQuery);
