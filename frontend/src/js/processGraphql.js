@@ -233,6 +233,15 @@ export async function fetchAuctionValues(query) {
   }
 }
 
+const decodeBs64 = (base64String) => {
+  try {
+      const decoded = atob(base64);
+      return decoded;
+  } catch (error) {
+      throw new Error('Failed to decode base64 string');
+  }
+}
+
 const detectAuctionContract = (txObject) => {
   const { state } = txObject;
   for (let stateChange of state){
