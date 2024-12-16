@@ -19,8 +19,9 @@
 
 	const uid = auctionInfo.uid
 	const thingName = thingInfo.name
-
-	$: reservePrice = toBigNumber($showModal.modalData.auctionInfo.reserve_price || 1)
+	
+	let reservePrice = toBigNumber($showModal.modalData.auctionInfo.reserve_price || 1)
+	
 	$: bidAmount = $showModal.modalData.winning_bid ? $showModal.modalData.winning_bid.plus(1) : reservePrice
 	$: below_reserve = $showModal.modalData.winning_bid ? false : bidAmount.isLessThan(reservePrice)
 	$: approvalTxStamps_to_tau = bidAmount.isGreaterThan(toBigNumber($approvalAmount[config.masterContract])) ? toBigNumber(stampLimits.currency.approve).dividedBy($stampRatio) : toBigNumber(0)
