@@ -232,3 +232,21 @@ export async function fetchAuctionValues(query) {
     console.error('Error with request:', error);
   }
 }
+
+const detectAuctionContract = (txObject) => {
+  const { state } = txObject;
+  for (let stateChange of state){
+      const { key } = stateChange;
+      if (key.startsWith(config.auctionContract)){
+          return true
+      }    
+  }
+  return false
+}
+
+export const hasAuctionTxHappened = (hexString)=>{
+  let txObject = JSON.parse(hexString);
+  const decoded = decodeBs64(txObject.result.data.value.TxResult.result.data);
+  txObject = JSON.parse(decoded);
+  return detectAuctionContract(txObject)
+}
