@@ -235,8 +235,7 @@ export async function fetchAuctionValues(query) {
 
 const decodeBs64 = (base64String) => {
   try {
-      const decoded = atob(base64);
-      return decoded;
+      return atob(base64String);
   } catch (error) {
       throw new Error('Failed to decode base64 string');
   }
@@ -253,9 +252,8 @@ const detectAuctionContract = (txObject) => {
   return false
 }
 
-export const hasAuctionTxHappened = (hexString)=>{
-  let txObject = JSON.parse(hexString);
+export const hasAuctionTxHappened = (txObject)=>{
   const decoded = decodeBs64(txObject.result.data.value.TxResult.result.data);
-  txObject = JSON.parse(decoded);
-  return detectAuctionContract(txObject)
+  const parsedDecoded = JSON.parse(decoded);
+  return detectAuctionContract(parsedDecoded);
 }
