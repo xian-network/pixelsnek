@@ -1,67 +1,60 @@
 <script>
-    import {beforeUpdate, getContext, onMount} from "svelte";
+    import { onMount } from "svelte";
     import {userAccount, auctions} from "../js/stores";
     import {decodeFrames, formatAccountAddress, stringToFixed} from "../js/utils";
     import {createSnack} from "../js/store-utils";
     import {config} from "../js/config";
-    import { fetchThings, fetchAuctionThings, hasAuctionTxHappened } from "../js/processGraphql";
-    import { getThingByUid, getAuctionThingQuery } from "../js/graphqlQueries";
-
-    // const { socket } = getContext('app_functions')
 
     let init = false
 
     onMount(async () => {
         await initialize()
 
-        // let socket = new WebSocket(config.websocketUrl);
+        let socket = new WebSocket(config.websocketUrl);
 
-        // socket.onopen = () => {
-        //     console.log('Connected to WebSocket');
-        //     const subscriptionRequest = {
-        //         jsonrpc: "2.0",
-        //         method: "subscribe",
-        //         id: 0,
-        //         params: {
-        //             query: "tm.event='Tx'"
-        //         }
-        //     };
+        socket.onopen = () => {
+            console.log('Connected to WebSocket');
+            const subscriptionRequest = {
+                jsonrpc: "2.0",
+                method: "subscribe",
+                id: 0,
+                params: {
+                    query: "tm.event='Tx'"
+                }
+            };
 
-        //     socket.send(JSON.stringify(subscriptionRequest));
-        // };
+            socket.send(JSON.stringify(subscriptionRequest));
+        };
 
-        // socket.onmessage = async (event) => {
-        //     // Handle incoming message from server
-        //     console.log("socketDataType: ", typeof(event.data), "| socketData: ", event.data);
+        socket.onmessage = async (event) => {
+            // Handle incoming message from server
+            console.log("socketDataType: ", typeof(event.data), "| socketData: ", event.data);
             
-        //     const parsedMessage = JSON.parse(event.data);
-        //     // Skip initial subscription confirmation message
-        //     if (parsedMessage.result && Object.keys(parsedMessage.result).length === 0) {
-        //         return;
-        //     }
+            const parsedMessage = JSON.parse(event.data);
+            // Skip initial subscription confirmation message
+            if (parsedMessage.result && Object.keys(parsedMessage.result).length === 0) {
+                return;
+            }
 
-        //     const auctionTx = hasAuctionTxHappened(parsedMessage);
+            const auctionTx = hasAuctionTxHappened(parsedMessage);
 
-        //     console.log({auctionTx})
+            console.log({auctionTx})
 
-        //     if (auctionTx){
-        //         console.log({parsedMessage});
-        //         const decodedAuctions = decodeAuctions(await getActiveAuctions())
-        //         auctions.set([...decodedAuctions]);
-        //     }
-        // };
+            if (auctionTx){
+                console.log({parsedMessage});
+                const decodedAuctions = decodeAuctions(await getActiveAuctions())
+                auctions.set([...decodedAuctions]);
+            }
+        };
 
-        // socket.onclose = () => {
-        //     console.log('websocket connection closed');
-        // };
+        socket.onclose = () => {
+            console.log('websocket connection closed');
+        };
 
-        // socket.onerror = () => {
-        // // Handle error
-        // };
-
-    // beforeUpdate(async () => {
-    //     if (!init) await initialize()
-    // })
+        socket.onerror = () => {
+        // Handle error
+        };
+    });
 
     async function initialize(){
         auctions.set(decodeAuctions(await getActiveAuctions()))
