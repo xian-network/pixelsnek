@@ -4,7 +4,7 @@
     import {decodeFrames, formatAccountAddress, stringToFixed} from "../js/utils";
     import {createSnack} from "../js/store-utils";
     import {config} from "../js/config";
-    import { fetchThings, fetchAuctionThings } from "../js/processGraphql";
+    import { fetchThings, fetchAuctionThings, hasAuctionTxHappened } from "../js/processGraphql";
     import { getThingByUid, getAuctionThingQuery } from "../js/graphqlQueries";
 
     // const { socket } = getContext('app_functions')
@@ -14,25 +14,50 @@
     onMount(async () => {
         await initialize()
 
-    //     socket.joinRoom('auction-updates')
-	// 	socket.on('new-auction', (auctionUpdate) => {
-	// 	    //console.log({newAuction: auctionUpdate})
-	// 	    getThingInfo(auctionUpdate.uid).then(thingInfo => {
-	// 	        auctionUpdate.thingInfo = thingInfo
-    //             announceNewAuction(decodeAuction(auctionUpdate))
-    //         })
-	// 	})
-    //     socket.on('new-bid', (auctionUpdate) => {
-    //         //console.log({newBid: auctionUpdate})
-	// 		if (!$auctions) return
-	// 		announceNewBid(replaceAuctionInfo(auctionUpdate))
-    //     })
-	// 	socket.on('auction-ended', (auctionUpdate) => {
-	// 	    //console.log({auctionEnded: auctionUpdate})
-	// 		announceAuctionEnded(replaceAuctionInfo(auctionUpdate))
-    //     })
-    //     return () => socket.leaveRoom('auction-updates')
-    })
+        // let socket = new WebSocket(config.websocketUrl);
+
+        // socket.onopen = () => {
+        //     console.log('Connected to WebSocket');
+        //     const subscriptionRequest = {
+        //         jsonrpc: "2.0",
+        //         method: "subscribe",
+        //         id: 0,
+        //         params: {
+        //             query: "tm.event='Tx'"
+        //         }
+        //     };
+
+        //     socket.send(JSON.stringify(subscriptionRequest));
+        // };
+
+        // socket.onmessage = async (event) => {
+        //     // Handle incoming message from server
+        //     console.log("socketDataType: ", typeof(event.data), "| socketData: ", event.data);
+            
+        //     const parsedMessage = JSON.parse(event.data);
+        //     // Skip initial subscription confirmation message
+        //     if (parsedMessage.result && Object.keys(parsedMessage.result).length === 0) {
+        //         return;
+        //     }
+
+        //     const auctionTx = hasAuctionTxHappened(parsedMessage);
+
+        //     console.log({auctionTx})
+
+        //     if (auctionTx){
+        //         console.log({parsedMessage});
+        //         const decodedAuctions = decodeAuctions(await getActiveAuctions())
+        //         auctions.set([...decodedAuctions]);
+        //     }
+        // };
+
+        // socket.onclose = () => {
+        //     console.log('websocket connection closed');
+        // };
+
+        // socket.onerror = () => {
+        // // Handle error
+        // };
 
     // beforeUpdate(async () => {
     //     if (!init) await initialize()
