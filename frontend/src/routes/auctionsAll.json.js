@@ -33,7 +33,7 @@ export async function get(req, res) {
 		console.log(err);
 	}
 
-	console.log({auctionInfo})
+	// console.log({auctionInfo})
 
 	res.setHeader('Content-Type', 'application/json');
 	res.end(JSON.stringify({data: auctionInfo, count: auctionInfo.length}));
