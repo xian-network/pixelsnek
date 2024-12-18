@@ -22,14 +22,14 @@
     export let showInfo = true
     export let id
 
-    //console.log({auctionInfo, thingInfo})
+    // console.log({auctionInfo, thingInfo})
 
     let pixelSize = 2
 
     $: hasEnded = auctionHasEnded(auctionInfo)
-    $: hasStarted = new Date() >= new Date(auctionInfo.start_date)
-    $: timesUp = new Date() > new Date(auctionInfo.scheduled_end_date)
-    $: notClaimed = auctionInfo.current_winner === ""
+    $: hasStarted = new Date() >= auctionInfo.start_date
+    // $: timesUp = new Date() > new Date(auctionInfo.scheduled_end_date)
+    $: notClaimed = auctionInfo.current_winner !== thingInfo.owner
     $: reserveMet = auctionInfo.reserve_met
     // $: bid_history = auctionInfo.bid_history
     // $: winning_bid_info = bid_history.length > 0 ? bid_history[0] : null
@@ -237,10 +237,10 @@
                     {/if}
                 {/if}
                 {#if notClaimed && hasEnded}
-                    {#if winning_bidder !== "" && $userAccount === winning_bidder}
+                    {#if winning_bidder !== auctionInfo.current_owner && $userAccount === winning_bidder}
                         <button class="button" on:click={() => {handleEnd(FormAuctionClaim, true)}}>CLAIM</button>
                     {:else}
-                        {#if $userAccount === auctionInfo.old_owner}
+                        {#if $userAccount === auctionInfo.current_owner}
                             <button class="button" on:click={() => {handleEnd(FormAuctionClaim)}}>RESOLVE AUCTION</button>
                         {/if}
                     {/if}
