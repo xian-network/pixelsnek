@@ -69,7 +69,7 @@ function createAndSendGIF2(res, thingInfo, shareLink = false) {
     encoder.start();
 
     encoder.setRepeat(0);   // 0 for repeat, -1 for no-repeat
-    encoder.setDelay(0);  // frame delay in ms
+    encoder.setDelay(Number(thingInfo.speed));  // frame delay in ms
     encoder.setQuality(50); // image quality. 10 is default.
     encoder.setThreshold(0);
     // Comment out or adjust the transparency setting
