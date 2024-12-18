@@ -21,7 +21,7 @@
     onMount(() => {
         if (thingInfo){
             if (frames.length > 1){
-                switcher = setInterval(switchFrames, thingInfo.speed)
+                switcher = setInterval(switchFrames, Number(thingInfo.speed))
             }
         }
         return(() => clearInterval((switcher)))
