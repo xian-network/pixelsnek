@@ -22,13 +22,8 @@
     export let showInfo = true
     export let id
 
-    // console.log({auctionInfo, thingInfo})
-
-    let pixelSize = 2
-
     $: hasEnded = auctionHasEnded(auctionInfo)
     $: hasStarted = new Date() >= auctionInfo.start_date
-    // $: timesUp = new Date() > new Date(auctionInfo.scheduled_end_date)
     $: notClaimed = auctionInfo.current_winner !== thingInfo.owner
     $: reserveMet = auctionInfo.reserve_met
     // $: bid_history = auctionInfo.bid_history
@@ -222,7 +217,7 @@
     </div>
     <div class="buttons flex-row flex-justify-spaceevenly">
         {#if $userAccount}
-            {#if $userAccount === auctionInfo.old_owner && canBeCancelled && !hasEnded}
+            {#if $userAccount === auctionInfo.current_owner && canBeCancelled && !hasEnded}
                 <button class="button" on:click={() => {handleEnd(FormAuctionCancel)}}>{hasEnded ? "" : "CANCEL"}</button>
             {/if}
             {#if hasStarted}
