@@ -17,7 +17,7 @@
 			// fetchData(getOwnedUidsQuery()),
 		]);
 
-		let eventInfo = data[2];
+		// let eventInfo = data[2];
 
 		// try{
 		// 	console.log("WE DOIN IT")
