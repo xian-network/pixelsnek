@@ -19,15 +19,14 @@
 
 		let eventInfo = data[2];
 
-		try{
-			console.log("WE DOIN IT")
-			let endDate = new Date(eventInfo.endDate)
-			let shouldShowEvent = new Date() <= endDate.setDate(endDate.getDate() + 3) && new Date() >= new Date(eventInfo.announceDate)
-			if (!shouldShowEvent) eventInfo = false
-			
-		}catch (e) {
-			eventInfo = null
-		}
+		// try{
+		// 	console.log("WE DOIN IT")
+		// 	let endDate = new Date(eventInfo.endDate)
+		// 	let shouldShowEvent = new Date() <= endDate.setDate(endDate.getDate() + 3) && new Date() >= new Date(eventInfo.announceDate)
+		// 	if (!shouldShowEvent) eventInfo = false
+		// }catch (e) {
+		// 	eventInfo = null
+		// }
 
 		return {
 			// mostLiked: data[0],
