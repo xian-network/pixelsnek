@@ -101,8 +101,8 @@ function createAndSendGIF2(res, thingInfo, shareLink = false) {
             })
 
             // Save each frame to disk for debugging
-            const buffer = canvas.toBuffer('image/png');
-            fs.writeFileSync(`./debug_frames/frame_${index}.png`, buffer);
+            // const buffer = canvas.toBuffer('image/png');
+            // fs.writeFileSync(`./debug_frames/frame_${index}.png`, buffer);
 
             encoder.addFrame(ctx);
         }
