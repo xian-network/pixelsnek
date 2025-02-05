@@ -1,4 +1,4 @@
-import { getThingByUid } from "../../js/graphqlQueries";
+// import { getThingByUid } from "../../js/graphqlQueries";
 // import { extractThingValues } from "../../js/processGraphql";
 
 // export async function get(req, res, next) {
