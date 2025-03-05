@@ -50,12 +50,15 @@ def get_listing_info(uid: str):
     }
 
 @export
-def auction_thing(uids: list, reserve_price: float, start_date: datetime.datetime, end_date: datetime.datetime):
+def auction_thing(uids: list, reserve_prices: list, start_date: datetime.datetime, end_date: datetime.datetime):
+    #  uids: list[str]
+    #  reserve_prices: list[float]
+    assert len(uids) == len(reserve_prices), "number of uids must match the number of reserve_prices"
     # Convert start_date and end_date to a common format (e.g., seconds since epoch)
     start_date = strptime_ymdhms(start_date)
     end_date = strptime_ymdhms(end_date)
 
-    for uid in uids:
+    for i, uid in enumerate(uids):
         # transfer thing to this auction contract
         # This will throw an Assertion error if caller does not own the thing and revert the tx
         thing_master_contract = I.import_module(S['thing_master_contract'])
@@ -69,13 +72,13 @@ def auction_thing(uids: list, reserve_price: float, start_date: datetime.datetim
 
         assert not S[uid, ctx.caller], 'Auction has already started!'
         assert end_date > now, "end_date is in the past"
-        assert reserve_price >= 0, "reserve_price cannot be less than 0"
+        assert reserve_prices[i] >= 0, "reserve_price cannot be less than 0"
 
         S[uid, 'start_date'] = start_date
         S[uid, 'end_date'] = end_date
         S[uid, 'current_owner'] = ctx.caller
         S[uid, 'uid'] = uid
-        S[uid, 'reserve_price'] = reserve_price
+        S[uid, 'reserve_price'] = reserve_prices[i]
         S[uid, 'current_bid'] = None
         S[uid, 'current_winner'] = ""
         S[uid, "royalty_percent"] = Thing_Info[uid, 'meta', 'royalty_percent']
