@@ -59,6 +59,8 @@ def auction_thing(uids: list, reserve_price: float, start_date: datetime.datetim
         # transfer thing to this auction contract
         # This will throw an Assertion error if caller does not own the thing and revert the tx
         thing_master_contract = I.import_module(S['thing_master_contract'])
+        # approve thing(nft) transfer to auction contract
+        thing_master_contract.approve(uid, ctx.this)
         thing_master_contract.transfer_from(
             uid=uid,
             to=ctx.this,
