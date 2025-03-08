@@ -39,5 +39,9 @@ export const stampLimits = (()=>{
     stampValues['currency'] = {
         approve: 25
     }
+    stampValues[config.auctionContract] = {
+        bid: 30,
+        end_auction: 90
+    }
     return stampValues
 })()
