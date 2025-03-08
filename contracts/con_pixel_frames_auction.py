@@ -58,12 +58,11 @@ def auction_thing(uids: list, reserve_prices: list, start_date: datetime.datetim
     start_date = strptime_ymdhms(start_date)
     end_date = strptime_ymdhms(end_date)
 
-    for i, uid in enumerate(uids):
+    i = 0
+    for uid in uids:
         # transfer thing to this auction contract
         # This will throw an Assertion error if caller does not own the thing and revert the tx
         thing_master_contract = I.import_module(S['thing_master_contract'])
-        # approve thing(nft) transfer to auction contract
-        thing_master_contract.approve(uid, ctx.this)
         thing_master_contract.transfer_from(
             uid=uid,
             to=ctx.this,
@@ -86,6 +85,8 @@ def auction_thing(uids: list, reserve_prices: list, start_date: datetime.datetim
 
         # Mark as auction started
         S[uid, ctx.caller] = True
+
+        i = i + 1
 
 @export
 def end_auction(uid: str, end_early: bool):
