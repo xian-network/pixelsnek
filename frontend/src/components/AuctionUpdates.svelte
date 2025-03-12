@@ -29,7 +29,7 @@
 
         socket.onmessage = async (event) => {
             // Handle incoming message from server
-            console.log("socketDataType: ", typeof(event.data), "| socketData: ", event.data);
+            // console.log("socketDataType: ", typeof(event.data), "| socketData: ", event.data);
             
             const parsedMessage = JSON.parse(event.data);
             // Skip initial subscription confirmation message
@@ -39,7 +39,7 @@
 
             const auctionTx = hasAuctionTxHappened(parsedMessage);
 
-            console.log({auctionTx})
+            // console.log({auctionTx})
 
             if (auctionTx){
                 console.log({parsedMessage});
