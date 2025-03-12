@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import {userAccount, auctions} from "../js/stores";
     import {decodeFrames, formatAccountAddress, stringToFixed} from "../js/utils";
+    import { hasAuctionTxHappened } from "../js/processGraphql";
     import {createSnack} from "../js/store-utils";
     import {config} from "../js/config";
 
@@ -10,7 +11,7 @@
     onMount(async () => {
         await initialize()
 
-        let socket = new WebSocket(config.websocketUrl);
+        let socket = new WebSocket(config.webSocketUrl);
 
         socket.onopen = () => {
             console.log('Connected to WebSocket');
