@@ -31,7 +31,7 @@ export async function get(req, res) {
 				...info, 
 				thingInfo,
 				ended: new Date() > info.scheduled_end_date, 
-				reserve_met: Number(info.reserve_price) >= Number(info.current_bid === null? 0: info.current_bid)
+				reserve_met: Number(info.current_bid === null? 0: info.current_bid) >= Number(info.reserve_price)
 			}
 		}))
 	} catch (err){
