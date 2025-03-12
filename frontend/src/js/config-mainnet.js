@@ -11,7 +11,8 @@ export const config = {
     //blockExplorer: "http://localhost:1337", // CHANGE
     blockExplorer: "https://explorer.xian.org", // CHANGE
     masternode: "https://node.xian.org", // CHANGE
-    graphqlEndpoint: "https://node.xian.org/graphql" // CHANGE
+    graphqlEndpoint: "https://node.xian.org/graphql", // CHANGE
+    webSocketUrl: "wss://node.xian.org/websocket"
 }
 
 export const featureLocks = {
@@ -41,7 +42,7 @@ export const stampLimits = (()=>{
     }
     stampValues[config.auctionContract] = {
         bid: 30,
-        end_auction: 90
+        end_auction: 100
     }
     return stampValues
 })()
