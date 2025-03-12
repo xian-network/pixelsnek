@@ -15,7 +15,7 @@
 	import Snackbar from "../components/Snackbar.svelte";
 	import Modal from "../components/Modal.svelte";
 	import CreatedWithLove from "../components/CreatedWithLove.svelte";
-	// import AuctionUpdates from "../components/AuctionUpdates.svelte";
+	import AuctionUpdates from "../components/AuctionUpdates.svelte";
 
 	// Misc
 	import { config, stampLimits } from "../js/config.js";
@@ -200,7 +200,7 @@
 	<slot></slot>
 </main>
 <CreatedWithLove />
-<!-- <AuctionUpdates /> -->
+<AuctionUpdates />
 
 <style>
 	main {
