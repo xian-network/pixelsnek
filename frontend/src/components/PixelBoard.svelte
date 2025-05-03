@@ -123,7 +123,8 @@
 
     }
     .paint-cursor{
-        cursor: url('/img/paint_brush.svg') 5 7, auto;
+        /* cursor: url('/img/paint_brush.svg') 5 7, auto; */
+        cursor: url('/img/paint_brush-primary.svg') 5 7, auto;
     }
     .fill-cursor{
         cursor: url('/img/paint_bucket.svg') 5 20, auto;

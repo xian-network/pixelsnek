@@ -1,0 +1,146 @@
+/* Modern NFT Gallery Animations */
+
+/* Fade In Animation for Page Elements */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Subtle Floating Animation for NFT Cards */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Glow Pulse Animation for Selected/Featured NFTs */
+@keyframes glowPulse {
+    0% { box-shadow: 0 0 5px rgba(123, 93, 250, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(123, 93, 250, 0.6); }
+    100% { box-shadow: 0 0 5px rgba(123, 93, 250, 0.3); }
+}
+
+/* Gradient Shift Animation */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Page Transition Animation */
+@keyframes pageTransition {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Apply animations to elements */
+.animate-fade-in {
+    animation: fadeIn 0.8s ease forwards;
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.animate-glow {
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+.animate-gradient {
+    background-size: 200% 200%;
+    animation: gradientShift 6s ease infinite;
+}
+
+.page-transition {
+    animation: pageTransition 0.4s ease-out;
+}
+
+/* Staggered animations for lists of items */
+.staggered-item {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.staggered-item.visible {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.staggered-item:nth-child(1) { animation-delay: 0.1s; }
+.staggered-item:nth-child(2) { animation-delay: 0.2s; }
+.staggered-item:nth-child(3) { animation-delay: 0.3s; }
+.staggered-item:nth-child(4) { animation-delay: 0.4s; }
+.staggered-item:nth-child(5) { animation-delay: 0.5s; }
+.staggered-item:nth-child(6) { animation-delay: 0.6s; }
+.staggered-item:nth-child(7) { animation-delay: 0.7s; }
+.staggered-item:nth-child(8) { animation-delay: 0.8s; }
+.staggered-item:nth-child(n+9) { animation-delay: 0.9s; }
+
+/* Hover effects for interactive elements */
+.hover-scale {
+    transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+.hover-rotate {
+    transition: transform 0.3s ease;
+}
+
+.hover-rotate:hover {
+    transform: rotate(5deg);
+}
+
+/* Special effect for featured NFTs */
+.featured-nft {
+    position: relative;
+    overflow: hidden;
+}
+
+.featured-nft::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(30deg);
+    animation: shineEffect 3s infinite linear;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes shineEffect {
+    0% { transform: scale(0.5) rotate(0deg) translate(-100%, -100%); }
+    100% { transform: scale(0.5) rotate(0deg) translate(100%, 100%); }
+}
+
+/* Background particle effect */
+.particle {
+    position: fixed;
+    width: 3px;
+    height: 3px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.particle:nth-child(odd) {
+    animation: particleFloat 20s infinite linear alternate;
+}
+
+.particle:nth-child(even) {
+    animation: particleFloat 15s infinite linear alternate-reverse;
+}
+
+@keyframes particleFloat {
+    0% { transform: translateY(0) translateX(0); }
+    100% { transform: translateY(-100vh) translateX(100vw); }
+}

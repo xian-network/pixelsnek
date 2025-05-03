@@ -61,6 +61,17 @@
 		padding: 10px 20px;
     	margin: 0 auto;
 	}
+	.display-card {
+        /* Ensure flex-wrap is applied */
+        flex-wrap: wrap;
+        /* Center items horizontally */
+        justify-content: center;
+        /* Remove default flex-row if it's added by a global class, 
+           or ensure display: flex is present */
+        display: flex;
+        padding: 1em 0; /* Add some padding */
+    }
+
 	.owned{
         border: 2px dashed var(--primary);
     }
