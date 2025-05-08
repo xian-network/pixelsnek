@@ -1,40 +1,61 @@
 <script>
-    import {beforeUpdate, getContext, onMount} from "svelte";
+    import { onMount } from "svelte";
     import {userAccount, auctions} from "../js/stores";
     import {decodeFrames, formatAccountAddress, stringToFixed} from "../js/utils";
+    import { hasAuctionTxHappened } from "../js/processGraphql";
     import {createSnack} from "../js/store-utils";
     import {config} from "../js/config";
 
-    // const { socket } = getContext('app_functions')
-
     let init = false
 
-    // onMount(async () => {
-    //     await initialize()
+    onMount(async () => {
+        await initialize()
 
-    //     socket.joinRoom('auction-updates')
-	// 	socket.on('new-auction', (auctionUpdate) => {
-	// 	    //console.log({newAuction: auctionUpdate})
-	// 	    getThingInfo(auctionUpdate.uid).then(thingInfo => {
-	// 	        auctionUpdate.thingInfo = thingInfo
-    //             announceNewAuction(decodeAuction(auctionUpdate))
-    //         })
-	// 	})
-    //     socket.on('new-bid', (auctionUpdate) => {
-    //         //console.log({newBid: auctionUpdate})
-	// 		if (!$auctions) return
-	// 		announceNewBid(replaceAuctionInfo(auctionUpdate))
-    //     })
-	// 	socket.on('auction-ended', (auctionUpdate) => {
-	// 	    //console.log({auctionEnded: auctionUpdate})
-	// 		announceAuctionEnded(replaceAuctionInfo(auctionUpdate))
-    //     })
-    //     return () => socket.leaveRoom('auction-updates')
-    // })
+        let socket = new WebSocket(config.webSocketUrl);
 
-    // beforeUpdate(async () => {
-    //     if (!init) await initialize()
-    // })
+        socket.onopen = () => {
+            console.log('Connected to WebSocket');
+            const subscriptionRequest = {
+                jsonrpc: "2.0",
+                method: "subscribe",
+                id: 0,
+                params: {
+                    query: "tm.event='Tx'"
+                }
+            };
+
+            socket.send(JSON.stringify(subscriptionRequest));
+        };
+
+        socket.onmessage = async (event) => {
+            // Handle incoming message from server
+            // console.log("socketDataType: ", typeof(event.data), "| socketData: ", event.data);
+            
+            const parsedMessage = JSON.parse(event.data);
+            // Skip initial subscription confirmation message
+            if (parsedMessage.result && Object.keys(parsedMessage.result).length === 0) {
+                return;
+            }
+
+            const auctionTx = hasAuctionTxHappened(parsedMessage);
+
+            // console.log({auctionTx})
+
+            if (auctionTx){
+                console.log({parsedMessage});
+                const decodedAuctions = decodeAuctions(await getActiveAuctions())
+                auctions.set([...decodedAuctions]);
+            }
+        };
+
+        socket.onclose = () => {
+            console.log('websocket connection closed');
+        };
+
+        socket.onerror = () => {
+        // Handle error
+        };
+    });
 
     async function initialize(){
         auctions.set(decodeAuctions(await getActiveAuctions()))
@@ -48,6 +69,8 @@
 		if (!json) return []
 	    // return json.data.sort((a, b) => a.last_tx_uid > b.last_tx_uid ? -1 : 1)
         return json.data
+
+        // getAuctionThingQuery()
 
     }
 

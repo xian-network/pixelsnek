@@ -18,7 +18,6 @@
 	import AuctionUpdates from "../components/AuctionUpdates.svelte";
 
 	// Misc
-	import { approvalRequest } from "../js/wallet_approval";
 	import { config, stampLimits } from "../js/config.js";
 	import {
 		walletInfo,

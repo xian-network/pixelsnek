@@ -19,7 +19,8 @@
 
 	$: endDate = new Date(eventInfo.endDate)
 	$: eventInfoType = eventInfo.eventType
-	$: eventAuctions = eventInfoType === "auction" ? getAuctions(eventInfo.artList, $auctions) : null
+	// $: eventAuctions = eventInfoType === "auction" ? getAuctions(eventInfo.artList, $auctions) : null
+	$: eventAuctions = eventInfoType === "auction" ? $auctions : null
 	$: eventHasEnded = endDate < new Date()
 	$: eventHasStarted = new Date() > new Date(eventInfo.startDate)
 
@@ -133,7 +134,7 @@
 
 <div class="container">
 	<img class="desktop-image" src="{`/img/events/${eventInfo.imageDesktop}`}" alt="event announcement" />
-	<img class="tablet-image" src="{`/img/events/${eventInfo.imageTablet}`}" alt="event announcement" />
+	<!--img class="tablet-image" src="{`/img/events/${eventInfo.imageTablet}`}" alt="event announcement" /-->
 	<img class="mobile-image" src="{`/img/events/${eventInfo.imageMobile}`}" alt="event announcement" />
 
 	<div class="gallery">
@@ -158,19 +159,17 @@
 
 	<div class="flex-row flex-align-center artist-info-row">
 		<h3 class="text-color-primary-dark artist-info"><strong>{eventInfo.name}</strong> by <a href="{`./creator/${eventInfo.artistVk}`}">{eventInfo.artistName}</a></h3>
-		{#if eventInfo.social.twitter}
-			<a class="social twitter" href="{eventInfo.social.twitter}" target="_blank" rel="noopener noreferrer">
+		{#if eventInfo.social.X}
+			<a class="social twitter" href="{eventInfo.social.X}" target="_blank" rel="noopener noreferrer">
 				<IconTwitter />
 			</a>
 		{/if}
-		{#if eventInfo.social.twitter}
+		{#if eventInfo.social.telegram}
 			<a class="social telegram" href="{eventInfo.social.telegram}" target="_blank" rel="noopener noreferrer">
 				<IconTelegram />
 			</a>
 		{/if}
 	</div>
-
-
 
 	{#if eventAuctions}
 		<Auctions auctions={eventAuctions} title={false} showMore={false} />

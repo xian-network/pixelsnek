@@ -93,10 +93,13 @@ def transfer(uid: str, new_owner: str):
     transfer_ownership(uid, new_owner)
 
 @export
-def approve(uid: str, to: str):
+def approve(uids: list, to: str):
+    # uid : list[str]
     sender = ctx.caller
-    assert_ownership(uid, sender)
-    balances[sender, uid, to] = True
+    
+    for uid in uids:
+        assert_ownership(uid, sender)
+        balances[sender, uid, to] = True
 
 @export
 def revoke(uid: str, to: str):

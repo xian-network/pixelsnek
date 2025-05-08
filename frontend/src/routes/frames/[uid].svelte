@@ -10,10 +10,10 @@
 		]);
 		// console.log({ data: JSON.stringify(data) });
 		let thingInfo = data[0][0];
-		console.log({ thingInfo });
+		// console.log({ thingInfo });
 		try {
 			thingInfo.frames = decodeFrames(thingInfo.thing);
-			console.log({ thingInfo });
+			// console.log({ thingInfo });
 		} catch (e) {
 			thingInfo = {
 				name: "Not Found",
@@ -44,7 +44,7 @@
 	export let auctionInfo;
 	export let salesHistory;
 
-	console.log({ thingInfo, auctionInfo });
+	// console.log({ thingInfo, auctionInfo });
 
 	let gifURL = `${config.domainName}/gif/${thingInfo.uid}.gif`;
 

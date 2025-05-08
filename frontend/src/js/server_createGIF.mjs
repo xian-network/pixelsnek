@@ -69,11 +69,11 @@ function createAndSendGIF2(res, thingInfo, shareLink = false) {
     encoder.start();
 
     encoder.setRepeat(0);   // 0 for repeat, -1 for no-repeat
-    encoder.setDelay(0);  // frame delay in ms
+    encoder.setDelay(Number(thingInfo.speed));  // frame delay in ms
     encoder.setQuality(50); // image quality. 10 is default.
     encoder.setThreshold(0);
     // Comment out or adjust the transparency setting
-    encoder.setTransparent(0x00FF15)
+    // encoder.setTransparent(0x00FF15)
 
     frames.forEach((frame, index) => {
         if (index <= frames.length) {
@@ -101,8 +101,8 @@ function createAndSendGIF2(res, thingInfo, shareLink = false) {
             })
 
             // Save each frame to disk for debugging
-            const buffer = canvas.toBuffer('image/png');
-            fs.writeFileSync(`./debug_frames/frame_${index}.png`, buffer);
+            // const buffer = canvas.toBuffer('image/png');
+            // fs.writeFileSync(`./debug_frames/frame_${index}.png`, buffer);
 
             encoder.addFrame(ctx);
         }

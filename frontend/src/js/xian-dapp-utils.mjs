@@ -172,14 +172,12 @@ const XianWalletUtils = {
     },
 
     getTxResults: async function(txHash) {
-        console.log({txHash})
         try {
             const response = await fetch(`${this.rpcUrl}/tx?hash=0x${txHash}`);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            console.log({data})
             data.result.cometbft_hash = txHash;
             return data;
         } catch (error) {

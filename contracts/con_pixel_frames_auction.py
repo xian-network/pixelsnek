@@ -25,7 +25,7 @@ def operator_transfer_thing(uid: str, new_owner: str):
     assert ctx.caller == metadata['operator'], 'Only auction operator can transfer things from contract.'
     thing_master_contract = I.import_module(S['thing_master_contract'])
     thing_master_contract.transfer(uid=uid, new_owner=new_owner)
-    S[uid] = False
+    S[uid, new_owner] = False
 
 @export
 def operator_transfer_currency(amount: str, to: float):
@@ -34,12 +34,13 @@ def operator_transfer_currency(amount: str, to: float):
 
 def get_listing_info(uid: str):
     # Get listing info
-    listing_info = S[uid]
+    current_owner = S[uid, 'current_owner']
+    listing_info = S[uid, current_owner]
     assert listing_info is not None, "Listing doesn't exist!"
     return {
         'start_date': S[uid, 'start_date'],
         'end_date': S[uid, 'end_date'],
-        'current_owner': S[uid, 'current_owner'],
+        'current_owner': current_owner,
         'uid': S[uid, 'uid'],
         'reserve_price': S[uid, 'reserve_price'],
         'current_bid': S[uid, 'current_bid'],
@@ -49,32 +50,43 @@ def get_listing_info(uid: str):
     }
 
 @export
-def auction_thing(uid: str, reserve_price: float, start_date: datetime.datetime, end_date: datetime.datetime):
-    # transfer thing to this auction contract
-    # This will throw an Assertion error if caller does not own the thing and revert the tx
-    thing_master_contract = I.import_module(S['thing_master_contract'])
-    thing_master_contract.transfer_from(
-        uid=uid,
-        to=ctx.this,
-        main_account=ctx.caller
-    )
+def auction_thing(uids: list, reserve_prices: list, start_date: datetime.datetime, end_date: datetime.datetime):
+    #  uids: list[str]
+    #  reserve_prices: list[float]
+    assert len(uids) == len(reserve_prices), "number of uids must match the number of reserve_prices"
+    # Convert start_date and end_date to a common format (e.g., seconds since epoch)
+    start_date = strptime_ymdhms(start_date)
+    end_date = strptime_ymdhms(end_date)
 
-    assert not S[uid], 'Auction has already started!'
-    assert end_date > now, "end_date is in the past"
-    assert reserve_price >= 0, "reserve_price cannot be less than 0"
+    i = 0
+    for uid in uids:
+        # transfer thing to this auction contract
+        # This will throw an Assertion error if caller does not own the thing and revert the tx
+        thing_master_contract = I.import_module(S['thing_master_contract'])
+        thing_master_contract.transfer_from(
+            uid=uid,
+            to=ctx.this,
+            main_account=ctx.caller
+        )
 
-    S[uid, 'start_date'] = start_date
-    S[uid, 'end_date'] = end_date
-    S[uid, 'current_owner'] = ctx.caller
-    S[uid, 'uid'] = uid
-    S[uid, 'reserve_price'] = reserve_price
-    S[uid, 'current_bid'] = None
-    S[uid, 'current_winner'] = ""
-    S[uid, "royalty_percent"] = Thing_Info[uid, 'meta', 'royalty_percent']
-    S[uid, "creator"] = Thing_Info[uid, 'creator']
-    
-    # Mark as auction started
-    S[uid] = True
+        assert not S[uid, ctx.caller], 'Auction has already started!'
+        assert end_date > now, "end_date is in the past"
+        assert reserve_prices[i] >= 0, "reserve_price cannot be less than 0"
+
+        S[uid, 'start_date'] = start_date
+        S[uid, 'end_date'] = end_date
+        S[uid, 'current_owner'] = ctx.caller
+        S[uid, 'uid'] = uid
+        S[uid, 'reserve_price'] = reserve_prices[i]
+        S[uid, 'current_bid'] = None
+        S[uid, 'current_winner'] = ""
+        S[uid, "royalty_percent"] = Thing_Info[uid, 'meta', 'royalty_percent']
+        S[uid, "creator"] = Thing_Info[uid, 'creator']
+
+        # Mark as auction started
+        S[uid, ctx.caller] = True
+
+        i = i + 1
 
 @export
 def end_auction(uid: str, end_early: bool):
@@ -117,7 +129,7 @@ def process_auction_result_no_winner(listing_info):
             amount=listing_info['current_bid']
         )
 
-    S[listing_info['uid']] = False
+    S[listing_info['uid'], listing_info['current_owner']] = False
 
 def process_auction_result(listing_info):
     thing_master_contract = I.import_module(S['thing_master_contract'])
@@ -150,7 +162,7 @@ def process_auction_result(listing_info):
         amount=net_amount
     )
 
-    S[listing_info['uid']] = False
+    S[listing_info['uid'], listing_info['current_owner']] = False
 
 @export
 def bid(uid: str, bid_amount: float):
@@ -180,3 +192,6 @@ def bid(uid: str, bid_amount: float):
     # Set the new bid info
     S[uid, 'current_bid'] = bid_amount
     S[uid, 'current_winner'] = ctx.caller
+
+def strptime_ymdhms(date_string: str):
+    return datetime.datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')

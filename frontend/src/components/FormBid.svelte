@@ -19,20 +19,23 @@
 
 	const uid = auctionInfo.uid
 	const thingName = thingInfo.name
-
-	$: reservePrice = toBigNumber($showModal.modalData.auctionInfo.reserve_price || 1)
-	$: bidAmount = $showModal.modalData.winning_bid ? $showModal.modalData.winning_bid.plus(1) : reservePrice
-	$: below_reserve = $showModal.modalData.winning_bid ? false : bidAmount.isLessThan(reservePrice)
+	
+	let reservePrice = toBigNumber($showModal.modalData.auctionInfo.reserve_price || 1)
+	let winning_bid = $showModal.modalData.winning_bid;
+	
+	$: bidAmount = winning_bid ? toBigNumber(winning_bid).plus(1) : reservePrice
+	$: below_reserve = winning_bid ? false : bidAmount.isLessThan(reservePrice)
 	$: approvalTxStamps_to_tau = bidAmount.isGreaterThan(toBigNumber($approvalAmount[config.masterContract])) ? toBigNumber(stampLimits.currency.approve).dividedBy($stampRatio) : toBigNumber(0)
 	$: bidTxStamps_to_tau = toBigNumber(stampLimits[config.auctionContract].bid).dividedBy($stampRatio)
 	$: total_tx_fees = approvalTxStamps_to_tau.plus(bidTxStamps_to_tau)
 	$: total_tau_to_bid = bidAmount.plus(total_tx_fees)
+	$: console.log(winning_bid)
 
 	$: buttonText = getButtonText(bidAmount)
 
 	function getButtonText(amount){
     	if (amount.isGreaterThan($currency)) return `Insufficient ${config.currencySymbol}`
-		if (amount.isLessThanOrEqualTo($showModal.modalData.winning_bid)) return "Bid is too low"
+		if (amount.isLessThanOrEqualTo(winning_bid)) return "Bid is too low"
 
 		return `Bid ${stringToFixed(amount, 4)} ${config.currencySymbol}`
 	}
@@ -180,7 +183,7 @@
 			<input
 				type="submit"
 				class="button_text outlined"
-				disabled={bidAmount.isGreaterThan($currency) || bidAmount.isLessThanOrEqualTo($showModal.modalData.winning_bid)}
+				disabled={bidAmount.isGreaterThan($currency) || bidAmount.isLessThanOrEqualTo(winning_bid)}
 				value={buttonText} form="bid" />
 		</form>
 	</div>

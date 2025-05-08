@@ -86,7 +86,7 @@
 			}else{
 				createSnack({
 					title: `Auction Resolved`,
-					body: `You have sent ${thingName} to ${formatAccountAddress(auctionInfo.old_owner, 8, 4)}.`,
+					body: `You have sent ${thingName} to ${formatAccountAddress(auctionInfo.current_owner, 8, 4)}.`,
 					type: "info",
 					thingInfo
 				})

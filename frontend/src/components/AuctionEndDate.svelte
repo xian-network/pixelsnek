@@ -6,41 +6,51 @@
 
     export let auctionInfo
 
-    let timer = null
+    let timer = null;
+    let currentTime = new Date();
 
-    $: endTime = new Date(auctionInfo.scheduled_end_date)
-    $: startTime = new Date(auctionInfo.start_date)
-    $: ended = auctionInfo.ended
-    $: ended_early = auctionInfo.ended_early
-    $: ended_earlyTime = new Date(auctionInfo.ended_early_date)
-    $: currentTime = new Date()
-    $: started = currentTime >= new Date(auctionInfo.start_date)
-    $: hasEnded = ended ? true : currentTime > endTime
-    $: deltaTime = determineTimeDelta(started, hasEnded, endTime, startTime, ended_early, ended_earlyTime, currentTime)
+    $: endTime = auctionInfo.scheduled_end_date;
+    $: startTime = auctionInfo.start_date;
+    $: ended = auctionInfo.ended;
+    // $: ended_early = auctionInfo.ended_early
+    // $: ended_earlyTime = new Date(auctionInfo.ended_early_date)
+    $: started = currentTime >= auctionInfo.start_date;
+    $: hasEnded = ended ? true : currentTime > endTime;
+    // $: deltaTime = determineTimeDelta(started, hasEnded, endTime, startTime, ended_early, ended_earlyTime, currentTime)
+    $: deltaTime = determineTimeDelta(currentTime, started, endTime, startTime);
 
 
     onMount(() => {
-        timer = setInterval(updateTime, 1000)
+        timer = setInterval(updateTime, 1000);
         /*
         console.log({
             endTime, ended, ended_early, ended_earlyTime, currentTime, deltaTime, hasEnded, started, startTime
         })*/
         return () => {
-            clearInterval(updateTime)
-            timer = null
+            clearInterval(timer);
+            timer = null;
         }
     })
 
     const updateTime = () => currentTime = new Date();
 
-    function determineTimeDelta(started, hasEnded, endTime, startTime, ended_early, ended_earlyTime){
+    // function determineTimeDelta(started, hasEnded, endTime, startTime, ended_early, ended_earlyTime){
+    //     // console.log({started, hasEnded, endTime, startTime, ended_early, ended_earlyTime})
+    //     if (!started){
+    //         return getTimeDelta(currentTime, startTime)
+    //     }else{
+    //         if (ended_early){
+    //             return getTimeDelta(ended_earlyTime, currentTime)
+    //         }
+    //         return getTimeDelta(endTime, currentTime)
+    //     }
+
+    // }
+    function determineTimeDelta(currentTime, started, endTime, startTime){
         // console.log({started, hasEnded, endTime, startTime, ended_early, ended_earlyTime})
         if (!started){
             return getTimeDelta(currentTime, startTime)
         }else{
-            if (ended_early){
-                return getTimeDelta(ended_earlyTime, currentTime)
-            }
             return getTimeDelta(endTime, currentTime)
         }
 

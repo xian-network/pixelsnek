@@ -257,3 +257,46 @@ export function constructValuesQuery(uids) {
 
   return query;
 }
+
+export const getAuctionThingQuery = (address, offset = 0) => {
+  return `
+  query MyQuery {
+    allStates(
+      filter: {
+        key: {startsWith: "${config.auctionContract}.S:", endsWith: "${address}"}
+        value: {equalTo: "True"}
+        }
+      orderBy: VALUE_DESC
+      offset: ${offset}
+    ) {
+      nodes {
+        key
+        value
+      }
+    }
+  }
+  `
+}
+
+export function constructAuctionValuesQuery(uids) {
+  const baseKey = `${config.auctionContract}.S`;
+
+  let query = `query MyQuery {`;
+
+  uids.forEach((uid, i) => {
+    query += `
+        i_${i}: allStates(
+          filter: {key: {startsWith: "${baseKey}:${uid}"}}
+        ) {
+          nodes {
+            key
+            value
+          }
+        }
+      `;
+  });
+
+  query += `}`;
+
+  return query;
+}

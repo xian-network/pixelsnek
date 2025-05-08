@@ -7,7 +7,6 @@ const server = http.createServer();
 
 import crypto from 'crypto'
 import sirv from 'sirv';
-let dynamicGIF = sirv('gif');
 import * as sapper from '@sapper/server';
 import Xian from 'xian-js'
 
