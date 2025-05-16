@@ -83,12 +83,10 @@
 	{/if} -->
 
 	<section class="content-section">
-		<h2 class="section-title">Recent Creations</h2>
 		<Recent {recent} preview={true}/>
 	</section>
 
 	<section class="content-section">
-		<h2 class="section-title">For Sale</h2>
 		<ForSale {forsale} preview={true}/>
 	</section>
 </div>
