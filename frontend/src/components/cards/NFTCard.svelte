@@ -192,6 +192,19 @@
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
   }
 
+  // Helper to truncate description to 70 chars, not breaking words, add ...
+  function truncateDescription(desc) {
+    if (!desc) return '';
+    if (desc.length <= 70) return desc;
+    let truncated = desc.slice(0, 70);
+    // If the last character is not a space, backtrack to the last space
+    if (desc[70] && desc[70] !== ' ') {
+      const lastSpace = truncated.lastIndexOf(' ');
+      if (lastSpace > 0) truncated = truncated.slice(0, lastSpace);
+    }
+    return truncated.trim() + '...';
+  }
+
 </script>
 
 <div class="nft-card {$$props.class || ''}" 
@@ -240,7 +253,7 @@
       
       {#if description}
         <div class="card-description">
-          <p>{description}</p>
+          <p>{truncateDescription(description)}</p>
         </div>
       {/if}
       
@@ -633,17 +646,24 @@
     margin-bottom: var(--space-sm);
     color: var(--color-text-secondary);
     font-size: var(--font-size-xs);
-    max-height: 3.6em; /* About 3 lines of text */
+    max-height: 60px;
+    min-height: 60px;
+    height: 60px;
     overflow: hidden;
     position: relative;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+    display: flex;
+    align-items: flex-start;
     text-overflow: ellipsis;
   }
   
   .card-description p {
     margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    display: block;
   }
 
   /* Add responsive styles at the end of the style block */
