@@ -90,8 +90,10 @@
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         gap: var(--space-lg, 24px);
+        width: 100%;
+        padding: 1rem 0;
+        box-sizing: border-box;
     }
-
     @media (max-width: 600px) {
         .nft-grid {
             grid-template-columns: 1fr;
