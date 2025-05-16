@@ -257,3 +257,27 @@ export const hasAuctionTxHappened = (txObject)=>{
   const parsedDecoded = JSON.parse(decoded);
   return detectAuctionContract(parsedDecoded);
 }
+
+export async function fetchData(query) {
+  const url = config.graphqlEndpoint;
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const json = await response.json();
+    return json.data;
+  } catch (error) {
+    console.error('Error with fetchData request:', error);
+    return null;
+  }
+}

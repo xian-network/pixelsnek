@@ -9,30 +9,32 @@
 	} from "../js/graphqlQueries.js";
 	
 	export async function preload() {
+		console.log("WE DOIN IT")
 		let data = await Promise.all([
 			fetchThings(getRecentUidsQuery()),
 			fetchThings(getThingsForSaleUidsQuery()),
-			this.fetch(`./getArtistEvent.json?event=artist`).then(res => res.json())
+			// this.fetch(`./getArtistEvent.json?event=artist`).then(res => res.json())
 			// fetchData(getMostLikedUidsQuery()),
 			// fetchData(getOwnedUidsQuery()),
 		]);
 
-		let eventInfo = data[2];
+		console.log(data[1])
 
-		try{
-			console.log("WE DOIN IT")
-			let endDate = new Date(eventInfo.endDate)
-			let shouldShowEvent = new Date() <= endDate.setDate(endDate.getDate() + 3) && new Date() >= new Date(eventInfo.announceDate)
-			if (!shouldShowEvent) eventInfo = false
-		}catch (e) {
-			eventInfo = null
-		}
+		// let eventInfo = data[2];
+
+		// try{
+		// 	let endDate = new Date(eventInfo.endDate)
+		// 	let shouldShowEvent = new Date() <= endDate.setDate(endDate.getDate() + 3) && new Date() >= new Date(eventInfo.announceDate)
+		// 	if (!shouldShowEvent) eventInfo = false
+		// }catch (e) {
+		// 	eventInfo = null
+		// }
 
 		return {
 			// mostLiked: data[0],
 			recent: data[0],
 			forsale: data[1],
-			eventInfo
+			// eventInfo
 		}
 	}
 </script>
@@ -56,50 +58,92 @@
 
 </script>
 
-<style>
-	*{
-		text-align: center;
-	}
-	.release-date{
-		margin: 2rem 0 0;
-		font-size: 3rem;
-    	font-weight: 200;
-		color: var(--primary-dark);
-    	text-shadow: 2px 2px #c3c3c3;
-	}
-	.hide-mobile{
-		margin: 3rem auto;
-	}
-	@media (min-width: 450px) {
-		.mobile-message{
-			display: none;
-		}
-		.release-date{
-			margin: 2rem 0 -4rem;
-		}
-	}
-</style>
-
 <svelte:head>
 	<title>Pixel Snek: On-chain NFT Animations!</title>
 </svelte:head>
 
-<div class="hide-mobile">
-	<Title fontSize={8} showFullLogo={true}/>
+<div class="page-container">
+	<div class="header-section">
+		<Title fontSize={8} showFullLogo={true}/>
+	</div>
+
+	<div class="mobile-message">
+		<strong>This site is not mobile optimized.</strong>
+		Please visit us on a desktop for the full experience including integration with the Xian Wallet to enable
+		<strong>buying, selling and creating custom NFT pixel animations!</strong>
+	</div>
+
+	{#if eventInfo}
+		<section class="event-section">
+			<ArtistEvent {eventInfo}/>
+		</section>
+	{/if}
+	<!-- {:else}
+		<PixelWall {mostLiked}/>
+	{/if} -->
+
+	<section class="content-section">
+		<h2 class="section-title">Recent Creations</h2>
+		<Recent {recent} preview={true}/>
+	</section>
+
+	<section class="content-section">
+		<h2 class="section-title">For Sale</h2>
+		<ForSale {forsale} preview={true}/>
+	</section>
 </div>
 
-<div class="mobile-message">
-	<strong>This site is not mobile optimized.</strong>
-	Please visit us on a desktop for the full experience including integration with the Xian Wallet to enable
-	<strong>buying, selling and creating custom NFT pixel animations!</strong>
-</div>
+<style>
+	.page-container {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: var(--space-lg, 16px);
+	}
 
-{#if eventInfo}
-	<ArtistEvent {eventInfo}/>
-{/if}
-<!-- {:else}
-	<PixelWall {mostLiked}/>
-{/if} -->
+	.header-section {
+		margin: 3rem auto;
+	}
 
-<Recent {recent} preview={true}/>
-<ForSale {forsale} preview={true}/>
+	.content-section {
+		margin-bottom: var(--space-xxl, 48px);
+	}
+
+	.section-title {
+		font-size: var(--font-size-2xl, 1.5rem);
+		font-weight: var(--font-weight-semibold, 600);
+		color: var(--color-text-primary);
+		margin-bottom: var(--space-md, 12px);
+		text-align: center;
+		padding-bottom: var(--space-md, 12px);
+		border-bottom: 1px solid var(--color-border-secondary);
+	}
+
+	.event-section {
+		margin: var(--space-xl, 24px) 0;
+	}
+
+	.mobile-message {
+		background-color: var(--color-background-secondary);
+		border-radius: var(--border-radius, 8px);
+		padding: var(--space-md, 12px);
+		text-align: center;
+		margin-bottom: var(--space-lg, 16px);
+		display: none;
+	}
+
+	@media (max-width: 768px) {
+		.mobile-message {
+			display: block;
+		}
+
+		.header-section {
+			margin: 1rem auto;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.page-container {
+			padding: var(--space-sm, 8px);
+		}
+	}
+</style>

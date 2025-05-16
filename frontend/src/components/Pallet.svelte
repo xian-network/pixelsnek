@@ -27,6 +27,17 @@
 </script>
 
 <style>
+    .pallet-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: var(--space-md, 16px);
+        background-color: var(--color-background-secondary, #f5f5f5);
+        border-radius: var(--border-radius, 8px);
+        border: 1px solid var(--color-border-secondary, #e0e0e0);
+        margin-bottom: var(--space-md, 16px);
+    }
+    
     .top-pallet {
         display: grid;
         width: fit-content;
@@ -47,61 +58,62 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        border: 1px solid #afafaf;
-        border-radius: 5px;
+        border: 1px solid var(--color-border-secondary, #afafaf);
+        border-radius: var(--border-radius-sm, 5px);
         font-weight: bold;
-        color: darkgray;
+        color: var(--color-text-tertiary, darkgray);
+        transition: all 0.2s ease-in-out;
     }
     .color:hover{
         position: relative;
         top: -2px;
         z-index: 1;
-        box-shadow: 0px 10px 14px -7px rgba(0,0,0,0.75);
-	    -webkit-box-shadow: 0px 10px 14px -7px rgba(0,0,0,0.75);
-	    -moz-box-shadow: 0px 10px 14px -7px rgba(0,0,0,0.75);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        cursor: pointer;
     }
     .selected{
-        border: 2px solid var(--primary);
+        border: 2px solid var(--color-primary, var(--primary));
     }
     .selected-colors{
         display: grid;
         width: fit-content;
         grid-template-columns: 46px 46px;
         grid-template-rows: 46px;
-        grid-gap: 2px;
-        padding: 1rem;
-        border: 1px dashed var(--primary);
-        margin-bottom: 3rem;
+        grid-gap: var(--space-xs, 4px);
+        padding: var(--space-md, 16px);
+        border: 1px dashed var(--color-primary, var(--primary));
+        margin-bottom: var(--space-lg, 24px);
+        border-radius: var(--border-radius-sm, 5px);
+        background-color: var(--color-background-tertiary, #f9f9f9);
     }
     .selected-colors > div {
         position: relative;
-        box-shadow: 0px 10px 14px -7px rgba(0,0,0,0.75);
-	    -webkit-box-shadow: 0px 10px 14px -7px rgba(0,0,0,0.75);
-	    -moz-box-shadow: 0px 10px 14px -7px rgba(0,0,0,0.75);
-        border: 1px solid #afafaf;
-        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        border: 1px solid var(--color-border-secondary, #afafaf);
+        border-radius: var(--border-radius-sm, 5px);
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: bold;
-        color: darkgray;
+        color: var(--color-text-tertiary, darkgray);
         font-size: 1.2em;
-    }
-    .flex-col{
-        align-items: center;
-        padding-left: 3rem;
+        cursor: pointer;
     }
     label{
         position: absolute;
-        top: -19px;
-        left: 18px;
+        top: -16px;
+        left: 50%;
+        transform: translateX(-50%);
         font-size: 0.7em;
-        color: var(--primary);
+        color: var(--color-primary, var(--primary));
         font-weight: bold;
+        background-color: var(--color-background-primary, white);
+        padding: 0 var(--space-xxs, 2px);
+        border-radius: var(--border-radius-sm, 5px);
     }
 </style>
 
-<div class="flex-col"
+<div class="pallet-container"
      on:drag|preventDefault
      >
     <div class="selected-colors">

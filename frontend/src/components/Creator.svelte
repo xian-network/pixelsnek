@@ -1,10 +1,10 @@
 <script>
     import { beforeUpdate } from 'svelte';
-    import DisplayFrames from './DisplayFrames.svelte';
+    import NFTCard from './cards/NFTCard.svelte';
 	import { fetchThings } from "../js/processGraphql.js";
     import { getCreatedUidsQuery } from "../js/graphqlQueries.js";
     // MISC
-    import { decodeFrames, formatAccountAddress, isXianKey  } from "../js/utils.js";
+    import { decodeFrames, formatAccountAddress, isXianKey, updateInfo } from "../js/utils.js";
 	import { formatThings } from "../js/utils";
 
     import { userAccount } from '../js/stores'
@@ -27,6 +27,17 @@
 	$: visibleHeight = scrollHeight + innerHeight
 	$: checker = checkGetMore(elements)
 
+    // Log thingInfo to see data structure
+    $: if (formatted && formatted.length > 0) {
+        const sample = formatted[0];
+        console.log("Created NFT sample data:", sample);
+        console.log("Created NFT price fields: ", {
+            price: sample.price,
+            price_amount: sample.price_amount,
+            current_price: sample.current_price,
+            list_price: sample.list_price
+        });
+    }
 
 	const checkGetMore = () => {
     	if (lastElementTop === null || lastElementOffsetHeight === null) return
@@ -42,34 +53,30 @@
 		formatted = [...formatted, ...formatThings(moreThings)]
 		if (!moreThings.length) at_end = true
 	}
-
-    formatThings();
+    
+    // Function to update an NFT's info after actions
+    function updateNFTInfo(updates, index) {
+        updateInfo(formatted[index], updates);
+        formatted = [...formatted]; // Trigger reactivity
+    }
+    
+    // Helper function to get price for NFT
+    function getNFTPrice(nft) {
+        // Look for price in these potential fields
+        return nft.price_amount || nft.price || nft.current_price || nft.list_price || 0;
+    }
 
 </script>
 
 <style>
-	.created {
-		width: 100%;
-		padding: 2rem 1rem;
-		flex-wrap: wrap;
-		box-sizing: border-box;
-		justify-content: space-evenly;
-	}
-
-	.created > div {
-		padding: 20px 20px;
-		width: 180px;
-		margin: 10px;
-        box-shadow: 2px 6px 19px 0px var(--box-shadow-primary-dark);
-	    -webkit-box-shadow: 2px 6px 19px 0px var(--box-shadow-primary-dark);
-	    -moz-box-shadow: 2px 6px 19px 0px var(--box-shadow-primary-dark);
-		align-items: center;
-        border-radius: 5px;
-	}
 	h2{
 		border-top: 1px solid lightgray;
 		padding-top: 1rem;
 		margin-top: 2rem;
+        color: var(--color-text-primary);
+        font-family: var(--font-family-heading);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
 	}
     p{
       width: 100%;
@@ -77,20 +84,26 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .button_text{
-        margin: 1px 0 0 5px;
-        padding: 0;
-    }
-    .flex-row{
-        flex-wrap: wrap;
-        align-items: center;
-    }
     a{
-		color: var(--primary);
+		color: var(--color-text-link);
 	}
 
+    .nft-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: var(--space-lg, 24px);
+        width: 100%;
+        padding: 1rem 0;
+        box-sizing: border-box;
+    }
+
+    @media (max-width: 600px) {
+        .nft-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
-<h2 class="text-color-primary-dark">
+<!-- <h2>
 	All NFTs Created by
 	{#if isXianKey(creator)}
 		<a href="{`${config.blockExplorer}/addresses/${creator}`}" target="_blank" rel="noopener noreferrer">
@@ -99,20 +112,32 @@
 	{:else}
 		{creator.length > 15 && !creator.startsWith("con_") ? formatAccountAddress(creator, 8, 5) : creator}
 	{/if}
-</h2>
+</h2> -->
 
 {#if formatted.length == 0}
 	<p>
 		{`${creator === $userAccount ? "You haven't" : "This user hasn't"} created anything yet!`}
 	</p>
 {/if}
-<div class="flex-row created">
+<div class="nft-grid">
     {#each formatted as thingInfo, index}
         {#if thingInfo.blacklist && thingInfo.owner !== $userAccount}
 
 		{:else}
             <div bind:this={elements[index]}>
-                <DisplayFrames pixelSize={7} {thingInfo} />
+                <NFTCard
+                    pixels={thingInfo.frames}
+                    pixelSize={7}
+                    title={thingInfo.name}
+                    description={thingInfo.description}
+                    creatorName={thingInfo.creator}
+                    ownerName={thingInfo.owner}
+                    currentBid={getNFTPrice(thingInfo)}
+                    currencySymbol={config.currencySymbol}
+                    href={`/frames/${thingInfo.uid}`}
+                    {thingInfo}
+                    updateInfo={(updates) => updateNFTInfo(updates, index)}
+                />
             </div>
         {/if}
     {/each}

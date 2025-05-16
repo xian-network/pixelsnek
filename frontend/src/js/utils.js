@@ -215,6 +215,12 @@ export const formatThings = (things) => {
   if (!things) return;
   things.forEach((thing) => {
     thing.frames = decodeFrames(thing.thing);
+    
+    // Ensure price data is properly formatted
+    if (thing.price_amount) {
+      // Make sure it's treated as a number for display
+      thing.price_amount = Number(thing.price_amount);
+    }
   });
   return things;
 };

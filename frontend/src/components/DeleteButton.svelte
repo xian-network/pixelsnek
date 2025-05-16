@@ -1,6 +1,7 @@
 <script>
     import { currentFrame, frameStore, activeFrame } from '../js/stores'
     import { newPixelFrame } from '../js/defaults'
+    import Button from './Button.svelte'
 
     const handleClick = () => {
         let deleteFrame = confirm("Delete this frame?")
@@ -16,4 +17,9 @@
     }
 </script>
 
-<button class="button_text" value="delete" on:click ={handleClick}> Delete Current Frame </button>
+<Button 
+    variant="secondary-medium" 
+    on:click={handleClick}
+>
+    Delete Current Frame
+</Button>

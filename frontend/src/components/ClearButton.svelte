@@ -1,6 +1,7 @@
 <script>
     import { currentFrame, frameStore, activeFrame } from '../js/stores'
     import { newPixelBoard } from '../js/defaults.js'
+    import Button from './Button.svelte'
 
     const handleClick = () => {
         let wipe = confirm("Wipe current frame?")
@@ -13,4 +14,9 @@
     }
 </script>
 
-<button class="button_text" value="clear" on:click ={handleClick}> Clear Current Frame </button>
+<Button 
+    variant="secondary-medium" 
+    on:click={handleClick}
+>
+    Clear Current Frame
+</Button>

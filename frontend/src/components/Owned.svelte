@@ -3,7 +3,7 @@
     import { scale } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
 
-    import DisplayFrames from './DisplayFrames.svelte';
+    import NFTCard from './cards/NFTCard.svelte';
 
     import { formatThings, updateInfo, formatAccountAddress, isXianKey } from "../js/utils.js";
     import { userAccount } from '../js/stores'
@@ -26,6 +26,18 @@
 	$: visibleHeight = scrollHeight + innerHeight
 	$: checker = checkGetMore(elements)
 
+    // Log thingInfo to see data structure
+    $: if (formatted && formatted.length > 0) {
+        const sample = formatted[0];
+        console.log("Sample NFT data:", sample);
+        console.log("Price fields: ", {
+            price: sample.price,
+            price_amount: sample.price_amount,
+            current_price: sample.current_price,
+            list_price: sample.list_price
+        });
+    }
+
 	const checkGetMore = () => {
     	if (lastElementTop === null || lastElementOffsetHeight === null) return
 		if (visibleHeight > lastElementTop - (lastElementOffsetHeight * 4) && account) getMore()
@@ -42,12 +54,16 @@
 		if (!moreThings.length) at_end = true
 	}
 
-    const updateThing = (e) => {
-    	const { updates, index } = e.detail
+    const updateThing = (updates, index) => {
     	updateInfo(formatted[index], updates)
 		formatted = [...formatted]
 	}
 
+    // Helper function to get price for NFT
+    function getNFTPrice(nft) {
+        // Look for price in these potential fields
+        return nft.price_amount || nft.price || nft.current_price || nft.list_price || 0;
+    }
 </script>
 
 <style>
@@ -55,6 +71,10 @@
 		border-top: 1px solid lightgray;
 		padding-top: 1rem;
 		margin-top: 2rem;
+        color: var(--color-text-primary);
+        font-family: var(--font-family-heading);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
 	}
     p{
       width: 100%;
@@ -63,11 +83,23 @@
       text-overflow: ellipsis;
     }
 	a{
-		color: var(--primary);
+		color: var(--color-text-link);
 	}
+    
+    .nft-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: var(--space-lg, 24px);
+    }
+
+    @media (max-width: 600px) {
+        .nft-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 
-<h2 class="text-color-primary-dark">
+<!-- <h2>
 	All NFTs owned by
 	{#if isXianKey(account)}
 		<a href="{`${config.blockExplorer}/addresses/${account}`}" target="_blank" rel="noopener noreferrer">
@@ -76,7 +108,7 @@
 	{:else}
 		{account.length > 15 && !account.startsWith("con_") ? formatAccountAddress(account, 8, 5) : account}
 	{/if}
-</h2>
+</h2> -->
 
 {#if formatted.length == 0}
 	<p>
@@ -84,14 +116,26 @@
 	</p>
 {/if}
 
-<div class="flex-row display-card">
+<div class="nft-grid">
     {#each formatted as thingInfo, index}
 		{#if thingInfo.blacklist && thingInfo.owner !== $userAccount}
-
+        
 		{:else}
-			<div in:scale="{{duration: 200, delay: 0, opacity: 0, start: 0.75, easing: quintOut}}"
+			<div
 				bind:this={elements[index]}>
-				<DisplayFrames pixelSize={7} {thingInfo} {index} on:update={updateThing}/>
+				<NFTCard
+                    pixels={thingInfo.frames}
+                    pixelSize={7}
+                    title={thingInfo.name}
+                    description={thingInfo.description}
+                    creatorName={thingInfo.creator}
+                    ownerName={thingInfo.owner}
+                    currentBid={getNFTPrice(thingInfo)}
+                    currencySymbol={config.currencySymbol}
+                    href={`/frames/${thingInfo.uid}`}
+                    {thingInfo}
+                    updateInfo={(updates) => updateThing(updates, index)}
+                />
         	</div>
 		{/if}
     {/each}

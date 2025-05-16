@@ -2,6 +2,7 @@
     // MISC
     import { newPixelFrame } from '../js/defaults'
     import { frameStore, activeFrame } from '../js/stores'
+    import Button from './Button.svelte'
 
     const handleClick = () => {
         frameStore.update(currentValue => {
@@ -12,5 +13,9 @@
     }
 </script>
 
-
-<button class="button_text weight-600" on:click={handleClick}>NEW</button>
+<Button 
+    variant="primary-medium" 
+    on:click={handleClick}
+>
+    NEW
+</Button>

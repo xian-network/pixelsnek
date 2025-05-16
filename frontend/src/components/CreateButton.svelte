@@ -3,6 +3,7 @@
 	import { showModal, frames, released, userAccount } from '../js/stores.js'
 	import FormCreate from './FormCreate.svelte'
 	import { framesEmpty, hasNulls } from '../js/utils.js'
+	import Button from './Button.svelte'
 
 	const dispatch = createEventDispatcher();
 
@@ -30,4 +31,10 @@
 	}
 </style>
 
-<button class="button" on:click={show} disabled={framesEmpty($frames)}>MINT NFT</button>
+<Button 
+    variant="primary-medium" 
+    on:click={show} 
+    disabled={framesEmpty($frames)}
+>
+    MINT NFT
+</Button>

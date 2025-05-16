@@ -11,6 +11,7 @@
     //Pictures
     import LikeFilledIcon from "../../static/img/like-filled.svg";
     import LikeUnfilledIcon from "../../static/img/like-unfilled.svg";
+    import { debug } from "svelte/internal";
 
     const { sendTransaction } = getContext("app_functions");
 
@@ -25,10 +26,29 @@
         checkAlreadyLiked();
     });
 
-    const checkAlreadyLiked = () => {
-        alreadyLiked(thingInfo.uid);
-        if (liked === null && $userAccount)
-            alreadyLiked(thingInfo.uid).then((res) => (liked = res));
+    const checkAlreadyLiked = async () => {
+        if ($userAccount) {
+            // Try direct localStorage check first
+            const lsKey = `${thingInfo.uid}:${$userAccount}:liked`;
+            if (localStorage.getItem(lsKey)) {
+                liked = true;
+                return;
+            }
+            
+            // Try the alreadyLiked function
+            try {
+                const res = await alreadyLiked(thingInfo.uid);
+                liked = res;
+                
+                // Force save to localStorage for consistency if liked
+                if (res === true) {
+                    localStorage.setItem(lsKey, "true");
+                }
+            } catch (error) {
+                console.error(`Error checking like status for ${thingInfo.uid}:`, error);
+                liked = false;
+            }
+        }
     };
 
     const like = () => {
@@ -46,15 +66,13 @@
     };
 
     const handleLikeTx = (txResults) => {
-        console.log({ txResults });
         if (txResults.status == 0) {
             liked = true;
-            thingInfo.likes = thingInfo.likes + 1;
+            thingInfo.likes = Number(thingInfo.likes) + 1;
             localStorage.setItem(
                 `${thingInfo.uid}:${$userAccount}:liked`,
                 true,
             );
-            console.log("LIKED IT, CREATING SNACK NOW");
             createSnack({
                 title: `You have liked this!`,
                 type: "success",
@@ -64,7 +82,6 @@
             });
         } else {
             liked = false;
-            console.log("LIKING THIS FAILED");
             createSnack({
                 title: `Liking this failed!`,
                 type: "error",
@@ -75,7 +92,13 @@
         }
     };
 
-    userAccount.subscribe((account) => checkAlreadyLiked());
+    userAccount.subscribe(account => {
+        if (account) {
+            checkAlreadyLiked().catch(err => {
+                console.error(`Error during checkAlreadyLiked for ${thingInfo.uid}:`, err);
+            });
+        }
+    });
 </script>
 
 <div class="flex-row flex-align-center likes">
@@ -85,12 +108,8 @@
         on:click={like}
         style={`width: ${width}px; height: ${height}px;`}
     >
-        {#if liked !== null}
-            {#if liked}
-                <LikeFilledIcon width="21" />
-            {:else}
-                <LikeUnfilledIcon width="21" />
-            {/if}
+        {#if liked === true}
+            <LikeFilledIcon width="21" />
         {:else}
             <LikeUnfilledIcon width="21" />
         {/if}
@@ -99,7 +118,7 @@
     <div class="show-mobile icon">
         <LikeUnfilledIcon width="22" />
     </div>
-    {thingInfo.likes}
+    <h2>{thingInfo.likes}</h2>
 </div>
 
 <style>
@@ -111,8 +130,13 @@
         margin-right: 6px;
         position: relative;
         top: 3.5px;
+        padding: 10px;
     }
     .logged-in {
         cursor: pointer;
     }
+
+    /* .likes {
+        border: 1px solid red;
+    } */
 </style>

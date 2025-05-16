@@ -1,6 +1,8 @@
 <script>
     import { getContext } from 'svelte'
 	import { goto } from '@sapper/app';
+	import Input from './Input.svelte';
+	import Button from './Button.svelte';
 
     //MISC
 	import { frames, frameSpeed, showModal, frameStore, activeFrame } from '../js/stores.js'
@@ -100,8 +102,46 @@
 </script>
 
 <style>
-	.preview-row{
+	.form-create-container {
+		max-width: 480px;
+		margin: 0 auto;
+		background: var(--color-background-primary);
+		border-radius: var(--border-radius, 12px);
+		box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+		padding: var(--space-xl, 32px) var(--space-lg, 24px);
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-lg, 24px);
+	}
+	.preview-row {
 		text-align: center;
+		margin-bottom: var(--space-lg, 24px);
+	}
+	.royalty-row {
+		display: flex;
+		align-items: center;
+		gap: var(--space-md, 16px);
+		margin-bottom: var(--space-md, 16px);
+	}
+	.royalty-label {
+		font-weight: 600;
+		flex: 1;
+	}
+	.royalty-value {
+		font-size: 1.25em;
+		font-weight: bold;
+		color: var(--primary-dark);
+		min-width: 2.5em;
+		text-align: right;
+	}
+	.slider {
+		width: 100%;
+		margin-top: 0.5rem;
+	}
+	.mint-btn-row {
+		display: flex;
+		justify-content: center;
+		margin-top: var(--space-lg, 24px);
 	}
 	.outlined{
 		color: var(--color-white-primary-tint);
@@ -148,24 +188,29 @@
 
 </style>
 
-<div class="modal-form flex-row">
+<div class="form-create-container">
 	<div class="preview-row">
 		<Preview frames={$frames} pixelSize={15} showWatermark={false}/>
-		<input type="submit" class="button" value="Mint NFT!" form="create" disabled={name === "" ||  desc === ""} />
 	</div>
-	<form id="create" class="flex-col" on:submit|preventDefault={upload} bind:this={formElm}>
-		<label for="name">Name your Artwork</label>
-		<input id="name" type="text" placeholder="Name" required on:blur={checkName} bind:value={name}/>
-		<label for="desc">Describe your creation</label>
-		<textarea id="desc" type="textarea" rows="8" maxlength="128" placeholder="(max 128 chars)" required bind:value={desc}/>
-		<label for="royalty">Collect royalties on each sale!</label>
-		<strong>{royaltyPercent}%</strong>
+	<form id="create" class="flex-col" on:submit|preventDefault={upload} bind:this={formElm} autocomplete="off">
+		<Input label="Name your Artwork" placeholder="Name" required bind:value={name} on:blur={checkName} maxLength={32} />
+		<Input label="Describe your creation" type="textarea" rows="6" maxLength={128} placeholder="(max 128 chars)" required bind:value={desc} />
+		<div class="royalty-row">
+			<span class="royalty-label">Collect royalties on each sale!</span>
+			<span class="royalty-value">{royaltyPercent}%</span>
+		</div>
 		<input
 			id="royalty"
+			class="slider"
 			bind:value={royaltyPercent}
 			type="range"
 			min="0"
 			max="100"
-			class="slider">
+		/>
+		<div class="mint-btn-row">
+			<Button type="submit" variant="primary-medium" disabled={name === '' || desc === ''}>
+				Mint NFT!
+			</Button>
+		</div>
 	</form>
 </div>

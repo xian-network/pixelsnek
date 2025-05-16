@@ -29,6 +29,9 @@
 	.designer {
 		display: flex;
 		flex-direction: column;
+		max-width: 1100px;
+		margin: 0 auto;
+		padding: var(--space-md, 16px);
 	}
 	.info{
 		display: flex;
@@ -43,22 +46,27 @@
 		align-items: center;
 	}
 	.buttons{
-		background: white;
+		background: var(--color-background-primary);
 		width: unset;
-
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md, 16px);
 	}
 	.pallet-board{
 		align-items: flex-start;
 	}
 	.shadowbox{
-		background: white;
-		padding: 10px 25px 1rem;
+		background: var(--color-background-primary);
+		padding: var(--space-md, 16px) var(--space-lg, 24px) 1rem;
 		margin: 0;
 		height: unset;
+		border-radius: var(--border-radius, 8px);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	}
 	hr{
-		color: var(--gray-5);
+		color: var(--color-border-primary, #e0e0e0);
 		width: 100%;
+		margin: var(--space-sm, 8px) 0;
 	}
 
 	@media (min-width: 980px) {
@@ -76,7 +84,7 @@
 		}
 		.shadowbox{
 			justify-content: space-evenly;
-			border: 1px solid #afafaf;
+			border: 1px solid var(--color-border-secondary, #afafaf);
 		}
 	}
 </style>

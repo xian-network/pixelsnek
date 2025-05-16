@@ -5,6 +5,7 @@
     import FrameCanvas from './FrameCanvas.svelte'
     import AddFrame from './AddFrame.svelte'
     import MoveFrameButton from './MoveFrameButton.svelte'
+    import Button from './Button.svelte'
 
     let pixelSize = 2;
     let gridSize = (pixelSize * config.frameWidth) + pixelSize;
@@ -19,87 +20,154 @@
     }
 </script>
 
-<style>
-    .frames{
-        margin-bottom: 12px;
-    }
-    .frame {
-        position: relative;
-        line-height: 0;
-        color: var(--primary);
-        font-weight: bold;
-        font-size: 0.8em;
+<div class="frames-container">
+    <div class="frames-header">
+        <span class="frame-count">Animation Frames <strong>{$frames.length}</strong></span>
+    </div>
+    
+    <div class="frames-grid">
+        {#each $frames as pixels, index}
+            <div class="frame-item" class:selected={$currentFrame === index}>
+                <div class="frame-number">{index + 1}</div>
+                
+                <div class="frame-content">
+                    {#if $currentFrame === index}
+                        <div class="move-button left">
+                            <MoveFrameButton direction="left" width="15px" {index}/>
+                        </div>
+                    {/if}
+                    
+                    <div 
+                        class="frame-canvas"
+                        on:click={() => currentFrame.set(index)}
+                    >
+                        <FrameCanvas {pixels} {pixelSize}/>
+                    </div>
+                    
+                    {#if $currentFrame === index}
+                        <div class="move-button right">
+                            <MoveFrameButton direction="right" width="15px" {index}/>
+                        </div>
+                    {/if}
+                </div>
+            </div>
+        {/each}
+        
+        {#if $frames.length < 8}
+            <div class="frame-item add-frame">
+                <!-- <div class="frame-number">+</div> -->
+                <div class="frame-canvas add-button" style={`width: ${config.frameWidth * pixelSize}px;`}>
+                    <AddFrame />
+                </div>
+            </div>
+        {/if}
+    </div>
+</div>
 
-        margin-right: 12px;
+<style>
+    .frames-container {
+        margin-bottom: var(--space-md, 12px);
+        background-color: var(--color-background-secondary, #f5f5f5);
+        border-radius: var(--border-radius, 8px);
+        padding: var(--space-sm, 8px);
+        border: 1px solid var(--color-border-secondary, #e0e0e0);
     }
-    .frame::after {
-        content: attr(title);
+    
+    .frames-header {
+        margin-bottom: var(--space-sm, 8px);
+        display: flex;
+        align-items: center;
+    }
+    
+    .frame-count {
+        font-size: var(--font-size-sm, 0.875rem);
+        color: var(--color-text-primary);
+        line-height: 1.5;
+    }
+    
+    .frame-count strong {
+        color: var(--color-primary);
+        font-size: var(--font-size-md, 1rem);
+        margin-left: var(--space-xs, 4px);
+        font-weight: var(--font-weight-bold, 700);
+    }
+    
+    .frames-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-sm, 8px);
+        align-items: flex-start;
+    }
+    
+    .frame-item {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .frame-number {
         position: absolute;
-        top: -10px;
+        top: -8px;
         left: 50%;
-        transform: translate(-50%, 0);
+        transform: translateX(-50%);
+        background-color: var(--color-background-primary);
+        color: var(--color-text-secondary);
+        font-size: var(--font-size-xs, 0.75rem);
+        font-weight: var(--font-weight-medium, 500);
+        padding: 2px 6px;
+        border-radius: 12px;
+        z-index: 2;
+        border: 1px solid var(--color-border-secondary);
+        min-width: 20px;
+        text-align: center;
     }
-    .selected{
-        border: 2px solid var(--primary);
-        box-shadow: 0px 10px 12px -7px rgb(0 0 0 / 50%);
-		-webkit-box-shadow: 0px 10px 12px -7px rgb(0 0 0 / 50%);
-		-moz-box-shadow: 0px 10px 12px -7px rgb(0 0 0 / 50%);
+    
+    .frame-content {
+        display: flex;
+        align-items: center;
     }
-    .not-selected{
-        border: 2px solid #afafaf;
-        box-shadow: 0px 8px 5px -7px rgb(0 0 0 / 50%);
-		-webkit-box-shadow: 0px 8px 5px -7px rgb(0 0 0 / 50%);
-		-moz-box-shadow: 0px 8px 5px -7px rgb(0 0 0 / 50%);
+    
+    .frame-canvas {
+        line-height: 0;
+        border: 2px solid var(--color-border-secondary, #e0e0e0);
+        border-radius: var(--border-radius-sm, 4px);
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: var(--color-background-primary);
+        cursor: pointer;
     }
-    .add-button{
-        border: 1px dashed var(--primary);
+    
+    .selected .frame-canvas {
+        border-color: var(--color-primary);
+        box-shadow: 0 4px 8px rgba(128, 90, 255, 0.2);
+    }
+    
+    .move-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .move-button.left {
+        margin-right: var(--space-xxs, 2px);
+    }
+    
+    .move-button.right {
+        margin-left: var(--space-xxs, 2px);
+    }
+    
+    .add-frame .frame-number {
+        background-color: var(--color-primary-transparent, rgba(128, 90, 255, 0.1));
+        color: var(--color-primary);
+    }
+    
+    .add-button {
+        border: 1px dashed var(--color-primary);
         display: flex;
         justify-content: center;
         align-items: center;
-
-        position: relative;
-        line-height: 0;
-
-    }
-    .add-button::after {
-        content: 'add';
-        position: absolute;
-        top: -10px;
-        left: 50%;
-        transform: translate(-50%, 0);
-        color: var(--primary);
-        font-weight: bold;
-        font-size: 0.8em;
-    }
-    span{
-        width: 100px;
-        line-height: 1.1;
-    }
-    span > strong {
-        color: var(--primary);
-        font-size: 1.2em;
-        margin-left: 3px;
+        cursor: pointer;
+        background-color: var(--color-background-tertiary, #f9f9f9);
     }
 </style>
-
-<div class="flex-row frames">
-    <span>Animation Frames <strong>{$frames.length}</strong></span>
-    {#each $frames as pixels, index }
-        <div class="frame" title={index + 1}>
-            {#if $currentFrame === index}<MoveFrameButton direction="left" width="15px" {index}/> {/if}
-            <div
-                class:selected={$currentFrame === index}
-                class:not-selected={$currentFrame !== index}
-                on:click={() => currentFrame.set(index)}>
-                <FrameCanvas {pixels} {pixelSize}/>
-            </div>
-            {#if $currentFrame === index}<MoveFrameButton direction="right" width="15px" {index}/>{/if}
-        </div>
-    {/each}
-    {#if $frames.length < 8}
-        <div class="add-button" style={`width: ${config.frameWidth * pixelSize }px;`}>
-            <AddFrame />
-        </div>
-    {/if}
-
-</div>

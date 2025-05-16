@@ -76,22 +76,78 @@
 	<meta property="og:image:type" content="image/gif" />
 </svelte:head>
 
-{#if typeof thingInfo.notFound === "undefined"}
-	<div class="display-one">
-		<DisplayFramesOne
-			{thingInfo}
-			{auctionInfo}
-			{salesHistory}
-			updateInfo={updateThingInfo}
-		/>
-	</div>
-{:else}
-	<p>{`${thingInfo.uid} doesn't exist.`}</p>
-{/if}
+<div class="page-container">
+	{#if typeof thingInfo.notFound === "undefined"}
+		<div class="frame-details-container">
+			<DisplayFramesOne
+				{thingInfo}
+				{auctionInfo}
+				{salesHistory}
+				updateInfo={updateThingInfo}
+			/>
+		</div>
+	{:else}
+		<div class="not-found-container">
+			<div class="not-found-content">
+				<h2>NFT Not Found</h2>
+				<p>{`${thingInfo.uid} doesn't exist.`}</p>
+			</div>
+		</div>
+	{/if}
+</div>
 
 <style>
-	.display-one {
-		max-width: 75em;
+	.page-container {
+		max-width: 1200px;
 		margin: 0 auto;
+		padding: var(--space-lg, 16px);
+	}
+
+	.frame-details-container {
+		margin: var(--space-xl, 24px) 0;
+	}
+
+	.not-found-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		min-height: 400px;
+	}
+
+	.not-found-content {
+		background-color: var(--color-background-secondary, #f5f5f5);
+		border-radius: var(--border-radius, 8px);
+		padding: var(--space-xl, 24px);
+		text-align: center;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+		max-width: 500px;
+		width: 100%;
+		border: 1px solid var(--color-border-secondary, #e0e0e0);
+	}
+
+	.not-found-content h2 {
+		color: var(--color-text-primary);
+		font-size: var(--font-size-2xl, 1.5rem);
+		margin-bottom: var(--space-md, 12px);
+	}
+
+	.not-found-content p {
+		color: var(--color-text-secondary);
+		font-size: var(--font-size-base, 1rem);
+	}
+
+	/* Responsive adjustments */
+	@media (max-width: 768px) {
+		.page-container {
+			padding: var(--space-md, 12px);
+		}
+
+		.frame-details-container {
+			margin: var(--space-md, 12px) 0;
+		}
+
+		.not-found-content {
+			padding: var(--space-lg, 16px);
+		}
 	}
 </style>

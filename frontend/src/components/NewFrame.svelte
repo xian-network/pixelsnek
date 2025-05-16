@@ -2,6 +2,7 @@
     // MISC
     import { currentFrame, frameStore, activeFrame } from '../js/stores'
     import { newPixelFrame } from '../js/defaults'
+    import Button from './Button.svelte'
 
     const reset = () => {
         let wipe = confirm("Wipe project and start again?")
@@ -19,4 +20,9 @@
 <style>
 </style>
 
-<button class="button_text" value="clear" on:click ={reset}> Start Over </button>
+<Button 
+    variant="secondary-medium" 
+    on:click={reset}
+>
+    Start Over
+</Button>

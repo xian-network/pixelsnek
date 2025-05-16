@@ -164,10 +164,10 @@
 
 </div>
 <div class="icons text-color-gray-5 flex-row flex-align-center">
-    <a href="{`./creator/${thingInfo.creator}`}" class="icon">
+    <a href="{`/profile/${thingInfo.creator}`}" class="icon" title="Creator profile">
         <ArtistIcon width="20"/>
     </a>
-    <a href="{`./owned/${thingInfo.owner}`}" class="icon flex-grow">
+    <a href="{`/profile/${thingInfo.owner}`}" class="icon flex-grow" title="Owner profile">
         <OwnerIcon width="20"/>
     </a>
     <Likes {thingInfo} />

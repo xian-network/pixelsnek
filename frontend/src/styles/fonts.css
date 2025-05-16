@@ -1,0 +1,82 @@
+/* Font declarations */
+@font-face {
+  font-family: 'Karmatic Arcade';
+  src: url('../fonts/karmatic-arcade-font/KarmaticArcade-6Yrp1.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pixelated Elegance';
+  src: url('../fonts/pixelated-elegance-font/PixelatedEleganceRegular-ovyAA.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Raster Forge';
+  src: url('../fonts/raster-forge-font/RasterForgeRegular-JpBgm.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Medodica';
+  src: url('../fonts/medodica/MedodicaRegular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Global pixelated aesthetics */
+* {
+  border-radius: 0 !important; /* Enforce pixelated corners everywhere */
+}
+
+/* Font utility classes */
+.font-body {
+  font-family: 'Medodica';
+}
+
+.font-heading {
+  font-family: 'Raster Forge';
+  letter-spacing: 0.15em;
+}
+
+.font-pixel-elegant {
+  font-family: 'Pixelated Elegance';
+}
+
+.font-raster {
+  font-family: 'Raster Forge', var(--font-family-sans);
+  letter-spacing: 0.12em;
+}
+
+.font-melodica {
+  font-family: 'Medodica', var(--font-family-sans);
+}
+
+/* Heading styles */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Raster Forge', var(--font-family-sans);
+  letter-spacing: 0.15em;
+}
+
+/* Form element styles */
+button, input[type="button"], input[type="submit"], .button, .button_text {
+  font-family: 'Raster Forge', var(--font-family-raster);
+  letter-spacing: 0.12em;
+}
+
+/* Update theme variables to use these fonts */
+:root {
+  --font-family-heading: 'Raster Forge', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-family-body: 'Medodica', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, sans-serif;
+  --font-family-pixel: 'Pixelated Elegance', monospace;
+  --font-family-raster: 'Raster Forge', monospace;
+  --font-family-buttons: 'Medodica', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-family-melodica: 'Medodica', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+} 

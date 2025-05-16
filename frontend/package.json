@@ -3,7 +3,7 @@
   "description": "A website to create and own unique pixel animations.",
   "version": "0.6.0",
   "scripts": {
-    "dev": "PORT=3001 sapper dev",
+    "dev": "PORT=3002 sapper dev",
     "build": "sapper build --legacy",
     "export": "sapper export --legacy",
     "start": "PORT=80 node __sapper__/build ",

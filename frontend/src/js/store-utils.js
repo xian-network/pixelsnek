@@ -23,9 +23,14 @@ export const alreadyLiked = async (uid) => {
     //console.log({account, lsValue})
     //console.log({lsValue})
     if (lsValue !== null) return true;
-    const liked = await getAlreadyLiked(uid, account)
-    if (liked === true) localStorage.setItem(`${uid}:${account}:liked`, true)
-    return liked
+    try {
+        const liked = await getAlreadyLiked(uid, account)
+        if (liked === true) localStorage.setItem(`${uid}:${account}:liked`, true)
+        return liked
+    } catch (error) {
+        console.error("Error checking like status:", error);
+        return false;
+    }
 }
 
 export const checkForApproval = async (contract) => {

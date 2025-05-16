@@ -118,9 +118,15 @@
 
 <style>
     .board {
+        display: grid;
         grid-template-columns: repeat(25, 25px);
         grid-template-rows: repeat(25, 25px);
-
+        background-color: var(--color-background-primary);
+        border-radius: var(--border-radius, 8px);
+        border: 1px solid var(--color-border-secondary, #e0e0e0);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: var(--space-lg, 24px);
+        position: relative;
     }
     .paint-cursor{
         cursor: url('/img/paint_brush.svg') 5 7, auto;
@@ -130,6 +136,10 @@
     }
     .checkmark{
         position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
     }
 </style>
 

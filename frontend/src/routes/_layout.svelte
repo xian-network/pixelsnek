@@ -10,12 +10,14 @@
 	import { onMount, beforeUpdate, setContext } from "svelte";
 
 	// Components
-	import Nav from "../components/Nav.svelte";
+	// import Nav from "../components/Nav.svelte";
+	import Header from "../components/Header.svelte";
 	import XianWalletUtils from "../js/xian-dapp-utils";
 	import Snackbar from "../components/Snackbar.svelte";
-	import Modal from "../components/Modal.svelte";
+	import ModalContainer from "../components/ModalContainer.svelte";
 	import CreatedWithLove from "../components/CreatedWithLove.svelte";
 	import AuctionUpdates from "../components/AuctionUpdates.svelte";
+	import Footer from '../components/Footer.svelte';
 
 	// Misc
 	import { config, stampLimits } from "../js/config.js";
@@ -38,6 +40,8 @@
 		checkForApproval,
 	} from "../js/store-utils.js";
 	import { TransactionResultHandler } from "../js/transaction_result_handler";
+	import '../styles/theme.css';
+	import '../styles/fonts.css';
 	// import * as socketservice from '../js/socketservice'
 
 	export let segment;
@@ -191,24 +195,25 @@
 	};
 </script>
 
-{#if $showModal.show}
-	<Modal />
-{/if}
+<ModalContainer />
 <Snackbar />
-<Nav {segment} {xdu} />
+<!-- <Nav {segment} {xdu} /> -->
+<Header {segment} />
 <main>
 	<slot></slot>
 </main>
 <CreatedWithLove />
 <AuctionUpdates />
+<Footer />
 
 <style>
 	main {
 		position: relative;
-		max-width: 1600px;
-		padding: 0 28px 10rem;
-		margin: 1rem auto 0;
+		width: 100%;
+		padding: var(--space-lg) 0;
 		box-sizing: border-box;
+		max-width: 1600px;
+		margin: 1rem auto 0;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
