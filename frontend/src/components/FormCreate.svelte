@@ -5,7 +5,7 @@
 	import Button from './Button.svelte';
 
     //MISC
-	import { frames, frameSpeed, showModal, frameStore, activeFrame } from '../js/stores.js'
+	import { frames, frameSpeed, showModal, frameStore } from '../js/stores.js'
 	import { serializeFrames, nameTaken, buildExplorerLink } from '../js/utils.js'
 	import { createSnack, closeModel } from '../js/store-utils.js'
 	import { config, stampLimits } from '../js/config.js';
@@ -22,7 +22,7 @@
 
 	const created = $showModal.modalData.created
 
-    const upload = () => {
+    const upload = async () => {
     	const thing_string = serializeFrames($frames)
 
 		const transaction = {
@@ -40,8 +40,17 @@
 			},
 			stampLimit: 130 + (stampLimits[config.masterContract].per_frame_stamps * $frames.length)
 		}
-		sendTransaction(transaction, handleCreateTx)
-		closeModel()
+		try {
+			await sendTransaction(transaction, handleCreateTx)
+			closeModel()
+		} catch (err) {
+			console.error('Transaction failed:', err)
+			createSnack({
+				title: 'Wallet Error',
+				body: err && err.message ? err.message : 'Could not connect to wallet.',
+				type: 'error'
+			})
+		}
     }
 
 	const checkName = async (e) => {
@@ -63,10 +72,10 @@
 				link: buildExplorerLink(txResults.cometbft_hash)
 			})
 
-			const oldIndex = $activeFrame
+			const oldIndex = $frameStore.active
 			let newIndex = oldIndex  - 1
             if (newIndex < 0 ) newIndex = 0
-            activeFrame.set(newIndex)
+            frameStore.setActive(newIndex)
 
             frameStore.update(currentValue => {
                 currentValue.splice(oldIndex, 1)
@@ -208,7 +217,7 @@
 			max="100"
 		/>
 		<div class="mint-btn-row">
-			<Button type="submit" variant="primary-medium" disabled={name === '' || desc === ''}>
+			<Button on:click={upload} disabled={name === '' || desc === ''}>
 				Mint NFT!
 			</Button>
 		</div>
