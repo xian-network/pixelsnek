@@ -8,108 +8,52 @@
     export let thingInfo = false;
     export let pixelSize = 10
     export let showWatermark = true;
-    export let border = false;
+    export let border = true;
     export let solidBorder = false;
     export let solidBorderColor = "";
     export let speed = null
-    
-    let currentFrame = 1;
-    let animationInterval;
-    let totalFrames = frames?.length || 0;
 
-    $: animationSpeed = speed || (thingInfo?.speed ? Number(thingInfo.speed) : $frameSpeed);
+    let switcher;
+    $: show = 1
+
+    $: animationSpeed = setSpeed(speed || $frameSpeed)
 
     onMount(() => {
-        if (frames?.length > 1) {
-            startAnimation();
+        if (thingInfo){
+            if (frames.length > 1){
+                switcher = setInterval(switchFrames, Number(thingInfo.speed))
+            }
         }
-        return () => stopAnimation();
-    });
-    
-    function startAnimation() {
-        if (frames?.length > 1) {
-            animationInterval = setInterval(switchFrames, animationSpeed);
-        }
+        return(() => clearInterval((switcher)))
+    })
+
+    const switchFrames = () => {
+        if (show > frames.length) show = 1
+        else show = show === frames.length ? 1 : show + 1;
     }
-    
-    function stopAnimation() {
-        if (animationInterval) {
-            clearInterval(animationInterval);
-            animationInterval = null;
+
+    const setSpeed = (s) => {
+        if (!thingInfo){
+            clearInterval((switcher))
+            switcher = setInterval(switchFrames, s)
         }
     }
 
-    const switchFrames = () => {
-        if (currentFrame >= frames.length) {
-            currentFrame = 1;
-        } else {
-            currentFrame += 1;
-        }
-    }
 </script>
 
 <style>
-    .frame-wrapper {
-        position: relative;
-        width: 100%;
-        height: 0;
-        padding-top: 100%; /* Create a square aspect ratio */
-        background-color: var(--color-background-secondary);
-        overflow: hidden;
-    }
-    
-    .frame-content {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .preview-frame {
+    .preview-frame{
         line-height: 0;
-        width: 100%;
-        padding : 10px;
+        width: max-content;
     }
-    
-    .preview-frame.border {
+    .preview-frame.border{
         border: 2px dashed var(--primary);
     }
-    
-    .preview-frame.solid-border {
+    .preview-frame.solid-border{
         border: 1px solid;
-    }
-    
-    .animation-indicator {
-        position: absolute;
-        bottom: 8px;
-        right: 8px;
-        background-color: rgba(0, 0, 0, 0.5);
-        color: white;
-        border-radius: 12px;
-        padding: 2px 6px;
-        font-size: 10px;
-        z-index: 10;
     }
 </style>
 
-<div class="frame-wrapper">
-    <div class="frame-content">
-        <div class="preview-frame">
-            <FrameCanvas 
-                {pixelSize} 
-                pixels={frames[currentFrame - 1]} 
-                watermark={showWatermark ? createWatermark(thingInfo, $userAccount) : undefined}
-            />
-        </div>
-    </div>
-    
-    {#if frames?.length > 1}
-        <div class="animation-indicator">
-            <span>{currentFrame}/{frames.length}</span>
-        </div>
-    {/if}
+<div class="preview-frame" class:border={border} class:solid-border={solidBorder} style={solidBorderColor !== "" ? `border-color: ${solidBorderColor};`: ""}>
+    <FrameCanvas {pixelSize} pixels={frames[show - 1]}  watermark={showWatermark ? createWatermark(thingInfo, $userAccount) : undefined}/>
 </div>
