@@ -6,12 +6,12 @@
     import Button from './Button.svelte'
 
     // MISC
-    import { frameStore, activeFrame } from '../js/stores'
+    import { frameStore } from '../js/stores'
 
     let copied = writable({})
 
     const handleLoad = (index) => {
-        activeFrame.set(index)
+        frameStore.setActive(index)
     }
 
     const handleDelete = (index) => {
@@ -19,12 +19,8 @@
         if(deleteFrame){
             let newIndex = index  - 1
             if (newIndex < 0 ) newIndex = 0
-            activeFrame.set(newIndex)
-
-            frameStore.update(currentValue => {
-                currentValue.splice(index, 1)
-                return currentValue
-            })
+            frameStore.setActive(newIndex)
+            frameStore.delete(index)
         }
     }
 
@@ -40,7 +36,7 @@
         });
     }
     const handleCopy = (index) => {
-        navigator.clipboard.writeText(JSON.stringify($frameStore[index]))
+        navigator.clipboard.writeText(JSON.stringify($frameStore.frames[index]))
         copied.update(currstore => {
             currstore[index] = true
             return currstore
@@ -77,14 +73,15 @@
     }
     
     .saved-item {
-        padding: var(--space-md, 16px);
-        margin: var(--space-md, 16px) 0;
+        padding: var(--space-xs, 4px) var(--space-md, 16px);
+        margin: var(--space-xs, 4px) 0;
         display: flex;
         border-radius: var(--border-radius, 8px);
         border: 1px solid var(--color-border-secondary, #e0e0e0);
         background-color: var(--color-background-primary);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         transition: all 0.2s ease;
+        align-items: center;
     }
     
     .saved-item.current {
@@ -103,7 +100,7 @@
     .item-details {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: center;
         width: 100%;
         margin-left: var(--space-md, 16px);
     }
@@ -111,11 +108,11 @@
     .info-row {
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
+        align-items: center;
     }
     
     .info-column p {
-        margin: var(--space-xxs, 2px) 0;
+        margin: 0;
         color: var(--color-text-secondary, var(--primary-dark));
         font-weight: 300;
     }
@@ -162,6 +159,11 @@
         color: white;
         z-index: 1;
     }
+    
+    :global(.preview-root), :global(.preview) {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
 </style>
 
 <div class="saved-container">
@@ -177,8 +179,8 @@
         </Button>
     </div>
     
-    {#each $frameStore as frameInfo, index}
-        <div class="saved-item" class:current={$activeFrame === index}>
+    {#each $frameStore.frames as frameInfo, index}
+        <div class="saved-item" class:current={$frameStore.active === index}>
             <Preview frames={frameInfo.frames} speed={frameInfo.speed} showWatermark={false} pixelSize={3} border={false}/>
             
             <div class="item-details">
@@ -213,7 +215,7 @@
                             {/if}
                         </div>
                         
-                        {#if $activeFrame !== index}
+                        {#if $frameStore.active !== index}
                             <Button 
                                 variant="primary-medium"
                                 on:click={() => handleLoad(index)}

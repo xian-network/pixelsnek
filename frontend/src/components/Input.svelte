@@ -2,19 +2,15 @@
   import { createEventDispatcher } from 'svelte';
 
   export let type = 'text';
-  export let value = ''; 
+  export let value = '';
   export let placeholder = '';
   export let disabled = false;
   export let readonly = false;
-  export let label = ''; 
+  export let label = '';
   export let id = label ? `input-${label.toLowerCase().replace(/\s+/g, '-')}-${Math.random().toString(36).substring(2,7)}` : `input-${Math.random().toString(36).substring(2,7)}`;
   
   const dispatch = createEventDispatcher();
   let focused = false;
-
-  function handleInput(event) {
-    dispatch('input', event.target.value);
-  }
 </script>
 
 <div class="input-wrapper {$$props.class || ''}" class:focused class:disabled class:readonly>
@@ -25,20 +21,34 @@
     <span class="input-icon icon-left">
       <slot name="icon-left"></slot>
     </span>
-    <input
-      {type}
-      {id}
-      value={value}
-      {placeholder}
-      {disabled}
-      {readonly}
-      on:input={handleInput}
-      on:focus={() => focused = true}
-      on:blur={() => focused = false}
-      on:keydown
-      class="input-field"
-      aria-label={label ? undefined : placeholder || 'Input field'}
-    />
+    {#if type === 'textarea'}
+      <textarea
+        {id}
+        bind:value
+        {placeholder}
+        {disabled}
+        {readonly}
+        rows={$$props.rows}
+        class="input-field"
+        aria-label={label ? undefined : placeholder || 'Input field'}
+        on:focus={() => focused = true}
+        on:blur={() => focused = false}
+      />
+    {:else}
+      <input
+        type="text"
+        {id}
+        bind:value
+        {placeholder}
+        {disabled}
+        {readonly}
+        class="input-field"
+        aria-label={label ? undefined : placeholder || 'Input field'}
+        on:focus={() => focused = true}
+        on:blur={() => focused = false}
+        on:keydown
+      />
+    {/if}
     <span class="input-icon icon-right">
        <slot name="icon-right"></slot>
     </span>

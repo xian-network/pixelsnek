@@ -1,15 +1,17 @@
 <script>
     // MISC
     import { newPixelFrame } from '../js/defaults'
-    import { frameStore, activeFrame } from '../js/stores'
+    import { frameStore } from '../js/stores'
     import Button from './Button.svelte'
 
     const handleClick = () => {
-        frameStore.update(currentValue => {
-            let newList = currentValue.unshift(newPixelFrame())
-            activeFrame.set(0)
-            return currentValue
-        })
+        frameStore.snapshot();
+        frameStore.update(state => {
+            const newFrame = newPixelFrame();
+            const frames = [newFrame, ...state.frames];
+            // Set active to 0 (the new project)
+            return { ...state, frames, active: 0 };
+        });
     }
 </script>
 

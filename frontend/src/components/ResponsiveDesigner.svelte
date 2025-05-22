@@ -22,7 +22,7 @@
     import SearchIcon from '../icons/SearchIcon.svelte';
 
 	// Misc
-	import { frames, frameStore, activeFrame } from '../js/stores'
+	import { frames, frameStore } from '../js/stores'
     import { onMount } from 'svelte';
 
 	// State for created animation

@@ -1,6 +1,6 @@
 <script>
     import { tick } from 'svelte'
-    import { activeFrame, frameStore, frames, currentFrame } from '../js/stores'
+    import { frameStore, frames, currentFrame } from '../js/stores'
     export let index
     export let width = "10px"
     export let direction = "right"
@@ -16,13 +16,13 @@
 
     const moveArrayItemToNewIndex = async (old_index, new_index) => {
         frameStore.update(currentValue => {
-            if (new_index >= currentValue[$activeFrame].frames.length) {
-                var k = new_index - currentValue[$activeFrame].frames.length + 1;
-                while (k--) {
-                    currentValue[$activeFrame].frames.push(undefined);
+            if (new_index >= currentValue[$frameStore.active].frames.length) {
+                var k = new_index - currentValue[$frameStore.active].frames.length + 1;
+                for (var i = 0; i < k; i++) {
+                    currentValue[$frameStore.active].frames.push(undefined);
                 }
             }
-            currentValue[$activeFrame].frames.splice(new_index, 0, currentValue[$activeFrame].frames.splice(old_index, 1)[0]);
+            currentValue[$frameStore.active].frames.splice(new_index, 0, currentValue[$frameStore.active].frames.splice(old_index, 1)[0]);
             return currentValue
         })
         await tick()

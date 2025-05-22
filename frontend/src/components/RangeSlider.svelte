@@ -1,5 +1,5 @@
 <script>
-    import { frameSpeed, frameStore, activeFrame } from '../js/stores.js'
+    import { frameSpeed, frameStore } from '../js/stores.js'
     import { onMount } from 'svelte'
 
     $: speed = $frameSpeed
@@ -17,7 +17,7 @@
 
     const handleInput = (e) => {
         frameStore.update(currentValue => {
-            currentValue[$activeFrame].speed = e.target.valueAsNumber
+            currentValue[$frameStore.active].speed = e.target.valueAsNumber
             return currentValue
         })
     }

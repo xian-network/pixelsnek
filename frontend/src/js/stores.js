@@ -62,96 +62,202 @@ export const tauPrice = (() => {
     }
 })()
 
+// Undo/Redo-enabled frame store with activeFrame
 export const frameStore = (() => {
-    let store = writable([])
-    if (typeof window !== 'undefined') {
-        let lsFrames = localStorage.getItem('saved_frames')
-        if (!lsFrames) store.set([newPixelFrame()])
-        else store.set(JSON.parse(lsFrames))
-
-        store.subscribe(current => {
-            let currentLsValue = localStorage.getItem('saved_frames')
-            if (!currentLsValue) currentLsValue = []
-            else currentLsValue = JSON.parse(currentLsValue)
-
-            if (JSON.stringify(current) !== JSON.stringify(currentLsValue)) {
-                if (current.length === 0) {
-                    store.set([newPixelFrame()])
-                    return
-                }
-                localStorage.setItem('saved_frames', JSON.stringify(current))
+    const initialFrames = (() => {
+        if (typeof window !== 'undefined') {
+            let lsFrames = localStorage.getItem('saved_frames');
+            if (!lsFrames) return [newPixelFrame()];
+            try {
+                return JSON.parse(lsFrames);
+            } catch (e) {
+                return [newPixelFrame()];
             }
-        })
+        }
+        return [newPixelFrame()];
+    })();
+    const initialActive = (() => {
+        if (typeof window !== 'undefined') {
+            let af = localStorage.getItem('active_frame');
+            try {
+                af = JSON.parse(af);
+                if (typeof af !== 'number') af = 0;
+                return af;
+            } catch (e) {
+                return 0;
+            }
+        }
+        return 0;
+    })();
+    
+    // The state is { frames: [...], active: number, undoCount: number, redoCount: number }
+    let undoStack = [];
+    let redoStack = [];
+    // The Svelte store holds only the current state (top of undoStack)
+    const { subscribe, set: _set } = writable({
+        frames: initialFrames,
+        active: initialActive,
+        undoCount: 0,
+        redoCount: 0
+    });
+
+    // Helper to emit the current state (top of undoStack)
+    function emit() {
+        const state = undoStack.length > 0 ? undoStack[undoStack.length - 1] : {
+            frames: initialFrames,
+            active: initialActive
+        };
+        _set({ ...state, undoCount: undoStack.length - 1, redoCount: redoStack.length });
+        persist(state);
     }
 
-    const setStore = (value) => store.set(value)
+    function persist(state) {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('saved_frames', JSON.stringify(state.frames));
+            localStorage.setItem('active_frame', JSON.stringify(state.active));
+        }
+    }
 
-    function isFrameData(framedata){
-        const { frames, speed, created } = framedata
-        if (!frames || !speed || !created) return false
-        if (!Array.isArray(frames)) return false
-        for (let frame of frames){
-            if (frame.length !== 625){
-                return false
-                break
+    function getCurrentState() {
+        // Always return the top of the undo stack
+        if (undoStack.length > 0) {
+            return JSON.parse(JSON.stringify(undoStack[undoStack.length - 1]));
+        }
+        return JSON.parse(JSON.stringify({ frames: initialFrames, active: initialActive }));
+    }
+
+    function isFrameData(framedata) {
+        const { frames, speed, created } = framedata;
+        if (!frames || !speed || !created) return false;
+        if (!Array.isArray(frames)) return false;
+        for (let frame of frames) {
+            if (frame.length !== 625) {
+                return false;
             }
-            for (let pixel of frame){
-                if (!isValidPixel(pixel)){
-                    return false
-                    break
+            for (let pixel of frame) {
+                if (!isValidPixel(pixel)) {
+                    return false;
                 }
             }
         }
-        return true
+        return true;
     }
 
+    // On load, push the initial state to the undo stack
+    (function init() {
+        const initialState = { frames: initialFrames, active: initialActive };
+        undoStack = [JSON.parse(JSON.stringify(initialState))];
+        redoStack = [];
+        emit();
+    })();
+
     return {
-        subscribe: store.subscribe,
-        get: () => get(store),
-        update: store.update,
-        set: setStore,
+        subscribe,
+        set: (newFrames, newActive) => {
+            // Just update the current state, do not push to undo stack
+            if (undoStack.length > 0) {
+                undoStack[undoStack.length - 1] = { frames: newFrames, active: newActive ?? 0 };
+            } else {
+                undoStack = [{ frames: newFrames, active: newActive ?? 0 }];
+            }
+            redoStack = [];
+            emit();
+        },
+        update: (fn) => {
+            // Just update the current state, do not push to undo stack
+            const curr = getCurrentState();
+            const next = fn(curr);
+            if (undoStack.length > 0) {
+                undoStack[undoStack.length - 1] = next;
+            } else {
+                undoStack = [next];
+            }
+            redoStack = [];
+            emit();
+        },
         add: (framedata) => {
-            if (!isFrameData(framedata)) return
-
-            store.update(currstore => {
-                currstore.push(framedata)
-                return currstore
-            })
-        }
-    }
-})()
-
-export const activeFrame = (() => {
-    let store = writable(0)
-    if (typeof window !== 'undefined') {
-        let activeFrame = localStorage.getItem('active_frame')
-        try{
-            activeFrame = JSON.parse(activeFrame)
-            if (!activeFrame) activeFrame = 0
-        }catch (e) {
-            activeFrame = 0
-        }
-        store.set(activeFrame)
-
-        store.subscribe(current => {
-            let currentLsValue = localStorage.getItem('active_frame')
-            if (!currentLsValue) currentLsValue = null
-            else currentLsValue = JSON.parse(currentLsValue)
-
-            if (current !== currentLsValue) {
-                localStorage.setItem('active_frame',current)
+            if (!isFrameData(framedata)) return;
+            const curr = getCurrentState();
+            const frames = [...curr.frames, framedata];
+            const active = frames.length - 1;
+            if (undoStack.length > 0) {
+                undoStack[undoStack.length - 1] = { frames, active };
+            } else {
+                undoStack = [{ frames, active }];
             }
-        })
-    }
-
-    const setStore = (value) => store.set(value)
-
-    return {
-        subscribe: store.subscribe,
-        get: () => get(store),
-        set: setStore,
-    }
-})()
+            redoStack = [];
+            emit();
+        },
+        delete: (index) => {
+            const curr = getCurrentState();
+            if (curr.frames.length <= 1) return; // Always keep at least one
+            const frames = curr.frames.slice();
+            frames.splice(index, 1);
+            let active = curr.active;
+            if (active >= frames.length) active = frames.length - 1;
+            if (undoStack.length > 0) {
+                undoStack[undoStack.length - 1] = { frames, active };
+            } else {
+                undoStack = [{ frames, active }];
+            }
+            redoStack = [];
+            emit();
+        },
+        load: (index) => {
+            const curr = getCurrentState();
+            let active = index;
+            if (active < 0) active = 0;
+            if (active >= curr.frames.length) active = curr.frames.length - 1;
+            if (undoStack.length > 0) {
+                undoStack[undoStack.length - 1] = { frames: curr.frames, active };
+            } else {
+                undoStack = [{ frames: curr.frames, active }];
+            }
+            redoStack = [];
+            emit();
+        },
+        setActive: (index) => {
+            const curr = getCurrentState();
+            let active = index;
+            if (active < 0) active = 0;
+            if (active >= curr.frames.length) active = curr.frames.length - 1;
+            if (undoStack.length > 0) {
+                undoStack[undoStack.length - 1] = { frames: curr.frames, active };
+            } else {
+                undoStack = [{ frames: curr.frames, active }];
+            }
+            redoStack = [];
+            emit();
+        },
+        get: () => getCurrentState(),
+        snapshot: () => {
+            // Only push to the undo stack if the new state is different from the last
+            const curr = getCurrentState();
+            const last = undoStack.length > 0 ? undoStack[undoStack.length - 1] : null;
+            if (!last || JSON.stringify(curr) !== JSON.stringify(last)) {
+                undoStack.push(JSON.parse(JSON.stringify(curr)));
+                redoStack = [];
+                emit();
+            }
+        },
+        undo: () => {
+            if (undoStack.length > 1) {
+                const popped = undoStack.pop();
+                redoStack.push(popped);
+                emit();
+            }
+        },
+        redo: () => {
+            if (redoStack.length > 0) {
+                const redone = redoStack.pop();
+                undoStack.push(redone);
+                emit();
+            }
+        },
+        canUndo: () => undoStack.length > 1,
+        canRedo: () => redoStack.length > 0,
+    };
+})();
 
 export const currentTool = (() => {
     let store = writable('fill')
@@ -205,16 +311,18 @@ export const brushSize = (() => {
 })()
 
 export const frames = derived(
-    ([frameStore, activeFrame]), ([$frameStore, $activeFrame]) => {
-        let framesValue = $frameStore[$activeFrame]
-        if (!framesValue) return newPixelFrame().frames
-        return $frameStore[$activeFrame].frames
+    frameStore, $frameStore => {
+        if (!$frameStore || !$frameStore.frames || typeof $frameStore.active !== 'number') return newPixelFrame().frames;
+        let framesValue = $frameStore.frames[$frameStore.active];
+        if (!framesValue) return newPixelFrame().frames;
+        return framesValue.frames;
     }
 );
 export const frameSpeed = derived(
-    ([frameStore, activeFrame]), ([$frameStore, $activeFrame]) => {
-        let framesValue = $frameStore[$activeFrame]
-        if (!framesValue) return newPixelFrame().speed
-        return $frameStore[$activeFrame].speed
+    frameStore, $frameStore => {
+        if (!$frameStore || !$frameStore.frames || typeof $frameStore.active !== 'number') return newPixelFrame().speed;
+        let framesValue = $frameStore.frames[$frameStore.active];
+        if (!framesValue) return newPixelFrame().speed;
+        return framesValue.speed;
     }
 );

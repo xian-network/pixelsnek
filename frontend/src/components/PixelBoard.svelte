@@ -4,7 +4,7 @@
 	import { quintOut } from 'svelte/easing';
 
     // MISC
-    import { currentColor, frames, currentFrame, frameStore, activeFrame, currentTool, brushSize } from '../js/stores'
+    import { currentColor, frames, currentFrame, frameStore, currentTool, brushSize } from '../js/stores'
     import { indexToPos } from '../js/utils'
     import { config } from '../js/config'
     import { brushSizeMap } from '../js/defaults'
@@ -35,10 +35,10 @@
         if (!color) {
             return
         }
-        frameStore.update(currentValue => {
-            let framesInfo = currentValue[$activeFrame].frames
-            framesInfo[$currentFrame][index] = color
-            return currentValue
+        frameStore.update(state => {
+            let framesInfo = state.frames[state.active].frames;
+            framesInfo[$currentFrame][index] = color;
+            return state;
         })
     }
 
@@ -67,7 +67,7 @@
                     pixelToPaintPos.x <= maxX &&
                     pixelToPaint >= 0 &&
                     pixelToPaint <= config.totalPixels - 1) {
-                    if ($frameStore[$activeFrame].frames[$currentFrame][pixelToPaint] !== $currentColor[button]) {
+                    if ($frameStore.frames[$frameStore.active].frames[$currentFrame][pixelToPaint] !== $currentColor[button]) {
                         changeColor(pixelToPaint, button)
                     }
                 }
@@ -78,7 +78,7 @@
 
     const fill = async (index, button) => {
         let painting = true;
-        const colorFrom = $frameStore[$activeFrame].frames[$currentFrame][index]
+        const colorFrom = $frameStore.frames[$frameStore.active].frames[$currentFrame][index]
         let checked = new Set([])
 
         const paintAround = async (pixelIndex) => {
@@ -99,7 +99,7 @@
                 down
             ].filter(f => {
                 if (f === null) return false
-                let pixelColor = $frameStore[$activeFrame].frames[$currentFrame][f]
+                let pixelColor = $frameStore.frames[$frameStore.active].frames[$currentFrame][f]
                 return f >= 0 &&
                         f <= config.totalPixels - 1 &&
                         !checked.has(f) &&
@@ -113,6 +113,14 @@
         }
         await paintAround(index)
         painting = false;
+    }
+
+    // Group undo/redo per user action
+    const handlePointerDown = () => {
+        frameStore.snapshot();
+    }
+    const handlePointerUp = () => {
+        frameStore.snapshot();
     }
 </script>
 
@@ -147,7 +155,11 @@
      class:fill-cursor={$currentTool === 'fill'}
      class:paint-cursor={$currentTool.startsWith('paint')}
      on:drag|preventDefault
-     on:contextmenu|preventDefault>
+     on:contextmenu|preventDefault
+     on:mousedown={handlePointerDown}
+     on:mouseup={handlePointerUp}
+     on:touchstart={handlePointerDown}
+     on:touchend={handlePointerUp}>
     {#if $frames && Array.isArray($frames[$currentFrame])}
         {#each $frames[$currentFrame] as pixel, index}
             <Pixel {pixel} {index} on:colorChange={handleClick}/>

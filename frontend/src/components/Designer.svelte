@@ -14,7 +14,7 @@
 	import Tools from './Tools.svelte'
 
 	// Misc
-	import { frames, frameStore, activeFrame } from '../js/stores'
+	import { frames, frameStore } from '../js/stores'
 
 	let itemCreated = false;
 

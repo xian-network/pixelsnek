@@ -2,6 +2,7 @@
     import FillButton from './FillButton.svelte'
     import PaintButton from './PaintButton.svelte'
     import BrushSize from './BrushSize.svelte'
+    import { frameStore } from '../js/stores';
 </script>
 
 <style>
@@ -26,4 +27,8 @@
         <FillButton />
     </div>
     <BrushSize />
+    <!-- <div class="tools-row">
+        <button on:click={() => frameStore.undo()} disabled={!frameStore.canUndo()}>Undo</button>
+        <button on:click={() => frameStore.redo()} disabled={!frameStore.canRedo()}>Redo</button>
+    </div> -->
 </div>
